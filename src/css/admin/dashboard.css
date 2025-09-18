@@ -1,0 +1,248 @@
+:root {
+    --primary: #3498db;
+    --secondary: #2c3e50;
+    --success: #27ae60;
+    --danger: #e74c3c;
+    --warning: #f39c12;
+    --light: #ecf0f1;
+    --dark: #2c3e50;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+    overflow-x: hidden;
+}
+
+.sidebar {
+    background-color: var(--secondary);
+    color: white;
+    height: 100%;
+    position: fixed;
+    padding-top: 20px;
+    width: 220px;
+    z-index: 1000;
+    transition: all 0.3s;
+}
+
+.sidebar .nav-link {
+    color: rgba(255, 255, 255, 0.8);
+    padding: 12px 20px;
+    margin: 4px 0;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.sidebar .nav-link:hover,
+.sidebar .nav-link.active {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.sidebar .nav-link i {
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
+}
+
+.main-content {
+    margin-left: 220px;
+    padding: 20px;
+    transition: all 0.3s;
+}
+
+.header {
+    background-color: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.card {
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.nav.navbar-main .nav-item {
+    width: 100%;
+    display: inline-block;
+    position: static;
+    padding: 0 15px;
+}
+
+.card-header {
+    background-color: white;
+    border-bottom: 1px solid #eee;
+    font-weight: 600;
+    padding: 15px 20px;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.card-body .table-responsive button {
+    margin-left: 10px;
+    width: 40%;
+}
+
+.card-body .table-responsive table tr td {
+    text-align: left;
+}
+
+.stat-card {
+    text-align: center;
+    padding: 20px;
+}
+
+.stat-card .number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.stat-card .label {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.table th {
+    font-weight: 600;
+    background-color: #f8f9fa;
+}
+
+.badge {
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-primary:hover {
+    background-color: #2980b9;
+    border-color: #2980b9;
+}
+
+.mobile-menu-btn {
+    display: none !important;
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 1100;
+}
+
+.user-info {
+    padding: 15px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 15px;
+}
+
+.user-img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 15px;
+}
+
+.chart-container {
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    padding: 15px;
+}
+
+.chart-bar:hover {
+    background-color: #2e59d9 !important;
+}
+
+.progress {
+    height: 20px;
+}
+
+.progress-bar {
+    font-size: 12px;
+    line-height: 20px;
+}
+
+.list-group-item {
+    border-left: none;
+    border-right: none;
+}
+
+.list-group-item:first-child {
+    border-top: none;
+}
+
+.list-group-item:last-child {
+    border-bottom: none;
+}
+
+.chart-tooltip {
+    transition: opacity 0.3s;
+    transform: translateX(0%) translateY(50%);
+    z-index: 1000;
+    position: fixed;
+    opacity: 1;
+}
+
+@media (max-width: 768px) {
+    .btn-filter {
+        display: flex;
+    }
+    .btn-filter.active {
+        display: none;
+        /* background-color: var(--primary); */
+        /* color: white; */
+    }
+    .sidebar {
+        margin-left: -250px;
+        transform: translate(-100%, 0);
+        transition: transform 0.6s ease, opacity 0.6s ease;
+    }
+    .sidebar.show {
+        margin-left: 0;
+        transform: translate(0, 0);
+    }
+    .navbar-main {
+        /* giới hạn chiều cao (có thể chỉnh theo ý bạn) */
+        overflow-y: auto;
+        /* bật scrollbar dọc khi nội dung tràn */
+        -webkit-overflow-scrolling: touch;
+        /* giúp cuộn mượt hơn trên iOS */
+    }
+    .main-content {
+        margin-left: 0;
+    }
+    .mobile-menu-btn {
+        top: 5px;
+        display: block !important;
+        transform: translate(0, 0);
+        transition: transform 0.6s ease;
+    }
+    .mobile-menu-btn.show {
+        transform: translate(410%, 0);
+    }
+    .main-content.with-sidebar {
+        margin-left: 250px;
+    }
+    .card-body .table-responsive button {
+        width: 100%;
+    }
+    td.handle-btn {
+        padding-bottom: 50px;
+        display: flex;
+        /* flex-direction: column; */
+        height: 100%;
+        justify-content: center;
+        align-items: center;
+        /* padding: 0 0; */
+    }
+}
