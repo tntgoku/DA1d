@@ -58,6 +58,18 @@
         top: 10px;
         margin-bottom: 20px;
     }
+    .product-action:hover .action {
+        opacity: 1;
+        -webkit-transition: all .5s ease 0s;
+        -moz-transition: all .5s ease 0s;
+        -ms-transition: all .5s ease 0s;
+        -o-transition: all .5s ease 0s;
+        transition: all .5s ease 0s;
+        right: 10px;
+    }
+    .product-action:hover .action button:hover {
+        background: var(--blue);
+    }
 }
 
 @media screen and (max-width: 535px) {

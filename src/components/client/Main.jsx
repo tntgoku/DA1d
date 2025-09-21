@@ -1,7 +1,17 @@
 import '../../css/client/main.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import{ useState } from 'react';
 import ItemProduct from './Product/ItemProduct';
+import { productsvariant,productsvariant1 } from '../../entity/Entity';
 const Main = () => {
+    const products=productsvariant;
+    const products1 =productsvariant1;
+    const [activeTab, setActiveTab] = useState("1");
+
+    const handleClick = (e) => {
+        const tab = e.currentTarget.getAttribute("data-tab");
+        setActiveTab(tab);
+    };
     return (
         <main>
             <div className="container" style={{marginTop: '20px'}}>
@@ -63,22 +73,32 @@ const Main = () => {
                             <div className="row p-5">
                                 <div className="col-12">
                                     <ul className="tab tab-title">
-                                        <li className="tab-link has-content current" data-tab= "1"><span title='Sản phẩm nổi bật'>Sản phẩm nổi bật</span></li>
-                                        <li className="tab-link has-content" data-tab="2"><span title='Sản phẩm bán chạy'>Sản phẩm bán chạy</span></li>
+                                        <li className={`tab-link has-content ${activeTab === "1" ? "current" : ""}`} data-tab= "1" onClick={handleClick}><span title='Sản phẩm nổi bật'>Sản phẩm nổi bật</span></li>
+                                        <li className={`tab-link has-content ${activeTab === "2" ? "current" : ""}`} data-tab="2" onClick={handleClick}><span title='Sản phẩm bán chạy'>Sản phẩm bán chạy</span></li>
                                     </ul>
-                                    <div className="tab-1 tab-content current">
+                                    <div className={`tab-1 tab-content ${activeTab ==="1" ? "current" : ""}`}>
                                             <div className="row row-fix">
-                                                <ItemProduct/>
-                                                <ItemProduct/>
-                                                <ItemProduct/>
-                                                <ItemProduct/>
-                                                <ItemProduct/>
-                                                <ItemProduct/>
+                                                {products1.map((product) => (
+                                                    <ItemProduct key={product.id} product={product} />
+                                                ))}
                                                 <div className="text-center no-padding">
                                                     <a className="see-more" title="Xem toàn bộ sản phẩm" href="/danh-muc-tu-dong">Xem toàn bộ sản phẩm <i className="fa-solid fa-arrow-right"></i>
                                                     </a>
                                                 </div>
                                             </div>
+                                    </div>
+                                    <div className={`tab-2 tab-content ${activeTab === "2" ? "current" : ""}`}>
+                                        <div className="row row-fix">
+                                            {
+                                                products1.map((product)=>(
+                                                    <ItemProduct key={product.id} product={product}/>
+                                                ))
+                                            }
+                                            <div className="text-center no-padding">
+                                                <a className="see-more" title="Xem toàn bộ sản phẩm" href="/danh-muc-tu-dong">Xem toàn bộ sản phẩm <i className="fa-solid fa-arrow-right"></i>
+                                                </a>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

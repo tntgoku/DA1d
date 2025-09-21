@@ -31,6 +31,104 @@ ul.breadcrumb li i {
     margin-top: 10px;
 }
 
+.version-product {
+    margin-bottom: 20px;
+}
+
+.header-version,
+.color-header-version {
+    font-size: 18px;
+    font-weight: 400;
+    margin-bottom: 10px;
+}
+
+.color-product .color-item {
+    width: 100%;
+    display: inline-flex;
+    border-radius: 5px;
+    padding: 5px;
+    position: relative;
+    align-items: center;
+    border: 1px solid #ccc;
+    justify-content: center;
+}
+
+.version-product .option-item {
+    position: relative;
+    border: 1px solid #ccc;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    border-radius: 5px;
+    padding: 5px;
+    font-weight: bold;
+    overflow: hidden;
+    color: #000;
+}
+
+.option-item.active,
+.option-item:hover,
+.color-item.active {
+    border: 1px solid #d70018;
+    color: #d70018;
+    cursor: pointer;
+    transition: all .3s ease;
+}
+
+.color-item.active::after,
+.option-item.active::after {
+    content: "✔";
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background-color: #d70018;
+    border-bottom-right-radius: 50px;
+    color: #f6f3f3;
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.option-item span {
+    padding: 0 !important;
+}
+
+.option-item.active .price,
+.color-item.active span,
+.option-item:hover .price {
+    color: #d70018;
+}
+
+.option-item .price,
+.color-product .color-item .switch-0-color .price {
+    color: #000;
+    font-size: 13px;
+    font-weight: 400;
+}
+
+.switch-0-color .title,
+.switch-0-color .price {
+    display: block;
+    /* mỗi phần tử chiếm 1 dòng */
+}
+
+.switch-0-color .title {
+    font-size: 14px;
+    line-height: 1.4;
+    font-weight: bold;
+}
+
+
+/* .color-product .color-item .switch-0-color {
+    margin-left: 5px;
+    display: flex;
+    flex-direction: column;
+} */
+
+.thumb-images img {
+    max-width: 47px;
+    max-height: 47px;
+}
+
 .input_number_product {
     display: block;
     width: 100%;

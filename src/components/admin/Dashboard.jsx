@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../css/admin/dashboard.css';
-import {users, products, orders, repairs, reviews} from '../../Entity/Entity'; 
+import {users, productsvariant, orders, repairs, reviews} from '../../entity/Entity'; 
 import DashboardSection from './DashboardSection';
 import UsersSection from './UserSection';
 import ProductsSection from './ProductsSection';
@@ -18,7 +18,7 @@ const Dashboard = () => {
   const [activeSection, setActiveSection] = useState('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-
+  const products=productsvariant;
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };

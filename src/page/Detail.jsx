@@ -1,15 +1,41 @@
 import Footer from "../components/client/Footer";
 import Header from "../components/client/Header";
 import '../css/client/detail.css';
-import{Route, Routes,Link, Links} from 'react-router-dom';
+import{Route, Routes,Link,useParams} from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import anh from '../assets/anh1.webp';
 import anh1 from '../assets/iphone-17-pro-max_1.webp';
 import 'swiper/css';
 import ImageSlider from "../components/client/ImagesSlides";
 import SlidesObject from "../components/client/SlidesObject";
-const Detail = (products) => {
-    
+import { productsvariant,productsvariant1 ,categories} from "../entity/Entity";
+const Detail = () => {
+    const { id } = useParams();
+ const product = productsvariant1.find((product) => product.href === id);
+
+let price = product.price;
+let discount = product.discount;
+let namecate = categories.find((cate) => cate.id === product.category);
+
+// Ép price về số (loại bỏ dấu chấm ngăn cách nghìn nếu có)
+if (typeof price === "string") {
+  price = parseFloat(price.replace(/\./g, ""));
+}
+
+// Ép discount về số
+discount = discount ? Number(discount) : 0;
+
+let finalPrice;
+
+if (price == null || price <= 0) {
+  finalPrice = "Liên hệ";
+} else {
+  if (discount > 0) {
+    price = price - price * (discount / 100);
+  }
+  finalPrice = price.toLocaleString("vi-VN") + "đ";
+}
+
 const slidesData = [
     {
         id: 1,
@@ -32,7 +58,13 @@ const slidesData = [
         discount: "Giảm 14%",
     },
 ];
-    const listimg=[anh1,anh1,anh1,anh1];
+    const listimg=[anh,anh1,anh,anh1];
+const [activeIndex, setActiveIndex] = useState(0);
+
+  const handleSelectColor = (index) => {
+    setActiveIndex(index);
+  };
+
   return <>
     <Header></Header>
     <div className="body-wrap" >
@@ -41,7 +73,7 @@ const slidesData = [
                 <ul className="breadcrumb">
                     <li className="home"> <Link to="/" className="changeurl">Home</Link><i className="fa-solid fa-chevron-right"></i> </li>
                     <li className="home"> <Link to="/" className="changeurl">Home</Link><i className="fa-solid fa-chevron-right"></i> </li>
-                    <li className="home"> <Link to="/products" className="changeurl">Products</Link><i className="fa-solid fa-chevron-right"></i> </li>
+                    <li className="home"> <Link to="/product" className="changeurl">Products</Link><i className="fa-solid fa-chevron-right"></i> </li>
                     <li><strong><span>iPhone 14 Pro Max 1TB 99%</span></strong> </li>
                 </ul>
             </div>
@@ -50,7 +82,7 @@ const slidesData = [
             <div className="container">
                 <div className="block-background" style={{backgroundColor:"#fff"}}>
                     <div className="row">
-                        <div className="col-12"><h1 className="title-product">{products.name?products.name:"deo co j dau"}</h1></div>
+                        <div className="col-12"><h1 className="title-product">{product.name?product.name:"NULL"}</h1></div>
                         <div className="product-detail-left product-images col-12 col-md-12 col-lg-6 col-xl-4">
                             <div className="product-image-block">
                                  <div className="image-container">
@@ -62,10 +94,14 @@ const slidesData = [
                             <div className="details-pro">
                                 <div className="inventory_quantity">
                                 <div className="thump-break row">
-                                    <div className="mb-break type col-lg-6">
-                                        <span className="stock-brand-title">Loại:</span>
-                                        <span className="a-vendor">Tai Nghe</span>
-                                    </div>
+                                    {
+                                        namecate &&(
+                                                <div className="mb-break type col-lg-6">
+                                                    <span className="stock-brand-title">Loại:</span>
+                                                    <span className="a-vendor" data-cate={namecate.id}>{namecate.name}</span>
+                                                </div>
+                                        )
+                                    }
                                     <div className="mb-break type col-lg-6">
                                         <span className="stock-brand-title">Thương hiệu:</span>
                                         <span className="a-vendor">Apple</span>
@@ -76,31 +112,95 @@ const slidesData = [
                                     </div>
                                     <div className="mb-break sku-product clearfix col-lg-6">
                                         <span className="stock-brand-title">Mã sản phẩm:</span>
-                                        <span className="variant-sku" itemprop="sku" content="AG1059"><span className="a-sku">AG1059</span></span>
+                                        <span className="variant-sku" itemprop="sku" content={product.id}><span className="a-sku">{product.id}</span></span>
                                         <br/>
                                     </div>      
                                 </div>
                                 <form action="/cart/add" className="add-to-cart-form" >
                                     <div className="price-box">
-                                        <div className="special-price">
-                                            <span className="price product-price">20.000.000đ</span>
-                                        </div>
-                                        <div className="special-price" style={{textDecoration:"line-through", color:"#6c757d",fontSize:"16px", marginLeft:"10px"}}>
-                                            <span className="price product-price">20.000.000đ</span>
-                                        </div>
+                                        {
+                                            (product.discount && finalPrice !=="Liên hệ") ? (
+                                                <>
+                                                    <div className="special-price">
+                                                        <span className="price product-price">
+                                                        {finalPrice}</span></div>
+                                                    <div className="special-price" style={{ textDecoration: "line-through", color: "#6c757d", fontSize: "16px", marginLeft: "10px",}}>
+                                                        <span className="price product-price">{product.price + "đ"}</span>
+                                                    </div>
+                                                </>
+                                            ) : (
+                                                <div className="special-price">
+                                                <span className="price product-price">{finalPrice}</span>
+                                                </div>
+                                            )
+                                        }
                                     </div>
                                     <div className="form-product" >
+                                       {product?.category <= 2 && (
+                                            <div className="version-product header">
+                                                <div className="header-version">
+                                                <span style={{ marginBottom: "10px", fontWeight: 600 }}>
+                                                    Chọn phiên bản
+                                                </span>
+                                                </div>
+                                                <div className="option-version row">
+                                                <div className="col-lg-4 col-md-3 col-4">
+                                                    <Link
+                                                    to={`/detail/${productsvariant1.at(0).href}`} 
+                                                    className="option-item active"
+                                                    >
+                                                    <span className="title">256GB</span>
+                                                    <span className="price">20.000.000đ</span>
+                                                    </Link>
+                                                </div>
+                                                <div className="col-lg-4 col-md-3 col-4">
+                                                    <Link to={`/detail/${productsvariant1.at(1).href}`} className="option-item">
+                                                    <span className="title">512GB</span>
+                                                    <span className="price">Liên hệ</span>
+                                                    </Link>
+                                                </div>
+                                                <div className="col-lg-4 col-md-3 col-4">
+                                                    <Link to={`/detail/${productsvariant1.at(2).href}`}  className="option-item">
+                                                    <span className="title">1TB</span>
+                                                    <span className="price">30.000.000đ</span>
+                                                    </Link>
+                                                </div>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {
+                                            <div className="color-product header">
+                                                <div className="color-header-version">
+                                                <span style={{ marginBottom: "10px", fontWeight: 600 }}>
+                                                    Màu sắc
+                                                </span>
+                                                </div>
+                                                <div className="option-version row">
+                                                    {listimg.map((img, index) => (
+                                                        <div className="col-lg-4 col-md-3 col-4" key={index}>
+                                                            <label
+                                                            className={`color-item ${activeIndex === index ? "active" : ""}`}
+                                                            onClick={() => handleSelectColor(index)}
+                                                            >
+                                                            <div className="thumb-images">
+                                                                <img src={img} alt={`Màu ${index}`} />
+                                                            </div>
+                                                            <div className="switch-0-color">
+                                                                <span className="title">Màu {index + 1}</span>
+                                                                <span className="price">20.000.000đ</span>
+                                                            </div>
+                                                            </label>
+                                                        </div>
+                                                        ))}
+                                                </div>
+                                            </div>
+                                        }
+
                                         <div className="custom-btn-number" >
                                             <div className="input_number_product form-control cart__qty">									
-                                                        <button className="btn_num num_1 button button_qty" type="button">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-dash" viewBox="0 0 16 16">
-                                                                <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8"></path>
-                                                            </svg>
-                                                        </button>
+                                                        <button className="btn_num num_1 button button_qty" type="button">-</button>
                                                         <input type="text" name="quantity" id="qtym" className="form-control prd_quantity" />
-                                                    <button className="btn_num num_2 button button_qty" type="button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-plus" viewBox="0 0 16 16">
-                                                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"></path>
-                                                        </svg>							</button>
+                                                    <button className="btn_num num_2 button button_qty" type="button">+</button>
                                                 </div>
                                         </div>
                                         <div className="btn-mua button_actions clearfix">
@@ -210,8 +310,8 @@ const slidesData = [
                             </div>
                         </div>
                     </div>
-                    <div className="col-lg-5">
-                        <div className="product-infor-technical block-background">
+                    <div className="col-lg-5">{
+                        product.category <=2 &&(                        <div className="product-infor-technical block-background">
                             <h3 className="title">Thông số kỹ thuật</h3>
                             <div className="content">
                                 <table>
@@ -231,7 +331,8 @@ const slidesData = [
                                     </tbody>
                                 </table>
                             </div>
-                        </div>
+                        </div>)}
+
                     </div>
                 </div>
             </div>
