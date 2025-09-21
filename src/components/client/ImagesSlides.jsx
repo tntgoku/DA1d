@@ -1,56 +1,58 @@
-import React, { useRef, useState } from 'react';
-    // Import Swiper React components
-    import { Swiper, SwiperSlide } from 'swiper/react';
+import React, { useRef, useEffect, useState } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/free-mode";
+import "swiper/css/navigation";
+import "swiper/css/thumbs";
+import { FreeMode, Navigation, Thumbs } from "swiper/modules";
 
-    // Import Swiper styles
-    import 'swiper/css';
-    import 'swiper/css/free-mode';
-    import 'swiper/css/navigation';
-    import 'swiper/css/thumbs';
+function ImageSlider({ listimg, activeIndex }) {
+  const [thumbsSwiper, setThumbsSwiper] = useState(null);
+  const mainSwiperRef = useRef(null);
 
-
-    // import required modules
-    import { FreeMode, Navigation, Thumbs } from 'swiper/modules';
-
-    export default ImageSlider;
-
-    function ImageSlider({ listimg }) {
-        const [thumbsSwiper, setThumbsSwiper] = useState(null);
-
-    return (
-        <>
-        <Swiper
-            style={{
-            '--swiper-navigation-color': '#fff',
-            '--swiper-pagination-color': '#fff',
-            }}
-            spaceBetween={50}
-            navigation={false}
-            thumbs={{ swiper: thumbsSwiper }}
-            modules={[FreeMode, Navigation, Thumbs]}
-            className="gallery-top p-2"
-        >
-            {listimg.map((img, index) => (
-                <SwiperSlide key={index}>
-                    <img src={img} width={379} height={379} />
-                </SwiperSlide>
-            ))}
-        </Swiper>
-        <Swiper
-            onSwiper={setThumbsSwiper}
-            spaceBetween={0}
-            slidesPerView={listimg.length}
-            navigation={true}
-            watchSlidesProgress={true}
-            modules={[FreeMode, Navigation, Thumbs]}
-            className="gallery-thumbs p-2 swipper-2"
-        >
-            {listimg.map((img, index) => (
-                <SwiperSlide key={index}>
-                    <img src={img} width={65} height={65} />
-                </SwiperSlide>
-            ))}
-        </Swiper>
-        </>
-    );
+  // Khi activeIndex thay đổi → đổi slide
+  useEffect(() => {
+    if (mainSwiperRef.current && typeof activeIndex === "number") {
+      mainSwiperRef.current.slideTo(activeIndex);
     }
+  }, [activeIndex]);
+
+  return (
+    <>
+      {/* Swiper chính */}
+      <Swiper
+        onSwiper={(swiper) => (mainSwiperRef.current = swiper)}
+        spaceBetween={50}
+        navigation={false}
+        thumbs={{ swiper: thumbsSwiper }}
+        modules={[FreeMode, Navigation, Thumbs]}
+        className="gallery-top p-2"
+      >
+        {listimg.map((img, index) => (
+          <SwiperSlide key={index}>
+            <img src={img} width={379} height={379} alt="" />
+          </SwiperSlide>
+        ))}
+      </Swiper>
+
+      {/* Thumbnails */}
+      <Swiper
+        onSwiper={setThumbsSwiper}
+        spaceBetween={0}
+        slidesPerView={listimg.length}
+        navigation={true}
+        watchSlidesProgress={true}
+        modules={[FreeMode, Navigation, Thumbs]}
+        className="gallery-thumbs p-2 swipper-2"
+      >
+        {listimg.map((img, index) => (
+          <SwiperSlide key={index}>
+            <img src={img} width={65} height={65} alt="" />
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    </>
+  );
+}
+
+export default ImageSlider;

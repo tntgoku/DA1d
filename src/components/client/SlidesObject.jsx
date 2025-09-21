@@ -58,7 +58,7 @@ function SlidesObject({ slidesData }) {
                                         (window.location.href = slide.href)
                                     }
                                 >
-                                   <i className="fa-solid fa-sliders"></i>
+                                   <i className="fa-solid fa-sliders" style={{color :'#fff'}}></i>
                                 </button>
                             </div>
                         </div>

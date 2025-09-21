@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import anh from '../assets/logo_store.jpg';
 import anh1 from '../assets/iphone-17-pro-max_1.webp';
-import { getProvinces, getDistricts, getCommunes } from "../components/getAPI";
+import { getProvinces, getDistricts} from "../components/getAPI";
 const ViewPayment = () => {
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
@@ -41,19 +41,19 @@ const ViewPayment = () => {
     fetchDistricts();
   }, [selectedProvince]);
 
-  // Khi chọn quận -> load xã
-  useEffect(() => {
-    const fetchCommunes = async () => {
-      if (!selectedDistrict) return;
-      try {
-        const data = await getCommunes(selectedDistrict);
-        setCommunes(data.data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchCommunes();
-  }, [selectedDistrict]);
+//   // Khi chọn quận -> load xã ---> Commit lại rồi vì dùng API mới sau khi Sáp nhập tỉnh, thành Việt Nam 2025
+//   useEffect(() => {
+//     const fetchCommunes = async () => {
+//       if (!selectedDistrict) return;
+//       try {
+//         const data = await getCommunes(selectedDistrict);
+//         setCommunes(data.data);
+//       } catch (err) {
+//         console.error(err);
+//       }
+//     };
+//     fetchCommunes();
+//   }, [selectedDistrict]);
   const handleChange = (e) => {
     setPaymentMethod(e.target.value);
     console.log("Phương thức thanh toán:", e.target.value);
@@ -77,7 +77,7 @@ const ViewPayment = () => {
                             <div className="title-header" style={{display :'flex',alignItems :'center'
                             }}>
                                 <h3 className="layout-flex__item--stretch">Phương thức thanh toán</h3>
-                                <Link to="/login" className="btn btn--link btn--edit">
+                                <Link to="/login" className="btn--link btn--edit">
                                 <i className="fa fa-user-circle"></i>Đăng nhập
                                 </Link>
                             </div>
@@ -116,13 +116,14 @@ const ViewPayment = () => {
                                 </div>
                                 </div>
 
-                                {/* Districts */}
+                                {/* Districts với API mới thì đây sẽ là Communes  */}
                                 <div className="field">
                                 <div className="field__input-wrapper form-group">
                                     <label htmlFor="district" className="field__label" style={ {display :'none'}}>  Quận/Huyện</label>
                                     <select  id="select-districts"  className="form-control form-control-sm"  value={selectedDistrict}  
                                     onChange={(e) =>    setSelectedDistrict(e.target.value)  }> 
-                                        <option value="">-- Chọn quận/huyện --</option>  
+                                        {/* <option value="">-- Chọn quận/huyện --</option>   */}
+                                        <option value="">-- Chọn xã/phường --</option>
                                         {districts.map((district) => (    
                                             <option key={district.id} value={district.id}>      
                                             {district.full_name}    
@@ -130,8 +131,10 @@ const ViewPayment = () => {
                                     </select>
                                 </div>
                                 </div>
-                                {/* Communes */}
-                                <div className="field">
+                                {/* Communes 
+                                Sáp nhập tỉnh, thành Việt Nam 2025 bỏ commit nếu như dùng API cũ với 64 tỉnh thành
+                                */}
+                                {/* <div className="field">
                                 <div className="field__input-wrapper form-group">
                                     <label htmlFor="commune" className="field__label" style={ {display :'none'}}>Xã/Phường</label>
                                     <select id="select-communes" className="form-control form-control-sm">
@@ -143,7 +146,7 @@ const ViewPayment = () => {
                                     ))}
                                     </select>
                                 </div>
-                                </div>
+                                </div> */}
 
                                 <div className="field">
                                     <div className="field__input-wrapper form-group">
@@ -169,11 +172,13 @@ const ViewPayment = () => {
                             </div>
                               <div className="content-box">
                                          <div className="form-check content-box__row ">
-                                            <div className="group-check">
-                                            <input className="form-check-input" type="radio" name="paymentMethod" id="mbbank" value="mbbank" onChange={handleChange} />
-                                            <label className="form-check-label radio__label__primary" htmlFor="flexRadioDefault1">thanh toán khi nhận hàng (COD)</label>
+                                            <div className="content-box__row">
+                                                <div className="group-check">
+                                                <input className="form-check-input" type="radio" name="paymentMethod" id="mbbank" value="mbbank" onChange={handleChange} />
+                                                <label className="form-check-label radio__label__primary" htmlFor="flexRadioDefault1">thanh toán khi nhận hàng (COD)</label>
+                                                </div>
+                                                <label htmlFor="" className=" radio__label__accessory"> <i className="fa-solid fa-money-bill"></i></label>
                                             </div>
-                                            <label htmlFor="" className=" radio__label__accessory"> <i className="fa-solid fa-money-bill"></i></label>
                                         </div>
                                         </div>
                             <div className="layout-flex">
@@ -191,29 +196,32 @@ const ViewPayment = () => {
                     
 									</div>
                                     <div className="content-box">
-                                        <div className="form-check content-box__row ">
-                                            <div className="group-check">
-
-                                            <input className="form-check-input" type="radio" name="paymentMethod" id="mbbank" value="mbbank" onChange={handleChange} />
-                                            <label className="form-check-label radio__label__primary" htmlFor="flexRadioDefault1">thanh toán khi nhận hàng (COD)</label>
+                                        <div className="form-check">
+                                            <div className="content-box__row">
+                                                <div className="group-check">
+                                                <input className="form-check-input" type="radio" name="paymentMethod" id="mbbank" value="mbbank" onChange={handleChange} />
+                                                <label className="form-check-label radio__label__primary" htmlFor="flexRadioDefault1">thanh toán khi nhận hàng (COD)</label>
+                                                </div>
+                                                <label htmlFor="" className=" radio__label__accessory"> <i className="fa-solid fa-money-bill"></i></label>
                                             </div>
-                                            <label htmlFor="" className=" radio__label__accessory"> <i className="fa-solid fa-money-bill"></i></label>
                                         </div>
-                                        <div className="form-check content-box__row">
+                                        <div className="form-check ">
+                                            <div className="content-box__row">
                                             <div className="group-check">
-
-                                            <input className="form-check-input" type="radio" name="paymentMethod" id="cod" value="cod" onChange={handleChange} />
-                                            <label className="form-check-label radio__label__primary" htmlFor="flexRadioDefault1">thanh toán khi nhận hàng (COD)</label>
+                                                <input className="form-check-input" type="radio" name="paymentMethod" id="cod" value="cod" onChange={handleChange} />
+                                                <label className="form-check-label radio__label__primary" htmlFor="flexRadioDefault1">thanh toán khi nhận hàng (COD)</label>
+                                                </div>
+                                                <label htmlFor="" className=" radio__label__accessory"> <i className="fa-solid fa-money-bill"></i></label>
                                             </div>
-                                            <label htmlFor="" className=" radio__label__accessory"> <i className="fa-solid fa-money-bill"></i></label>
                                         </div>
-                                        <div className="form-check content-box__row">
+                                        <div className="form-check ">
+                                            <div className="content-box__row">
                                             <div className="group-check">
-
-                                            <input className="form-check-input" type="radio" name="paymentMethod" id="vnpay" value="vnpay" onChange={handleChange} />
-                                            <label className="form-check-label radio__label__primary" htmlFor="flexRadioDefault1">thanh toán ONLINE với VNPAY</label>
+                                                <input className="form-check-input" type="radio" name="paymentMethod" id="vnpay" value="vnpay" onChange={handleChange} />
+                                                <label className="form-check-label radio__label__primary" htmlFor="flexRadioDefault1">thanh toán ONLINE với VNPAY</label>
+                                                </div>
+                                                <label htmlFor="" className=" radio__label__accessory"> <i className="fa-solid fa-money-bill"></i></label>
                                             </div>
-                                            <label htmlFor="" className=" radio__label__accessory"> <i className="fa-solid fa-money-bill"></i></label>
                                         </div>
                                     </div>
                                 </div>
@@ -224,30 +232,30 @@ const ViewPayment = () => {
             </div>
             <div className="sidebar-payment">
                 <div className="sidebar__header">
-                    <h2 class="sidebar__title">
+                    <h2 className="sidebar__title">
 							Đơn hàng (10 sản phẩm)
 						</h2>
                 </div>
                 <div className="sidebar__content">
                     <div className="order-summary__sections">
                         <div className="order-summary__section order-summary__section--product-list">
-                            <div className="product-table">
-                               <thead class="product-table__header">
+                            <table className="product-table">
+                               <thead className="product-table__header">
 											<tr>
 												<th>
-													<span class="visually-hidden">Ảnh sản phẩm</span>
+													<span className="visually-hidden">Ảnh sản phẩm</span>
 												</th>
 												<th>
-													<span class="visually-hidden">Mô tả</span>
+													<span className="visually-hidden">Mô tả</span>
 												</th>
 												<th>
-													<span class="visually-hidden">Sổ lượng</span>
+													<span className="visually-hidden">Sổ lượng</span>
 												</th>
 												<th>
-													<span class="visually-hidden">Đơn giá</span>
+													<span className="visually-hidden">Đơn giá</span>
 												</th>
 											</tr>
-										</thead>
+							   </thead>
                                 <tbody>
                                     <tr className="product">
                                         <td className="product__image">
@@ -267,7 +275,7 @@ const ViewPayment = () => {
                                         <td className="product__price" >319.800.000₫</td>
                                     </tr>
                                 </tbody>
-                            </div>
+                            </table>
                         </div>
                         <div className="order-summary__section order-summary__section--discount-code">
                             <div className="fieldset">
@@ -303,11 +311,11 @@ const ViewPayment = () => {
                         </div>
                         
                         <div className="order-summary__section order-summary__section--total-lines">
-                            <div class="total-line total-line--subtotal">
-												<span class="total-line__name">
+                            <div className="total-line total-line--subtotal">
+												<span className="total-line__name">
 													Tạm tính
 												</span>
-												<span class="total-line__price">319.800.000₫</span>
+												<span className="total-line__price">319.800.000₫</span>
 											</div>
                             <div className="total-line total-line-shipping shipFeeCheckHost">
                                 <span className="total-line-name">Phí vận chuyển</span>
@@ -315,15 +323,15 @@ const ViewPayment = () => {
                                     <span className="order-summary-emphasis" value="40000" id="shipFee" codfee="0" data-curentvalue="40000">40,000  đ</span>
                                 </span>
                             </div>
-                            <div class="total-line-table__footer">
-											<div class="total-line payment-due">
-												<span class="total-line__name">
-													<span class="payment-due__label-total">
+                            <div className="total-line-table__footer">
+											<div className="total-line payment-due">
+												<span className="total-line__name">
+													<span className="payment-due__label-total">
 														Tổng cộng
 													</span>
 												</span>
-												<span class="total-line__price">
-													<span class="payment-due__price" data-bind="getTextTotalPrice()">319.840.000₫</span>
+												<span className="total-line__price">
+													<span className="payment-due__price" data-bind="getTextTotalPrice()">319.840.000₫</span>
 												</span>
 											</div>
 										</div>

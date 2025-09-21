@@ -3,6 +3,7 @@ import Header from "../components/client/Header";
 import '../css/client/detail.css';
 import{Route, Routes,Link,useParams} from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
+import { useState,useEffect } from "react";
 import anh from '../assets/anh1.webp';
 import anh1 from '../assets/iphone-17-pro-max_1.webp';
 import 'swiper/css';
@@ -10,32 +11,48 @@ import ImageSlider from "../components/client/ImagesSlides";
 import SlidesObject from "../components/client/SlidesObject";
 import { productsvariant,productsvariant1 ,categories} from "../entity/Entity";
 const Detail = () => {
-    const { id } = useParams();
- const product = productsvariant1.find((product) => product.href === id);
+ const { id } = useParams();
+  
+  // Tìm sản phẩm hiện tại theo id
+  const product = productsvariant1.find((pro) => pro.href === id);
 
-let price = product.price;
-let discount = product.discount;
-let namecate = categories.find((cate) => cate.id === product.category);
+  // Giá hiển thị
+  const [finalPrice, setFinalPrice] = useState("Liên hệ");
+  const [activeIndex, setActiveIndex] = useState(0);
 
-// Ép price về số (loại bỏ dấu chấm ngăn cách nghìn nếu có)
-if (typeof price === "string") {
-  price = parseFloat(price.replace(/\./g, ""));
-}
+  // Tên danh mục
+  const namecate = product
+    ? categories.find((cate) => cate.id === product.category)
+    : null;
 
-// Ép discount về số
-discount = discount ? Number(discount) : 0;
+  // Hàm tính giá cuối cùng
+  const calculatePrice = (priceInput, discountInput) => {
+    if (!priceInput || priceInput.toLowerCase() === "liên hệ") return "Liên hệ";
 
-let finalPrice;
+    let price = typeof priceInput === "string" ? parseFloat(priceInput.replace(/\./g, "")) : priceInput;
+    let discount = discountInput ? Number(discountInput) : 0;
 
-if (price == null || price <= 0) {
-  finalPrice = "Liên hệ";
-} else {
-  if (discount > 0) {
-    price = price - price * (discount / 100);
-  }
-  finalPrice = price.toLocaleString("vi-VN") + "đ";
-}
+    if (price <= 0) return "Liên hệ";
+    if (discount > 0) price = price - price * (discount / 100);
 
+    return price.toLocaleString("vi-VN") + "đ";
+  };
+
+  // Cập nhật giá khi component mount hoặc product thay đổi
+  useEffect(() => {
+    if (!product) {
+      setFinalPrice("Liên hệ");
+    } else {
+      setFinalPrice(calculatePrice(product.price, product.discount));
+    }
+  }, [product]);
+
+  // Cập nhật giá khi click chọn color
+  const handleSelectColor = (index) => {
+    setActiveIndex(index);
+    const selectedImg = listimg[index];
+    setFinalPrice(calculatePrice(selectedImg.price, product?.discount));
+  };
 const slidesData = [
     {
         id: 1,
@@ -58,12 +75,23 @@ const slidesData = [
         discount: "Giảm 14%",
     },
 ];
-    const listimg=[anh,anh1,anh,anh1];
-const [activeIndex, setActiveIndex] = useState(0);
+    const listimg=[{img :anh,
+        id:101,
+        price: "20.990.000",
 
-  const handleSelectColor = (index) => {
-    setActiveIndex(index);
-  };
+    },{img :anh1,
+        id:102,
+        price: "Liên Hệ",
+        
+    },{img :anh,
+        id:103,
+        price: "19.990.000",
+        
+    },{img :anh1,
+        id:104,
+        price: "21.290.000",
+        
+    }];
 
   return <>
     <Header></Header>
@@ -86,7 +114,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                         <div className="product-detail-left product-images col-12 col-md-12 col-lg-6 col-xl-4">
                             <div className="product-image-block">
                                  <div className="image-container">
-                                                <ImageSlider listimg={listimg}></ImageSlider>
+                                                <ImageSlider listimg={listimg} activeIndex={activeIndex}></ImageSlider>
                                 </div>
                             </div>
                         </div>
@@ -180,14 +208,15 @@ const [activeIndex, setActiveIndex] = useState(0);
                                                         <div className="col-lg-4 col-md-3 col-4" key={index}>
                                                             <label
                                                             className={`color-item ${activeIndex === index ? "active" : ""}`}
-                                                            onClick={() => handleSelectColor(index)}
+                                                            onClick={() => handleSelectColor(index)
+                                                            }
                                                             >
                                                             <div className="thumb-images">
-                                                                <img src={img} alt={`Màu ${index}`} />
+                                                                <img src={img.img} alt={`Màu ${index}`} />
                                                             </div>
                                                             <div className="switch-0-color">
                                                                 <span className="title">Màu {index + 1}</span>
-                                                                <span className="price">20.000.000đ</span>
+                                                                <span className="price">  {calculatePrice(img.price, product?.discount)}</span>
                                                             </div>
                                                             </label>
                                                         </div>
@@ -195,25 +224,28 @@ const [activeIndex, setActiveIndex] = useState(0);
                                                 </div>
                                             </div>
                                         }
-
-                                        <div className="custom-btn-number" >
-                                            <div className="input_number_product form-control cart__qty">									
-                                                        <button className="btn_num num_1 button button_qty" type="button">-</button>
-                                                        <input type="text" name="quantity" id="qtym" className="form-control prd_quantity" />
+                                        {finalPrice !== "Liên hệ" && (
+                                            <>
+                                                <div className="custom-btn-number">
+                                                <div className="input_number_product form-control cart__qty">									
+                                                    <button className="btn_num num_1 button button_qty" type="button">-</button>
+                                                    <input type="text" name="quantity" id="qtym" className="form-control prd_quantity" />
                                                     <button className="btn_num num_2 button button_qty" type="button">+</button>
                                                 </div>
-                                        </div>
-                                        <div className="btn-mua button_actions clearfix">
-                                                <button type="submit" title="Thêm vào giỏ" className="btn  btn-dark btn_base normal_button btn_add_cart add_to_cart btn-cart">
+                                                </div>
+                                                <div className="btn-mua button_actions clearfix">
+                                                <button type="submit" title="Thêm vào giỏ" className="btn btn-dark btn_base normal_button btn_add_cart add_to_cart btn-cart">
                                                     <span className="txt-main text_1">Thêm vào giỏ</span>
                                                     <span className="text_2">Giao hàng tận nơi miễn phí</span>
                                                 </button>
-                                        </div>
-                                        <div className="group-button">
-                                            <a href="" title="Mua ngay" className="btn-buyNow btn btn-dark">
-                                                Mua ngay
-                                            </a>
-                                        </div>
+                                                </div>
+                                                <div className="group-button">
+                                                <a href="" title="Mua ngay" className="btn-buyNow btn btn-dark">
+                                                    Mua ngay
+                                                </a>
+                                                </div>
+                                            </>
+                                        )}
                                     </div>
                                     <div className="khuyen-mai">
                                         <h3 className="title">

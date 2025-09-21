@@ -12,7 +12,7 @@ const ItemProduct =({key,product})=>{
         <div className="col-xl-20 col-lg-3 col-sm-4 col-6 col-fix">			
             <div className="variants product-action" data-cart-form="" data-id={product.id}>
                 <div className="product-thumbnail">
-                    <Link className="image_thumb scale_hover" to={`/detail/${product.href}`} title={product.name}>
+                    <Link className="image_thumb scale_hover" to={`/detail/${product.href}`} title={product.name} key-id={key}>
                         <img
                             width={234}
                             height={234}

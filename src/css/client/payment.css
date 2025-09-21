@@ -249,13 +249,13 @@
 }
 
 .content-box__row {
-    margin-left: 5px;
     display: table;
     display: flex;
+    align-items: center;
     justify-content: space-between;
     width: 100%;
     position: relative;
-    padding: 1em;
+    padding: 0.5em;
 }
 
 .section__header {
@@ -280,6 +280,7 @@
     margin-left: 25px;
     display: flex;
     gap: 15px;
+    align-items: center;
     justify-content: space-between;
 }
 
@@ -372,6 +373,20 @@ span.total-line__price {
 
 .spinner-label {
     width: 100%;
+}
+
+.form-check {
+    border-bottom: 1px solid #d9d9d9;
+    margin-bottom: 0 !important;
+}
+
+.btn--link.btn--edit {
+    font-size: 16px;
+    margin-bottom: .5rem;
+}
+
+.btn--link.btn--edit i {
+    margin-right: 8px;
 }
 
 button.btn.btn-checkout.btn-success.spinner {

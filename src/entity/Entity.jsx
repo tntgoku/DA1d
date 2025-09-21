@@ -8,7 +8,7 @@ const users = [
 ];
 
 const productsvariant = [
-  { product_id:1, id: 101, name: 'iPhone 14 Pro Max', category: 1, price: '28.990.000', discount: '10', stock: 15, status: 'Còn hàng', description: 'iPhone 14 Pro Max 128GB Chính Hãng VN/A - Mới 100', warranty: '12 tháng', isNew: true, imgSrc: anh1, imgAlt: 'iPhone 14 Pro Max', href: 'iphone-14-pro-max-128gb-chinh-hang-vn-a-1'},
+  { product_id:1, id: 101, name: 'iPhone 14 Pro Max', category: 1, price: '28.990.000', discount: '10', stock: 15, status: 'Còn hàng', description: 'iPhone 14 Pro Max 128GB Chính Hãng VN/A - Mới 100', warranty: '12 tháng', isNew: true, imgSrc: anh1, imgAlt: 'iPhone 14 Pro Max', href:'iphone-14-pro-max-128gb-chinh-hang-vn-a-1'},
   { product_id:1, id: 102, name: 'iPhone 14 Pro Max 1TB 99', category: 1, price: '24.990.000', discount: '5', stock: 8, status: 'Còn hàng', description: 'iPhone 14 Pro Max 1TB Chính Hãng VN/A - Mới 100', warranty: '12 tháng', isNew: true, imgSrc: anh1, imgAlt: 'iPhone 14 Pro Max 1TB', href: 'iphone-14-pro-max-1tb-chinh-hang-vn-a-1'},
   { product_id:1, id: 103, name: 'iPhone 14 Pro Max 512GB 99', category: 1, price: '20.990.000', discount: '5', stock: 8, status: 'Còn hàng', description: 'iPhone 14 Pro Max 1TB Chính Hãng VN/A - Mới 100', warranty: '12 tháng', isNew: false, imgSrc: anh1, imgAlt: 'iPhone 14 Pro Max 1TB', href: 'iphone-14-pro-max-cu'},
   { product_id:2, id: 201, name: 'Ốp lưng iPhone 14 Pro', category: 3, price: '450.000', discount: null, stock: 32, status: 'Còn hàng', description: 'Ốp lưng iPhone 14 Pro Chính Hãng Apple Silicone Case with MagSafe', warranty: '6 tháng', isNew: false, imgSrc: anh1, imgAlt: 'Ốp lưng iPhone 14 Pro', href: '/op-lung-iphone-14-pro-chinh-hang-apple-silicone-case-with-magsafe-1'},
