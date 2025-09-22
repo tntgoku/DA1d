@@ -7,6 +7,8 @@ import App from './App.jsx'
 import Detail from './page/Detail.jsx';
 import ViewPayment from './page/gotopayment.jsx';
 import Cart from './page/Cart.jsx';
+import AuthForms from './page/AuthForms.jsx';
+import Account from './page/Account.jsx';
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
@@ -19,6 +21,8 @@ createRoot(document.getElementById('root')).render(
         <Route path="*" element={<div>Not Found</div>} />
         <Route path="/admin/*" element={<Dashboard />} />
         <Route path='/payment' element={<ViewPayment />} />
+        <Route path='/login' element={<AuthForms/>}/>
+        <Route path='/account' element ={<Account/>}/>
       </Routes>
     </BrowserRouter>
   </StrictMode>,

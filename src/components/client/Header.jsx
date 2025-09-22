@@ -1,7 +1,7 @@
 import "../../css/client/header.css";
 import SvgIcon from "./Svg";
 import anh1 from '../../assets/anh1.webp';
-import {Routes,Route,Link} from 'react-router-dom';
+import {Routes,Route,Link,useNavigate} from 'react-router-dom';
 // import Dashboard from '../admin/Dashboard';
 import { useState,useEffect } from "react";
 import '../../css/client/payment.css';
@@ -10,14 +10,16 @@ const Header = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [animate, setAnimate] = useState(false);
     const [isOpennav,setIsOpennav]= useState(false);
+    const navigate=useNavigate();
     const handleToggleLogin = () => {
-         if (!isOpen) {
-      setIsOpen(true);      
-      setTimeout(() => setAnimate(true), 10); 
-    } else {
-      setAnimate(false);     
-      setIsOpen(false);      
-    }
+    //      if (!isOpen) {
+    //   setIsOpen(true);      
+    //   setTimeout(() => setAnimate(true), 10); 
+    // } else {
+    //   setAnimate(false);     
+    //   setIsOpen(false);   
+        navigate("/login");   
+    // }
     }
     const handleTogglenav=()=>{
         if(!isOpennav){
@@ -184,11 +186,7 @@ const Header = () => {
                             </ul>
                         </div>
                 </div>
-                <div id="modalLogin" className={`popup ${animate ? "show" : ""}`}>
-                  <h2>Form đăng nhập</h2>
-                  <p>Đây là nội dung sẽ hiện khi isOpen = true</p>
-                  <button aria-label="close" className="modal-close is-medium modal__button" onClick={handleToggleLogin}>X</button>
-                </div>
+
             </div>
         </header>
     );

@@ -35,6 +35,7 @@
     }
     .header-des {
         position: relative;
+        margin: 20px 0;
         /* background: #fff; */
         background-color: var(--blue-background);
     }

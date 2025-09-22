@@ -40,11 +40,13 @@ a {
     padding-left: 10px;
 }
 
-.block-background {
-    padding: 5px 5px;
-    background: #ebebeb;
-    border-radius: 5px;
-    box-shadow: 0 0px 2px 0 rgba(60, 64, 67, 0.1), 0 0px 6px 0px rgba(60, 64, 67, 0.25);
+.bread-crumb {
+    background: #dadada;
+    margin-bottom: 20px;
+}
+
+.bread-crumb .breadcrumb {
+    font-size: 16px;
 }
 
 .block-background>* {

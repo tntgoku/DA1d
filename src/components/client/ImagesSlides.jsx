@@ -30,7 +30,7 @@ function ImageSlider({ listimg, activeIndex }) {
       >
         {listimg.map((img, index) => (
           <SwiperSlide key={index}>
-            <img src={img} width={379} height={379} alt="" />
+            <img src={img.img} width={379} height={379} alt="" />
           </SwiperSlide>
         ))}
       </Swiper>
@@ -47,7 +47,7 @@ function ImageSlider({ listimg, activeIndex }) {
       >
         {listimg.map((img, index) => (
           <SwiperSlide key={index}>
-            <img src={img} width={65} height={65} alt="" />
+            <img src={img.img} width={65} height={65} alt="" />
           </SwiperSlide>
         ))}
       </Swiper>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const EditProductModal = ({ 
+export const EditProductModal = ({ 
   showModal, 
   setShowModal, 
   editingProduct, 
@@ -13,25 +13,27 @@ const EditProductModal = ({
   
   // Đồng bộ trạng thái haveCamera với category
   useEffect(() => {
-    setHaveCamera(formData.category === 'Iphone' || formData.category === 'Tablet');
+    setHaveCamera(formData.category === 1 || formData.category === 2);
   }, [formData.category]);
 
-  // Hàm xử lý upload ảnh
+// Hàm xử lý upload ảnh
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = (e) => {
+      reader.onload = (event) => {
         handleInputChange({
           target: {
-            name: 'image',
-            value: e.target.result
+            name: 'imgSrc',         // trùng với key trong formData
+            value: event.target.result
           }
         });
       };
       reader.readAsDataURL(file);
     }
   };
+// hoặc
+let price = parseInt((formData.price || "0").toString().replace(/\./g, ""), 10);
 
   return (
     <div className="modal fade show" style={{display: 'block', backgroundColor: 'rgba(0,0,0,0.5)'}}>
@@ -72,9 +74,9 @@ const EditProductModal = ({
                       <div className="mb-5">
                         <label className="form-label">Hình ảnh sản phẩm</label>
                         <div>
-                          {formData.img && (
+                          {formData.imgSrc && (
                             <img 
-                              src={formData.img} 
+                              src={formData.imgSrc} 
                               alt="Preview" 
                               style={{maxWidth: '200px', maxHeight: '200px', marginBottom: '10px'}}
                             />
@@ -92,7 +94,7 @@ const EditProductModal = ({
                   <div className="row">
                     <div className="col-md-6">
                       <div className="mb-3">
-                        <label className="form-label">Tên sản phẩm *</label>
+                        <label className="form-label" data-id={formData.id} data-idpro={formData.product_id}>Tên sản phẩm *</label>
                         <input
                           type="text"
                           className="form-control"
@@ -111,36 +113,35 @@ const EditProductModal = ({
                           name="category"
                           value={formData.category}
                           onChange={handleInputChange}
+                          data-test={formData.category}
                           required
                         >
                           <option value="">Chọn danh mục</option>
-                          <option value="Iphone">Điện thoại</option>
-                          <option value="Tablet">Tablet</option>
-                          <option value="Đồng hồ">Đồng hồ thông minh</option>
-                          <option value="Phụ kiện">Phụ kiện</option>
+                          <option value="1">Điện thoại</option>
+                          <option value="2">Tablet</option>
+                          <option value="3">Đồng hồ thông minh</option>
+                          <option value="4">Phụ kiện</option>
                         </select>
                       </div>
                     </div>
                   </div>
-                  
-                  {haveCamera && (
                     <div className="row">
                       <div className="col-md-6">
                         <div className="mb-3">
                           <label className="form-label">Loại sản phẩm:</label>
                           <select 
-                            name="type" 
+                            name="isNew" 
                             className="form-select"
-                            value={formData.type || ''}
+                            value={formData.isNew || ''}
                             onChange={handleInputChange}
+                            data-test123={formData.isNew}
                           >
-                            <option value="isNew">Mới</option>
-                            <option value="isOld">Cũ</option>
+                            <option  value="true">Mới</option>
+                            <option  value="false">Cũ</option>
                           </select>
                         </div>
                       </div>
                     </div>
-                  )}  
                   <div className="row">
                     <div className="col-md-6">
                       <div className="mb-3">
@@ -149,7 +150,7 @@ const EditProductModal = ({
                           type="number"
                           className="form-control"
                           name="price"
-                          value={formData.price}
+                          value={price}
                           onChange={handleInputChange}
                           required
                           min="0"
@@ -172,7 +173,6 @@ const EditProductModal = ({
                     </div>
                   </div>
                 </div>
-
                 {/* Tab thông số kỹ thuật */}
                 <div className={`tab-pane fade ${activeTab === 'specs' ? 'show active' : ''}`}>
                   <div className="row">
@@ -442,5 +442,3 @@ const EditProductModal = ({
     </div>
   );
 };
-
-export default EditProductModal;

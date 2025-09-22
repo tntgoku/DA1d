@@ -1,6 +1,6 @@
 import anh1 from '../../../assets/iphone-17-pro-max_1.webp'
 import { Link, useNavigate } from 'react-router-dom';
-const ItemProduct =({key,product})=>{
+const ItemProduct =({idkey,product})=>{
       const navigate = useNavigate();
     let price=product.price;
     if (price == null || Number(price.replace(/\D/g, "")) <= 0) {
@@ -12,7 +12,7 @@ const ItemProduct =({key,product})=>{
         <div className="col-xl-20 col-lg-3 col-sm-4 col-6 col-fix">			
             <div className="variants product-action" data-cart-form="" data-id={product.id}>
                 <div className="product-thumbnail">
-                    <Link className="image_thumb scale_hover" to={`/detail/${product.href}`} title={product.name} key-id={key}>
+                    <Link className="image_thumb scale_hover" to={`/detail/${product.href}`} title={product.name} key-id={idkey}>
                         <img
                             width={234}
                             height={234}

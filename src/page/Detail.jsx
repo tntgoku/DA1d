@@ -53,6 +53,12 @@ const Detail = () => {
     const selectedImg = listimg[index];
     setFinalPrice(calculatePrice(selectedImg.price, product?.discount));
   };
+  const logdata=()=>{
+    let data1=listimg.at(activeIndex);
+    
+    console.log(data1);
+    console.log(product);
+  }
 const slidesData = [
     {
         id: 1,
@@ -78,18 +84,22 @@ const slidesData = [
     const listimg=[{img :anh,
         id:101,
         price: "20.990.000",
+        color: "Titan Sa Mạc"
 
     },{img :anh1,
         id:102,
         price: "Liên Hệ",
+        color:"Titan Đen"
         
     },{img :anh,
         id:103,
         price: "19.990.000",
+        color:"Titan Trắng"
         
     },{img :anh1,
         id:104,
         price: "21.290.000",
+        color:"Titan Tự Nhiên"
         
     }];
 
@@ -215,7 +225,7 @@ const slidesData = [
                                                                 <img src={img.img} alt={`Màu ${index}`} />
                                                             </div>
                                                             <div className="switch-0-color">
-                                                                <span className="title">Màu {index + 1}</span>
+                                                                <span className="title">{img.color  }</span>
                                                                 <span className="price">  {calculatePrice(img.price, product?.discount)}</span>
                                                             </div>
                                                             </label>
@@ -234,7 +244,9 @@ const slidesData = [
                                                 </div>
                                                 </div>
                                                 <div className="btn-mua button_actions clearfix">
-                                                <button type="submit" title="Thêm vào giỏ" className="btn btn-dark btn_base normal_button btn_add_cart add_to_cart btn-cart">
+                                                <button type="button" title="Thêm vào giỏ" className="btn btn-dark btn_base normal_button btn_add_cart add_to_cart btn-cart"
+                                                 onClick={()=>{ logdata()
+                                                }}>
                                                     <span className="txt-main text_1">Thêm vào giỏ</span>
                                                     <span className="text_2">Giao hàng tận nơi miễn phí</span>
                                                 </button>
@@ -290,14 +302,12 @@ const slidesData = [
 								        </div>
                                     </div>
                                 </div>
-                                <div class="col-12 col-md-6 col-lg-4 col-xl-12">
-							<div class="khuyen-mai">
-								<h3 class="title">
-									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lightning-fill" viewBox="0 0 16 16">
-										<path d="M5.52.359A.5.5 0 0 1 6 0h4a.5.5 0 0 1 .474.658L8.694 6H12.5a.5.5 0 0 1 .395.807l-7 9a.5.5 0 0 1-.873-.454L6.823 9.5H3.5a.5.5 0 0 1-.48-.641l2.5-8.5z"></path>
-									</svg>Miễn Phí Trọn Đời
+                                <div className="col-12 col-md-6 col-lg-4 col-xl-12">
+							<div className="khuyen-mai">
+								<h3 className="title">
+									Miễn Phí Trọn Đời
 								</h3>
-								<div class="content">
+								<div className="content">
 									<ul>
 										<li><img width="20" height="20" src="//bizweb.dktcdn.net/100/176/601/themes/984546/assets/km_product1.png?1758020458072" alt="Miễn phí thay kính cường lực full viền cho iPhone."/>Miễn phí thay kính cường lực full viền cho iPhone.</li>
 										<li><img width="20" height="20" src="//bizweb.dktcdn.net/100/176/601/themes/984546/assets/km_product2.png?1758020458072" alt="Miễn phí thay ốp lưng silicon cho iPhone."/>Miễn phí thay ốp lưng silicon cho iPhone.</li>

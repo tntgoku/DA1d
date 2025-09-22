@@ -1,62 +1,12 @@
- import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import anh from '../../assets/anh1.webp';
-import EditProductModal from './Editproduct';
-
+import { productsvariant1, categories } from '../../entity/Entity'; // Import thêm categories
+import {EditProductModal } from './ItemProduct/Editproduct';
+import { ItemProducts} from './ItemProduct/Itemproduct';
 const ProductsSection = () => {
- const [products, setProducts] = useState([
-    { 
-      id: 1, 
-      name: 'iPhone 14 Pro Max', 
-      category: 'Iphone', 
-      price: 28990000, 
-      stock: 10, 
-      status: 'Active',
-      img: anh,
-      specifications: {
-        color: 'Tím',
-        storage: '256GB',
-        ram: '6GB',
-        screen: '6.7 inch',
-        battery: '4323 mAh',
-        chip: 'Apple A16 Bionic',
-        camera: '48MP'
-      }
-    },
-    { 
-      id: 2, 
-      name: 'MacBook Pro 14 inch', 
-      category: 'Laptop', 
-      price: 45990000, 
-      stock: 5, 
-      status: 'Active',
-      img: anh,
-      specifications: {
-        color: 'Bạc',
-        storage: '512GB SSD',
-        ram: '16GB',
-        screen: '14.2 inch',
-        battery: '70Wh',
-        chip: 'Apple M2 Pro',
-        weight: '1.6kg'
-      }
-    },
-    { 
-      id: 3, 
-      name: 'AirPods Pro 2', 
-      category: 'Phụ kiện', 
-      price: 5990000, 
-      stock: 20, 
-      status: 'Active',
-      img: anh,
-      specifications: {
-        color: 'Trắng',
-        battery: '6h nghe nhạc',
-        charging: 'MagSafe',
-        connectivity: 'Bluetooth 5.3',
-        features: 'Chống ồn chủ động'
-      }
-    },
-  ]);
+  // Khởi tạo state với productsvariant1
+  const [products, setProducts] = useState(productsvariant1);
+  // Xóa dòng gán trực tiếp: products = productsvariant1;
 
   const [showModal, setShowModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
@@ -84,15 +34,13 @@ const ProductsSection = () => {
     }
   });
 
-  // Định dạng tiền Việt Nam
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+  // Hàm lấy tên category từ id
+  const getCategoryName = (categoryId) => {
+    const category = categories.find(cat => cat.id === categoryId);
+    return category ? category.name : 'Không xác định';
   };
 
-  // Tính tổng tiền trong giỏ hàng
-  const calculateTotal = () => {
-    return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
-  };
+
 
   // Thêm sản phẩm vào giỏ hàng
   const addToCart = (product) => {
@@ -141,7 +89,6 @@ const ProductsSection = () => {
           screen: '',
           battery: '',
           chip: '',
-          camera: '',
           weight: '',
           connectivity: '',
           features: ''
@@ -203,14 +150,16 @@ const ProductsSection = () => {
   const handleEdit = (product) => {
     setEditingProduct(product);
     setFormData({
+      id:product.id,
+      product_id:product.product_id,
       name: product.name,
       category: product.category,
       price: product.price,
       stock: product.stock,
       status: product.status,
       specifications: product.specifications || {
-        color: '',
-        storage: '',
+        color: product.color,
+        storage: product.storage,
         ram: '',
         screen: '',
         battery: '',
@@ -219,24 +168,33 @@ const ProductsSection = () => {
         weight: '',
         connectivity: '',
         features: ''
-      }
+      },
+      imgSrc: product.imgSrc,
+      isNew:product.isNew // Thêm trường ảnh
     });
     setShowModal(true);
   };
 
   // Xóa sản phẩm
   const handleDelete = (id) => {
-    if (window.confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
+    if (window.confirm(`Bạn có chắc chắn muốn xóa sản phẩm này? ${id}`)) {
       setProducts(products.filter(product => product.id !== id));
       setCartItems(cartItems.filter(item => item.id !== id));
     }
   };
 
-  // Lọc sản phẩm theo từ khóa tìm kiếm
-  const filteredProducts = products.filter(product => 
-    product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    product.category.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredProducts = useMemo(() => {
+    const term = (searchTerm || '').trim().toLowerCase();
+    if (!products || products.length === 0) return [];
+    if (!term) return products;
+
+    return products.filter(product => {
+      const name = (product.name || '').toString().toLowerCase();
+      const categoryName = getCategoryName(product.category).toLowerCase();
+      return name.includes(term) || categoryName.includes(term);
+    });
+  }, [products, searchTerm]);
+
   return (
     <div>
       <div className="header d-flex justify-content-between align-items-center">
@@ -251,11 +209,11 @@ const ProductsSection = () => {
           <div className="card">
             <div className="card-header" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
               <span>Danh sách Sản phẩm</span>
-                <div class="search-match">
-                  <form action="/search" method="get" class="input-groups1">
-                  <input class="input-group-field auto-search search-auto form-control" placeholder="Bạn cần tìm gì..." autocomplete="off" type="text" name="query"/>
+                <div className="search-match">
+                  <form action="/search" method="get" className="input-groups1">
+                  <input className="input-group-field auto-search search-auto form-control" placeholder="Bạn cần tìm gì..." autoComplete="off" type="text" name="query"/>
                   <input type="hidden" value="product" name="type"/>
-                  <button type="submit" class="btn icon-fallback-text" title="Search"><i class="fa-solid fa-magnifying-glass"></i></button>
+                  <button type="submit" className="btn icon-fallback-text" title="Search"><i className="fa-solid fa-magnifying-glass"></i></button>
                   </form>
                 </div>
             </div>
@@ -275,20 +233,11 @@ const ProductsSection = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {products.map(product => (
-                      <tr key={product.id}>
-                        <td>{product.id}</td>
-                        <td className="product-img"><img src={anh}  width="64" height="64" className="img-thumbnail" alt="Product" /></td>
-                        <td className="product-name">{product.name}</td>
-                        <td className="product-cate">{product.category}</td>
-                        <td className="text-left product-price">{product.price}</td>
-                        <td>{product.stock}</td>
-                        <td><span className="badge bg-success">{product.status}</span></td>
-                        <td className='handle-btn'>
-                          <button className="btn btn-sm btn-outline-primary me-1" onClick={() => handleEdit(product)}><i className="fas fa-edit"></i></button>
-                          <button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(product.id)}><i className="fas fa-trash"></i></button>
-                        </td>
-                      </tr>
+                    {filteredProducts.map(product => (
+                      <ItemProducts product={product} 
+                      handleDelete={handleDelete} handleEdit={handleEdit}
+                      getCategoryName={getCategoryName}
+                      />
                     ))}
                   </tbody>
                 </table>
