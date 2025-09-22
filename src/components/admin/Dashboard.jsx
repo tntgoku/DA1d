@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../css/admin/dashboard.css';
-import {users, productsvariant, orders, repairs, reviews} from '../../entity/Entity'; 
+import {users, productsvariant, testOrders, repairs, reviews} from '../../entity/Entity'; 
 import DashboardSection from './DashboardSection';
 import UsersSection from './User/UserSection';
 import ProductsSection from './ProductsSection';
@@ -26,13 +26,13 @@ const Dashboard = () => {
   const renderSection = () => {
     switch(activeSection) {
       case 'dashboard':
-        return <DashboardSection users={users} products={products} orders={orders} repairs={repairs} sidebarOpen={sidebarOpen}/>;
+        return <DashboardSection users={users} products={products} orders={testOrders} repairs={repairs} sidebarOpen={sidebarOpen}/>;
       case 'users':
         return <UsersSection users={users} />;
       case 'products':
         return <ProductsSection products={products} />;
       case 'orders':
-        return <OrdersSection orders={orders} />;
+        return <OrdersSection orders={testOrders}  products={products}/>;
       case 'repairs':
         return <RepairsSection repairs={repairs} />;
       // case 'reviews':

@@ -1,26 +1,211 @@
+import React, { useState, useEffect } from 'react';
+
+import { OrderDetailModal } from './OrderDetailModal';
+import { OrderModal } from './OrderModal';
 
 
-const OrdersSection = ({ orders }) => {
-return (
+const getStatusColor = (status) => {
+  switch (status) {
+    case 'Đã giao': return 'success';
+    case 'Đang giao': return 'info';
+    case 'Đã xác nhận': return 'primary';
+    case 'Chờ xác nhận': return 'warning';
+    case 'Đã hủy': return 'danger';
+    default: return 'secondary';
+  }
+};
+
+const formatCurrency = (amount) => {
+  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+};
+
+const OrdersSection = ({ orders: initialOrders, products }) => {
+  const [orders, setOrders] = useState(initialOrders);
+  const [showModal, setShowModal] = useState(false);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [editingOrder, setEditingOrder] = useState(null);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [formData, setFormData] = useState({
+    customer: '',
+    phone: '',
+    email: '',
+    address: '',
+    date: new Date().toISOString().slice(0, 16),
+    payment: 'COD',
+    status: 'Chờ xác nhận',
+    notes: '',
+    items: [{ productId: '', productName: '', price: 0, quantity: 1 }],
+    shippingFee: 0,
+    discount: 0
+  });
+
+  useEffect(() => {
+    setOrders(initialOrders);
+  }, [initialOrders]);
+
+  useEffect(() => {
+    if (!showModal) {
+      setFormData({
+        customer: '',
+        phone: '',
+        email: '',
+        address: '',
+        date: new Date().toISOString().slice(0, 16),
+        payment: 'COD',
+        status: 'Chờ xác nhận',
+        notes: '',
+        items: [{ productId: '', productName: '', price: 0, quantity: 1 }],
+        shippingFee: 0,
+        discount: 0
+      });
+      setEditingOrder(null);
+    }
+  }, [showModal]);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+  };
+
+  const handleItemChange = (index, field, value) => {
+    const updatedItems = [...formData.items];
+    
+    if (field === 'productId') {
+      const product = products.find(p => p.id == value);
+      updatedItems[index] = {
+        ...updatedItems[index],
+        productId: value,
+        productName: product ? product.name : '',
+        price: product ? product.price : 0
+      };
+    } else {
+      updatedItems[index] = {
+        ...updatedItems[index],
+        [field]: field === 'quantity' ? parseInt(value) || 0 : value
+      };
+    }
+    
+    setFormData({
+      ...formData,
+      items: updatedItems
+    });
+  };
+
+  const addItem = () => {
+    setFormData({
+      ...formData,
+      items: [...formData.items, { productId: '', productName: '', price: 0, quantity: 1 }]
+    });
+  };
+
+  const removeItem = (index) => {
+    if (formData.items.length > 1) {
+      const updatedItems = formData.items.filter((_, i) => i !== index);
+      setFormData({
+        ...formData,
+        items: updatedItems
+      });
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    
+    const total = formData.items.reduce((sum, item) => sum + (item.price * item.quantity), 0) +
+                  (parseFloat(formData.shippingFee) || 0) - (parseFloat(formData.discount) || 0);
+
+    if (editingOrder) {
+      const updatedOrders = orders.map(order => 
+        order.id === editingOrder.id 
+          ? { ...formData, id: editingOrder.id, total }
+          : order
+      );
+      setOrders(updatedOrders);
+    } else {
+      const newOrder = {
+        ...formData,
+        id: orders.length > 0 ? Math.max(...orders.map(o => o.id)) + 1 : 1,
+        total
+      };
+      setOrders([...orders, newOrder]);
+    }
+    
+    setShowModal(false);
+  };
+
+  const handleEdit = (order) => {
+    setEditingOrder(order);
+    setFormData({
+      ...order,
+      date: order.date.includes('T') ? order.date : `${order.date}T00:00`
+    });
+    setShowModal(true);
+  };
+
+  const handleView = (order) => {
+    setSelectedOrder(order);
+    setShowDetailModal(true);
+  };
+
+  const handleDelete = (id) => {
+    if (window.confirm('Bạn có chắc chắn muốn xóa đơn hàng này?')) {
+      setOrders(orders.filter(order => order.id !== id));
+    }
+  };
+
+  const filteredOrders = orders.filter(order => {
+    const matchesSearch = order.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         order.id.toString().includes(searchTerm);
+    const matchesStatus = statusFilter === 'all' || order.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
+
+  return (
     <div>
       <div className="header d-flex justify-content-between align-items-center">
         <h4>Quản lý Đơn hàng</h4>
         <div>
-          <button className="btn btn-outline-secondary me-2"><i className="fas fa-filter"></i> Lọc</button>
-          <button className="btn btn-primary"><i className="fas fa-plus"></i> Tạo đơn mới</button>
+          <select 
+            className="form-select me-2 d-inline-block w-auto"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            <option value="all">Tất cả trạng thái</option>
+            <option value="Chờ xác nhận">Chờ xác nhận</option>
+            <option value="Đã xác nhận">Đã xác nhận</option>
+            <option value="Đang giao">Đang giao</option>
+            <option value="Đã giao">Đã giao</option>
+            <option value="Đã hủy">Đã hủy</option>
+          </select>
+          <button className="btn btn-primary" onClick={() => setShowModal(true)}>
+            <i className="fas fa-plus"></i> Tạo đơn mới
+          </button>
         </div>
       </div>
 
       <div className="card">
-        <div className="card-header">
+        <div className="card-header" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
           <span>Danh sách Đơn hàng</span>
-                          <div class="search-match">
-                  <form action="/search" method="get" class="input-groups1">
-                  <input class="input-group-field auto-search search-auto form-control" placeholder="Bạn cần tìm gì..." autocomplete="off" type="text" name="query"/>
-                  <input type="hidden" value="product" name="type"/>
-                  <button type="submit" class="btn icon-fallback-text" title="Search"><i class="fa-solid fa-magnifying-glass"></i></button>
-                  </form>
-                </div>
+          <div className="search-match">
+            <form className="input-groups1">
+              <input 
+                className="input-group-field auto-search search-auto form-control" 
+                placeholder="Tìm kiếm đơn hàng..." 
+                autoComplete="off" 
+                type="text" 
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <button type="submit" className="btn icon-fallback-text" title="Search">
+                <i className="fa-solid fa-magnifying-glass"></i>
+              </button>
+            </form>
+          </div>
         </div>
         <div className="card-body">
           <div className="table-responsive">
@@ -33,30 +218,80 @@ return (
                   <th>Tổng tiền</th>
                   <th>Phương thức</th>
                   <th>Trạng thái</th>
-                  <th>Thao tác</th>
+                  <th style={{textAlign:'center'}}>Thao tác</th>
                 </tr>
               </thead>
               <tbody>
-                {orders.map(order => (
+                {filteredOrders.map(order => (
                   <tr key={order.id}>
-                    <td>{order.id}</td>
+                    <td>#{order.id}</td>
                     <td>{order.customer}</td>
-                    <td>{order.date}</td>
-                    <td>{order.total}</td>
+                    <td>{new Date(order.date).toLocaleDateString('vi-VN')}</td>
+                    <td>{formatCurrency(order.total)}</td>
                     <td>{order.payment}</td>
-                    <td><span className={`badge bg-${order.status === 'Đã giao' ? 'success' : order.status === 'Đang giao' ? 'info' : 'warning'}`}>{order.status}</span></td>
+                    <td>
+                      <span className={`badge bg-${getStatusColor(order.status)}`}>
+                        {order.status}
+                      </span>
+                    </td>
                     <td className='handle-btn'>
-                      <button className="btn btn-sm btn-outline-primary me-1"><i className="fas fa-eye"></i></button>
-                      <button className="btn btn-sm btn-outline-secondary"><i className="fas fa-print"></i></button>
+                      <button 
+                        className="btn btn-sm btn-outline-primary me-1" 
+                        onClick={() => handleView(order)}
+                      >
+                        <i className="fas fa-eye"></i>
+                      </button>
+                      <button 
+                        className="btn btn-sm btn-outline-success me-1" 
+                        onClick={() => handleEdit(order)}
+                      >
+                        <i className="fas fa-edit"></i>
+                      </button>
+                      <button 
+                        className="btn btn-sm btn-outline-danger" 
+                        onClick={() => handleDelete(order.id)}
+                      >
+                        <i className="fas fa-trash"></i>
+                      </button>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
+            
+            {filteredOrders.length === 0 && (
+              <div className="text-center py-4">
+                <p>Không tìm thấy đơn hàng nào</p>
+              </div>
+            )}
           </div>
         </div>
       </div>
+
+      {/* Modal Thêm/Sửa đơn hàng */}
+      <OrderModal
+        showModal={showModal}
+        setShowModal={setShowModal}
+        editingOrder={editingOrder}
+        handleSubmit={handleSubmit}
+        formData={formData}
+        handleInputChange={handleInputChange}
+        handleItemChange={handleItemChange}
+        addItem={addItem}
+        removeItem={removeItem}
+        products={products}
+      />
+
+      {/* Modal Xem chi tiết đơn hàng */}
+      <OrderDetailModal
+      getStatusColor={getStatusColor}
+        showModal={showDetailModal}
+        setShowModal={setShowDetailModal}
+        order={selectedOrder}
+        formatCurrency={formatCurrency}
+      />
     </div>
   );
-}
+};
+
 export default OrdersSection;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import '../css/client/Account.css';
 import Sidebar from '../components/Sidebar';
 import Profile from '../components/client/Account/Profile';
@@ -7,6 +7,7 @@ import ServiceHistory from '../components/client/Account/ServicesHistory';
 import Wishlist from '../components/client/WishList';
 import Header from '../components/client/Header';
 import Footer from '../components/client/Footer';
+import { testOrders } from '../entity/Entity';
 const Account = () => {
   const [activeTab, setActiveTab] = useState('profile');
   const [isEditing, setIsEditing] = useState(false);
@@ -19,30 +20,10 @@ const Account = () => {
     avatar: 'https://via.placeholder.com/150'
   });
 
-  const [orders] = useState([
-    {
-      id: 'DH001',
-      date: '15/08/2023',
-      products: [
-        { name: 'iPhone 12 Pro Max 128GB', price: '18.500.000đ', quantity: 1 },
-        { name: 'Ốp lưng chống sốc', price: '250.000đ', quantity: 1 }
-      ],
-      total: '18.750.000đ',
-      status: 'Đã giao'
-    },
-    {
-      id: 'DH002',
-      date: '10/09/2023',
-      products: [
-        { name: 'Samsung Galaxy S21 Ultra', price: '21.900.000đ', quantity: 1 },
-        { name: 'Tai nghe Bluetooth', price: '850.000đ', quantity: 1 },
-        { name: 'Miếng dán cường lực', price: '150.000đ', quantity: 2 }
-      ],
-      total: '23.050.000đ',
-      status: 'Đang giao'
-    }
-  ]);
-
+  const [orders,setOrders] = useState([]);
+useEffect(() => {
+  setOrders(testOrders); // nạp dữ liệu testOrders khi component mount
+}, []);
   const [services] = useState([
     {
       id: 'DV001',

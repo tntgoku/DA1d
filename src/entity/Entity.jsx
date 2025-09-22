@@ -6,6 +6,84 @@ const users = [
   { id: 2, name: 'Trần Thị B', email: 'b.tran@example.com', phone: '0923456789', role: 'Nhân viên', status: 'Active' },
   { id: 3, name: 'Lê Văn C', email: 'c.le@example.com', phone: '0934567890', role: 'Khách hàng', status: 'Inactive' }
 ];
+const testOrders = [
+  {
+    id: 1,
+    customer: 'Nguyễn Văn A',
+    phone: '0905123456',
+    email: 'nguyenvana@example.com',
+    address: '123 Lê Lợi, Quận 1, TP.HCM',
+    date: new Date().toISOString().slice(0, 16),
+    payment: 'COD',
+    status: 'Chờ xác nhận',
+    notes: 'Giao giờ hành chính',
+    items: [
+      { productId: 101, productName: 'iPhone 13 128GB', price: 19990000, quantity: 1 },
+      { productId: 202, productName: 'Ốp lưng iPhone 13', price: 250000, quantity: 2 }
+    ],
+    shippingFee: 30000,
+    discount: 0,
+    total:20520000,
+    paid:false
+  },
+  {
+    id: 2,
+    customer: 'Trần Thị B',
+    phone: '0912345678',
+    email: 'tranb@example.com',
+    address: '456 Hai Bà Trưng, Quận 3, TP.HCM',
+    date: new Date().toISOString().slice(0, 16),
+    payment: 'Chuyển khoản',
+    status: 'Đang giao',
+    notes: '',
+    items: [
+      { productId: 103, productName: 'iPhone 14 Pro 256GB', price: 30990000, quantity: 1 }
+    ],
+    shippingFee: 50000,
+    discount: 1000000,
+    total: 30040000,
+    paid:true
+  },
+  {
+    id: 3,
+    customer: 'Lê Văn C',
+    phone: '0987654321',
+    email: 'levanc@example.com',
+    address: '789 Nguyễn Huệ, Quận 1, TP.HCM',
+    date: new Date().toISOString().slice(0, 16),
+    payment: 'COD',
+    status: 'Hoàn tất',
+    notes: 'Khách kiểm  trả tiền trước rồi nhận',
+    items: [
+      { productId: 301, productName: 'AirPods Pro 2', price: 5990000, quantity: 1 },
+      { productId: 401, productName: 'Cáp sạc Lightning chính hãng', price: 390000, quantity: 1 }
+    ],
+    shippingFee: 20000,
+    discount: 500000,
+    total: 5900000,
+    paid:true
+  }
+  ,
+  {
+    id: 4,
+    customer: 'Lê Văn C123',
+    phone: '0987654321',
+    email: 'levanc@example.com',
+    address: '789 Nguyễn Huệ, Quận 1, TP.HCM',
+    date: new Date().toISOString().slice(0, 16),
+    payment: 'COD',
+    status: 'Hoàn tất',
+    notes: 'Khách kiểm tra trước khi nhận',
+    items: [
+      { productId: 301, productName: 'AirPods Pro 2', price: 5990000, quantity: 1 },
+      { productId: 401, productName: 'Cáp sạc Lightning chính hãng', price: 390000, quantity: 1 }
+    ],
+    shippingFee: 20000,
+    discount: 500000,
+    total: 5900000,
+    paid:false
+  }
+];
 
 const productsvariant = [
   { product_id:1, id: 101, name: 'iPhone 14 Pro Max', category: 1, price: '28.990.000', discount: '10', stock: 15, status: 'Còn hàng', description: 'iPhone 14 Pro Max 128GB Chính Hãng VN/A - Mới 100', warranty: '12 tháng', isNew: true, imgSrc: anh1, imgAlt: 'iPhone 14 Pro Max', href:'iphone-14-pro-max-128gb-chinh-hang-vn-a-1'},
@@ -48,4 +126,4 @@ const categories=[
   {id:4,name:"Dịch vụ sửa chữa"},
 ]
 
-export { users, productsvariant,productsvariant1, categories,orders, repairs, reviews };
+export { users, productsvariant,productsvariant1, categories,orders,testOrders, repairs, reviews };

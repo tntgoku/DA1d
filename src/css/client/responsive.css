@@ -133,3 +133,41 @@
         display: block !important;
     }
 }
+
+@media print {
+    /* Ẩn những phần nhạy cảm */
+    /* Giữ tên và số điện thoại cùng hàng */
+    .modal-content {
+        display: none !important;
+    }
+    .invoice-print {
+        display: block !important;
+    }
+    .modal-body p {
+        margin-bottom: 4px;
+    }
+    .content-infor-user .name-user,
+    .content-infor-user .phone-user {
+        display: inline-block;
+        margin-right: 30px;
+        /* khoảng cách giữa tên và số điện thoại */
+    }
+    .hide-print {
+        display: none !important;
+    }
+    .price-print {
+        margin-left: auto;
+        /* đẩy phần tử này sát về bên phải */
+        text-align: right;
+    }
+    p,
+    h5,
+    h6,
+    td {
+        font-size: 13px;
+    }
+}
+
+.invoice-print {
+    display: none;
+}
