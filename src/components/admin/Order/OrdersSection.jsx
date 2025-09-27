@@ -11,7 +11,7 @@ const getStatusColor = (status) => {
     case 'Đã xác nhận': return 'primary';
     case 'Chờ xác nhận': return 'warning';
     case 'Đã hủy': return 'danger';
-    default: return 'secondary';
+    default: return 'success';
   }
 };
 
@@ -221,20 +221,22 @@ const OrdersSection = ({ orders: initialOrders, products }) => {
                   <th style={{textAlign:'center'}}>Thao tác</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className=' table table-responsive'>
                 {filteredOrders.map(order => (
                   <tr key={order.id}>
-                    <td>#{order.id}</td>
-                    <td>{order.customer}</td>
-                    <td>{new Date(order.date).toLocaleDateString('vi-VN')}</td>
-                    <td>{formatCurrency(order.total)}</td>
-                    <td>{order.payment}</td>
-                    <td>
-                      <span className={`badge bg-${getStatusColor(order.status)}`}>
+                    <td className='text-center align-middle'>#{order.id}</td>
+                    <td className='text-center align-middle'>{order.customer}</td>
+                    <td className='text-center align-middle'>{new Date(order.date).toLocaleDateString('vi-VN')}</td>
+                    <td className='text-center align-middle'>{formatCurrency(order.total)}</td>
+                    <td className='text-center align-middle'>{order.payment}</td>
+                    <td className='text-center align-middle'>
+                      <span className={`badge bg-${getStatusColor(order.status)}`} style={{width: '80%',height:"100%",fontSize:13}}>
                         {order.status}
                       </span>
-                    </td>
-                    <td className='handle-btn'>
+                    </td >
+                    <td className='handle-btn text-center align-middle' style={{
+                      display: 'flex',
+                    }}>
                       <button 
                         className="btn btn-sm btn-outline-primary me-1" 
                         onClick={() => handleView(order)}

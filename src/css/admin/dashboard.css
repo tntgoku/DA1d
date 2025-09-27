@@ -87,7 +87,7 @@ body {
     padding: 20px;
 }
 
-.card-body .table-responsive button {
+.card-body .table-responsive .handle-btn button {
     margin-left: 10px;
     width: 40%;
 }
@@ -107,9 +107,7 @@ body {
     color: var(--primary);
 }
 
-.handle-btn {
-    display: flex;
-}
+.handle-btn {}
 
 .stat-card .label {
     font-size: 0.9rem;
@@ -121,10 +119,31 @@ body {
     background-color: #f8f9fa;
 }
 
+.table.table-hover thead tr {
+    text-align: center;
+}
+
+button.btn.btn-sm.btn-outline-primary.me-1 {
+    background: #0d6efd;
+}
+
+button.btn.btn-sm.btn-outline-danger {
+    background: #dc3545;
+}
+
+button.btn.btn-sm.btn-outline-warning,
+button.btn.btn-sm.btn-warning {
+    background: #ffc107;
+}
+
+button.btn.btn-sm.btn-warning i.fas.fa-star {
+    color: #fff;
+}
+
 .badge {
-    padding: 6px 10px;
+    /* padding: 6px 10px; */
     border-radius: 20px;
-    font-weight: 500;
+    font-weight: 600;
 }
 
 .btn-primary {

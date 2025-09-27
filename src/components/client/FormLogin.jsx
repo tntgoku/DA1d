@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../../css/client/AuthForms.css';
 import { SocialLogin } from '../FormSocialLogin';
-
+import { login as loginService } from '../../service/Authentication';
 // Component Form Đăng Nhập
 const LoginForm = ({ switchToRegister, onSocialLogin }) => {
   const [formData, setFormData] = useState({
@@ -19,8 +19,18 @@ const LoginForm = ({ switchToRegister, onSocialLogin }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Đăng nhập với:', formData.email, formData.password);
-    alert('Đăng nhập thành công!');
+    // console.log('Đăng nhập với:', formData.email, formData.password);
+    // alert('Đăng nhập thành công!');
+    // Gọi API đăng nhập
+    loginService(formData.email, formData.password)
+      .then(data => {
+        console.log('Login successful:', data);
+        alert('Đăng nhập thành công!');
+      })
+      .catch(error => {
+        console.error('Login failed:', error);
+        alert('Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.');
+      });
   };
 
   return (

@@ -1,6 +1,22 @@
 import React from 'react';
 // Dữ liệu mẫu
 import anh1 from '../assets/iphone-17-pro-max_1.webp'
+import anh2 from '../assets/17_mist_blue.webp'
+import anh3 from '../assets/17_sage.webp'
+function formatPrice(price) {
+  if (typeof price === "number") {
+    return price.toLocaleString("vi-VN") + " đ";
+  }
+
+  if (price === null || price === undefined) {
+    return "Liên hệ";
+  }
+
+  // Chuyển chuỗi sang số, loại bỏ ký tự không phải số
+  const numericPrice = Number(price.toString().replace(/\D/g, ""));
+  return numericPrice > 0 ? numericPrice.toLocaleString("vi-VN") + " đ" : "Liên hệ";
+}
+
 const users = [
   { id: 1, name: 'Nguyễn Văn A', email: 'a.nguyen@example.com', phone: '0912345678', role: 'Admin', status: 'Active' },
   { id: 2, name: 'Trần Thị B', email: 'b.tran@example.com', phone: '0923456789', role: 'Nhân viên', status: 'Active' },
@@ -93,14 +109,51 @@ const productsvariant = [
   { product_id:2, id: 202, name: 'Cáp sạc iPhone', category: 3, price: '290.000', discount: null, stock: 50, status: 'Còn hàng', description: 'Cáp sạc iPhone Chính Hãng Apple Lightning to USB-C (1m)', warranty: '6 tháng', isNew: false, imgSrc: anh1, imgAlt: 'Cáp sạc iPhone', href: '/cap-sac-iphone-chinh-hang-apple-lightning-to-usb-c-1m-1'},
 ];
 const productsvariant1 = [
-  {product_id:1, id: 101, name: 'iPhone 14 Pro Max 128GB'    , category: 2, price: '28.990.000', discount: '10', storage:"128",color :"Trắng" ,stock: 15, status: 'Còn hàng', description: 'iPhone 14 Pro Max 128GB Chính Hãng VN/A - Mới 100', warranty: '12 tháng', isNew: true, imgSrc: anh1, imgAlt: 'iPhone 14 Pro Max', href: 'iphone-14-pro-max-128gb-chinh-hang-vn-a-1'},
-  {product_id:1, id: 102, name: 'iPhone 14 Pro Max 256GB 99', category: 1, price: '19.990.000', discount: '10', storage:"256",color :"Xanh" ,stock: 8, status: 'Còn hàng', description: 'iPhone 14 Pro Max 256GB Chính Hãng VN/A - Mới 100', warranty: '6 tháng', isNew: false, imgSrc: anh1, imgAlt: 'iPhone 14 Pro Max 256GB', href: 'iphone-14-pro-max-256gb-chinh-hang-vn-a-1'},
-  {product_id:1, id: 103, name: 'iPhone 14 Pro Max 1T 99', category: 1, price: '20.990.000', discount: '8' , storage:"1024",color :"Đen" ,stock: 8, status: 'Còn hàng', description: 'iPhone 14 Pro Max 1TB Chính Hãng VN/A - Mới 100', warranty: '6 tháng', isNew: false, imgSrc: anh1, imgAlt: 'iPhone 14 Pro Max 1TB', href: 'iphone-14-pro-max-cu-99-1t'},
-  {product_id:1, id: 104, name: 'iPhone 14 Pro Max 512GB 99', category: 1, price: '19.990.000', discount: '10', storage:"512",color :"Tím" ,stock: 8, status: 'Còn hàng', description: 'iPhone 14 Pro Max 256GB Chính Hãng VN/A - Mới 100', warranty: '6 tháng', isNew: false, imgSrc: anh1, imgAlt: 'iPhone 14 Pro Max 256GB', href: 'iphone-14-pro-max-256gb-chinh-hang-vn-a-1'},
-  {product_id:1, id: 105, name: 'iPhone 14 Pro Max 256GB 99', category: 1, price: '19.990.000', discount: '10', storage:"256",color :"Vàng" ,stock: 8, status: 'Còn hàng', description: 'iPhone 14 Pro Max 256GB Chính Hãng VN/A - Mới 100', warranty: '6 tháng', isNew: false, imgSrc: anh1, imgAlt: 'iPhone 14 Pro Max 256GB', href: 'iphone-14-pro-max-256gb-chinh-hang-vn-a-1'},
-  {product_id:1, id: 106, name: 'iPhone 14 Pro Max 128GB 99', category: 1, price: null, discount: '10', storage:"128",color :"Vàng-gold" ,stock: 8, status: 'Còn hàng', description: 'iPhone 14 Pro Max 128GB Chính Hãng VN/A - Mới 100', warranty: '6 tháng', isNew: false, imgSrc: anh1, imgAlt: 'iPhone 14 Pro Max 256GB', href: 'iphone-14-pro-max-128gb-99-vn-a-1'},
-  {product_id:2, id: 201, name: 'Ốp lưng iPhone 14 Pro', category: 3, price: '450.000', discount: null, stock: 32, status: 'Còn hàng', description: 'Ốp lưng iPhone 14 Pro Chính Hãng Apple Silicone Case with MagSafe', warranty: '6 tháng', isNew: false, imgSrc: anh1, imgAlt: 'Ốp lưng iPhone 14 Pro', href: 'op-lung-iphone-14-pro-chinh-hang-apple-silicone-case-with-magsafe-1'},
-  {product_id:2, id: 202, name: 'Cáp sạc iPhone', category: 3, price: '290.000', discount: null, stock: 50, status: 'Còn hàng', description: 'Cáp sạc iPhone Chính Hãng Apple Lightning to USB-C (1m)', warranty: '6 tháng', isNew: false, imgSrc: anh1, imgAlt: 'Cáp sạc iPhone', href: 'cap-sac-iphone-chinh-hang-apple-lightning-to-usb-c-1m-1'},
+  {product_id:1, id: 101, name: 'iPhone 14 Pro Max 128GB'    , category: 2, price: '28.990.000', discount: '10', storage:"128",color :"Trắng" ,stock: 15, status: 'Còn hàng',
+     description: 'iPhone 14 Pro Max 128GB Chính Hãng VN/A - Mới 100', warranty: '12 tháng',
+      isNew: true, images:[
+        {imgSrc: anh1, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:1,primary:true},
+        {imgSrc: anh2, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:2,primary:false},
+        {imgSrc: anh3, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:3,primary:false},
+      ], featuredImageIndex: 3, href: 'iphone-14-pro-max-128gb-chinh-hang-vn-a-1'},
+  {product_id:1, id: 102, name: 'iPhone 14 Pro Max 256GB 99', category: 1, price: '19.990.000', discount: '10', storage:"256",color :"Xanh" ,stock: 8, status: 'Còn hàng',
+     description: 'iPhone 14 Pro Max 256GB Chính Hãng VN/A - Mới 100', warranty: '6 tháng',
+      isNew: false, images:[
+        {imgSrc: anh1, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:1,primary:true},
+        {imgSrc: anh2, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:2,primary:false},
+      ], featuredImageIndex: 2, href: 'iphone-14-pro-max-256gb-chinh-hang-vn-a-1'},
+  {product_id:1, id: 103, name: 'iPhone 14 Pro Max 1T 99', category: 1, price: '20.990.000', discount: '8' , storage:"1024",color :"Đen" ,stock: 8, status: 'Còn hàng',
+     description: 'iPhone 14 Pro Max 1TB Chính Hãng VN/A - Mới 100', warranty: '6 tháng',
+      isNew: false, images:[
+        {imgSrc: anh2, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:2,primary:false},
+        {imgSrc: anh3, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:3,primary:false},
+      ], featuredImageIndex: 1, href: 'iphone-14-pro-max-cu-99-1t'},
+  {product_id:1, id: 104, name: 'iPhone 14 Pro Max 512GB 99', category: 1, price: '19.990.000', discount: '10', storage:"512",color :"Tím" ,stock: 8, status: 'Còn hàng',
+     description: 'iPhone 14 Pro Max 256GB Chính Hãng VN/A - Mới 100', warranty: '6 tháng',
+      isNew: false, images:[
+        {imgSrc: anh1, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:1,primary:true},
+        {imgSrc: anh2, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:2,primary:false},
+      ],featuredImageIndex: 2, href: 'iphone-14-pro-max-256gb-chinh-hang-vn-a-1'},
+  {product_id:1, id: 105, name: 'iPhone 14 Pro Max 256GB 99', category: 1, price: '19.990.000', discount: '10', storage:"256",color :"Vàng" ,stock: 8, status: 'Còn hàng',
+     description: 'iPhone 14 Pro Max 256GB Chính Hãng VN/A - Mới 100', warranty: '6 tháng',
+      isNew: false, images:[
+        {imgSrc: anh1, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:1,primary:true},
+      ], href: 'iphone-14-pro-max-256gb-chinh-hang-vn-a-1'},
+  {product_id:1, id: 106, name: 'iPhone 14 Pro Max 128GB 99', category: 1, price: null, discount: '10', storage:"128",color :"Vàng-gold" ,stock: 8, status: 'Còn hàng', description: 'iPhone 14 Pro Max 128GB Chính Hãng VN/A - Mới 100', warranty: '6 tháng', isNew: false, images:[
+        {imgSrc: anh1, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:1,primary:true},
+        {imgSrc: anh2, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:2,primary:false},
+        {imgSrc: anh3, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:3,primary:false},
+      ],featuredImageIndex: 2, href: 'iphone-14-pro-max-128gb-99-vn-a-1'},
+  {product_id:2, id: 201, name: 'Ốp lưng iPhone 14 Pro', category: 3, price: '450.000', discount: null, stock: 32, status: 'Còn hàng', description: 'Ốp lưng iPhone 14 Pro Chính Hãng Apple Silicone Case with MagSafe', warranty: '6 tháng', isNew: false, images:[
+        {imgSrc: anh1, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:1,primary:true},
+        {imgSrc: anh2, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:2,primary:false},
+        {imgSrc: anh3, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:3,primary:false},
+      ], featuredImageIndex: 1, href: 'op-lung-iphone-14-pro-chinh-hang-apple-silicone-case-with-magsafe-1'},
+  {product_id:2, id: 202, name: 'Cáp sạc iPhone', category: 3, price: '290.000', discount: null, stock: 50, status: 'Còn hàng', description: 'Cáp sạc iPhone Chính Hãng Apple Lightning to USB-C (1m)', warranty: '6 tháng', isNew: false, images:[
+        {imgSrc: anh1, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:1,primary:true},
+        {imgSrc: anh2, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:2,primary:false},
+        {imgSrc: anh3, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:3,primary:false},
+      ], featuredImageIndex: 1, href: 'cap-sac-iphone-chinh-hang-apple-lightning-to-usb-c-1m-1'},
 ];
 const orders = [
   { id: 'ORD-001', customer: 'Nguyễn Văn A', date: '20/11/2023', total: '12.450.000', payment: 'COD', status: 'Đã giao' },
@@ -125,5 +178,87 @@ const categories=[
   {id:3,name:"Phụ kiện Iphone"},
   {id:4,name:"Dịch vụ sửa chữa"},
 ]
+ const itemtest=
+     [ {
+      productId: 9,
+      productName: "iPhone 13 Pro Max Cu",
+      slug: "iphone-13-pro-max-cu",
+      categoryId: 1,
+      productType: "used",
+      model: "iPhone13ProMax",
+      description: "iPhone 13 Pro Max 128GB dã qua s? d?ng, còn m?i 95%",
+      isActive: true,
+      isFeatured: true,
+      variants:[ { 
+        variantId : 4, 
+        productId : 9, 
+        sku : "IP13PM-128-SILVER", 
+        price : 18500000, 
+        stock : 5, 
+        color : "B?c", 
+        storage : "128GB", 
+        costPrice : 16000000, 
+        stockQuantity : 5, 
+        lowStockThreshold : 3, 
+        warrantyPeriod : 6, 
+        isActive : true, 
+        isFromTradeIn : false, 
+        isFeatured : false, 
+        originalOwnerId : 0, 
+        quantity_cart:99, 
+        region : "VN/A", 
+        slug : "ip13pm-128"}
+      ],
+      images:[
+              {
+                imgSrc : "/src/assets/iphone-17-pro-max_1.webp",
+                imgAlt : "iPhone 13 Pro Max B?c",
+                displayOrder : "1",
+                isPrimary : true
+              }
+      ]
 
-export { users, productsvariant,productsvariant1, categories,orders,testOrders, repairs, reviews };
+  },
+  {
+      productId: 9,
+      productName: "iPhone 13 Pro Max Cu",
+      slug: "iphone-13-pro-max-cu",
+      categoryId: 1,
+      productType: "used",
+      model: "iPhone13ProMax",
+      description: "iPhone 13 Pro Max 128GB dã qua s? d?ng, còn m?i 95%",
+      isActive: true,
+      isFeatured: true,
+      variants:[ { 
+        variantId : 5, 
+        productId : 9, 
+        sku : "IP13PM-128-SILVER", 
+        price : 18500000, 
+        stock : 5, 
+        color : "B?c", 
+        storage : "128GB", 
+        costPrice : 16000000, 
+        stockQuantity : 5, 
+        lowStockThreshold : 3, 
+        warrantyPeriod : 6, 
+        isActive : true, 
+        isFromTradeIn : false, 
+        isFeatured : false, 
+        originalOwnerId : 0, 
+        quantity_cart:99, 
+        region : "VN/A", 
+        slug : "ip13pm-128"}
+      ],
+      images:[
+              {
+                imgSrc : "/src/assets/iphone-17-pro-max_1.webp",
+                imgAlt : "iPhone 13 Pro Max B?c",
+                displayOrder : "1",
+                isPrimary : true
+              }
+      ]
+
+  }
+]
+ 
+export { users, productsvariant,productsvariant1, categories,orders,testOrders,itemtest, repairs, reviews,formatPrice };

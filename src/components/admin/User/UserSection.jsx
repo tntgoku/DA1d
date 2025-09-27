@@ -185,32 +185,33 @@ const UsersSection = ({ users: initialUsers }) => {
                   <th>Thao tác</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className=' table table-responsive'>
                 {filteredUsers.map(user => (
                   <tr key={user.id}>
-                    <td>{user.id}</td>
-                    <td>{user.name}</td>
-                    <td>{user.email}</td>
-                    <td>{user.phone}</td>
-                    <td>
+                    <td className='text-center align-middle'>{user.id}</td>
+                    <td className='text-center align-middle'>{user.name}</td>
+                    <td className='text-center align-middle'>{user.email}</td>
+                    <td className='text-center align-middle'>{user.phone}</td>
+                    <td className='text-center align-middle'>
                       <span className={`badge bg-${getRoleBadgeClass(user.role)}`}>
                         {user.role}
                       </span>
                     </td>
-                    <td>
-                      <span className={`badge bg-${getStatusBadgeClass(user.status)}`}>
+                    <td className=' handle-btn text-center align-middle'>
+                      <span className={`badge bg-${getStatusBadgeClass(user.status)}`} style={{width: '80%',height:"100%",fontSize:13}}>
                         {user.status}
                       </span>
                     </td>
-                    <td>
+                    <td className=' handle-btn text-center align-middle' >
                       <button 
-                        className="btn btn-sm btn-outline-primary me-1" 
+                        className="btn btn-sm btn-outline-primary me-1"  
                         onClick={() => handleEdit(user)}
                       >
                         <i className="fas fa-edit"></i>
                       </button>
                       <button 
                         className="btn btn-sm btn-outline-danger" 
+                     
                         onClick={() => handleDelete(user.id)}
                       >
                         <i className="fas fa-trash"></i>

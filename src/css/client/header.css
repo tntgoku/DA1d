@@ -256,6 +256,13 @@ body {
 
 .cart__product_name .cart__btn-remove {
     color: red;
+    background-color: #fff;
+    border: none;
+    font-weight: 600;
+}
+
+.cart__product_name .cart__btn-remove:hover {
+    color: #d70018;
 }
 
 .variant-title {

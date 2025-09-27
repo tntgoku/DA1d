@@ -1,12 +1,28 @@
 import '../../css/client/main.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import{ useState } from 'react';
+import{ useState,useEffect } from 'react';
 import ItemProduct from './Product/ItemProduct';
-import { productsvariant,productsvariant1 } from '../../entity/Entity';
+import { productsvariant1 } from '../../entity/Entity';
+import { getAllProduct, getProductFeatured } from '../../service/productService';
 const Main = () => {
-    const products=productsvariant;
     const products1 =productsvariant1;
     const [activeTab, setActiveTab] = useState("1");
+    const [productAPI,setProductAPI]=useState();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getProductFeatured();
+        setProductAPI(response);
+        console.log("Fetched productsFeatured oday ne:", response);
+        // products1=data;
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+    fetchData();
+  }, []);
+
 
     const handleClick = (e) => {
         const tab = e.currentTarget.getAttribute("data-tab");
@@ -78,9 +94,14 @@ const Main = () => {
                                     </ul>
                                     <div className={`tab-1 tab-content ${activeTab ==="1" ? "current" : ""}`}>
                                             <div className="row row-fix">
-                                                {products1.map((product) => (
-                                                    <ItemProduct key={product.id} product={product} />
-                                                ))}
+                                                {productAPI && productAPI.map((product,index) => (
+                                                    product.variants.map((productclone)=>(
+                                                        <ItemProduct key={`${product.id}-${productclone.variantId}`}
+                                                                     nameproduct={product.productName}
+                                                                     product={productclone}
+                                                                     description={product.description}
+                                                                     Listimg={product?.images} />
+                                                    ))))}
                                                 <div className="text-center no-padding">
                                                     <a className="see-more" title="Xem toàn bộ sản phẩm" href="/danh-muc-tu-dong">Xem toàn bộ sản phẩm <i className="fa-solid fa-arrow-right"></i>
                                                     </a>
@@ -90,7 +111,7 @@ const Main = () => {
                                     <div className={`tab-2 tab-content ${activeTab === "2" ? "current" : ""}`}>
                                         <div className="row row-fix">
                                             {
-                                                products1.map((product)=>(
+                                                products1 && products1.map((product)=>(
                                                     <ItemProduct key={product.id} product={product}/>
                                                 ))
                                             }

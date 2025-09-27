@@ -30,12 +30,12 @@ function ImageSlider({ listimg, activeIndex }) {
       >
         {listimg.map((img, index) => (
           <SwiperSlide key={index}>
-            <img src={img.img} width={379} height={379} alt="" />
+            <img src={img?.imgSrc} width={379} height={379} alt="" />
           </SwiperSlide>
         ))}
       </Swiper>
-
-      {/* Thumbnails */}
+        {
+          listimg.length > 1 && (
       <Swiper
         onSwiper={setThumbsSwiper}
         spaceBetween={0}
@@ -47,10 +47,12 @@ function ImageSlider({ listimg, activeIndex }) {
       >
         {listimg.map((img, index) => (
           <SwiperSlide key={index}>
-            <img src={img.img} width={65} height={65} alt="" />
+            <img src={img.imgSrc} width={65} height={65} alt="" />
           </SwiperSlide>
         ))}
       </Swiper>
+          )
+          }
     </>
   );
 }

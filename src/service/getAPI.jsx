@@ -1,6 +1,15 @@
 import axios from "axios";
 
 const API_GET_PROVINCES_URL = "https://esgoo.net/api-tinhthanh-new/1/0.htm";
+const API_BE = "http://localhost:8080/api/";
+
+export const apiClient = axios.create({
+  baseURL: API_BE, // Replace with your API base URL
+  timeout: 10000, // Request timeout
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
 
 export const getProvinces = async () => {
   try {
@@ -30,3 +39,5 @@ export const getDistricts = async (provinceId) => {
 //     throw error;
 //   }
 // };
+
+

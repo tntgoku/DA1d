@@ -160,7 +160,7 @@
 .field__input-btn-wrapper {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
 }
 
 .product__price {
@@ -303,6 +303,7 @@
 
 .total-line {
     padding-top: .75em;
+    margin-left: 9px;
 }
 
 .total-line__price {
@@ -337,6 +338,7 @@
 
 .total-line.total-line-shipping.shipFeeCheckHost,
 .total-line.total-line--subtotal,
+.total-line.line-discount,
 .total-line-table__footer {
     padding-left: 9px;
 }
@@ -350,7 +352,8 @@
 }
 
 .total-line.total-line-shipping.shipFeeCheckHost span,
-.total-line.total-line.total-line--subtotal span {
+.total-line.total-line.total-line--subtotal span,
+.total-line.line-discount span {
     font-size: 16px;
 }
 
@@ -393,4 +396,17 @@ button.btn.btn-checkout.btn-success.spinner {
     /* float: right; */
     width: 130px;
     height: 45px;
+}
+
+a.previous-link {
+    margin-left: 15px;
+}
+
+.field__input-wrapper.error .field__input {
+    border: 1px solid red;
+}
+
+.field__message--error {
+    padding-top: 6px;
+    color: #c23527;
 }

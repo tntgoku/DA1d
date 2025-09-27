@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { SocialLogin } from "../FormSocialLogin";
+import { register } from "../../service/Authentication";
 const RegisterForm = ({ switchToLogin, onSocialLogin }) => {
   const [formData, setFormData] = useState({
     name: '',
@@ -25,8 +26,16 @@ const RegisterForm = ({ switchToLogin, onSocialLogin }) => {
       alert('Mật khẩu xác nhận không khớp!');
       return;
     }
-    console.log('Đăng ký với:', formData);
-    alert('Đăng ký thành công!');
+    // Gọi API đăng ký
+    register(formData.name, formData.phone, formData.email, formData.password, formData.confirmPassword)
+      .then(data => {
+        console.log('Registration successful:', data);
+        alert('Đăng ký thành công!');
+      })
+      .catch(error => {
+        console.error('Registration failed:', error);
+        alert('Đăng ký thất bại. Vui lòng kiểm tra lại thông tin.');
+      });
   };
 
   return (

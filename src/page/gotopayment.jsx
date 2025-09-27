@@ -2,16 +2,17 @@ import { Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import anh from '../assets/logo_store.jpg';
 import anh1 from '../assets/iphone-17-pro-max_1.webp';
-import { getProvinces, getDistricts} from "../components/getAPI";
+import { getProvinces, getDistricts} from "../service/getAPI";
 const ViewPayment = () => {
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [communes, setCommunes] = useState([]);
   const [paymentMethod, setPaymentMethod] = useState("");
   const [value, setValue] = useState("");
-
+  const [isInvalid,setIsInvalid]=useState(false);
   const [selectedProvince, setSelectedProvince] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
+  const [totalPrice,setTotalPrice]=useState();
   // Lấy danh sách tỉnh/thành
   useEffect(() => {
     const fetchData = async () => {
@@ -58,6 +59,22 @@ const ViewPayment = () => {
     setPaymentMethod(e.target.value);
     console.log("Phương thức thanh toán:", e.target.value);
   };
+  const handleSubmitDiscount = ()=>{
+  if (value !== "SALE2025") {   // ví dụ mã hợp lệ là SALE2025
+    setIsInvalid(true);
+  } else {
+    setIsInvalid(false);
+    console.log("Áp dụng mã:", value);
+};
+  }
+
+  const getTextTotalPrice = () => {
+  let finalPrice = totalPrice;
+  if (!isInvalid && value === "SALE2025") {
+    finalPrice = totalPrice * 0.8; // giảm 20%
+  }
+  return finalPrice.toLocaleString("vi-VN") ;
+};
   return (
     <div>
       <header className="banner"></header>
@@ -174,7 +191,7 @@ const ViewPayment = () => {
                                          <div className="form-check content-box__row ">
                                             <div className="content-box__row">
                                                 <div className="group-check">
-                                                <input className="form-check-input" type="radio" name="paymentMethod" id="mbbank" value="mbbank" onChange={handleChange} />
+                                                <input className="form-check-input" type="radio" name="paymentMethod" id="mbbank" defaultChecked  value="freeship" onChange={handleChange} />
                                                 <label className="form-check-label radio__label__primary" htmlFor="flexRadioDefault1">thanh toán khi nhận hàng (COD)</label>
                                                 </div>
                                                 <label htmlFor="" className=" radio__label__accessory"> <i className="fa-solid fa-money-bill"></i></label>
@@ -257,23 +274,6 @@ const ViewPayment = () => {
 											</tr>
 							   </thead>
                                 <tbody>
-                                    <tr className="product">
-                                        <td className="product__image">
-                                            <div className=" product-thumbnail__wrapper product-thumbnail">
-                                                <div className="image_thumb">
-                                                    <img src={anh1} width={50} height={50} className="product-thumbnail__image" alt="" />
-                                                </div>
-                                            </div>
-                                            <span className="product-thumbnail__quantity">10</span>
-                                        </td>
-                                        <th className="product__description">
-                                            <span className="product__description__name">MacBook Air M4 15" 10CPU 10GPU 16GB 256GB 2025</span>
-                                            <br />
-                                            <span className="product__description__property">Xanh Dương / BH chính hãng Miễn Phí</span>
-										</th>
-                                        <td className="product__quantity visually-hidden"><span>Số lượng:</span> 10</td>
-                                        <td className="product__price" >319.800.000₫</td>
-                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -285,7 +285,7 @@ const ViewPayment = () => {
                                     }`}
                                     >
                                     <div className="field__input-btn-wrapper">
-                                        <div className="field__input-wrapper">
+                                        <div className= {`field__input-wrapper ${isInvalid ? "error" : ""}`}>
                                         <label htmlFor="reductionCode" className="field__label" >
                                             Nhập mã giảm giá
                                         </label>
@@ -297,10 +297,16 @@ const ViewPayment = () => {
                                             value={value}
                                             onChange={(e) => setValue(e.target.value)}
                                         />
+                                                                                {
+                                            isInvalid &&(
+                                                <p class="field__message field__message--error">Mã khuyến mãi không hợp lệ</p>
+                                            )
+                                        }
                                         </div>
                                         <button
                                         className="field__input-btn btn spinner btn-success"
-                                        type="button"
+                                        type="button" 
+                                        onClick={ (e)=>handleSubmitDiscount()}
                                         >
                                         <span className="spinner-label">Áp dụng</span>
                                         </button>
@@ -312,18 +318,26 @@ const ViewPayment = () => {
                         
                         <div className="order-summary__section order-summary__section--total-lines">
                             <div className="total-line total-line--subtotal">
-												<span className="total-line__name">
-													Tạm tính
-												</span>
-												<span className="total-line__price">319.800.000₫</span>
+												<span className="total-line-name">Tạm tính</span>
+												<span className="total-line-price">
+                                                     <span className="order-summary-emphasis" 
+                                                     value="40000" id="shipFee" codfee="0" data-curentvalue="40000">
+                                                        <span>319.800.000</span>  đ</span>
+                                                </span>
 											</div>
                             <div className="total-line total-line-shipping shipFeeCheckHost">
                                 <span className="total-line-name">Phí vận chuyển</span>
-                                <span className="total-line-price">
-                                    <span className="order-summary-emphasis" value="40000" id="shipFee" codfee="0" data-curentvalue="40000">40,000  đ</span>
+                                <span className="total-line-price ">
+                                    <span className="order-summary-emphasis" value="40000" id="shipFee" codfee="0" data-curentvalue="40000"><span>40,000</span>  đ</span>
                                 </span>
                             </div>
-                            <div className="total-line-table__footer">
+                            <div className="total-line line-discount">
+                                <span className="total-line-name">Giảm giá </span>
+                                  <span className="total-line-price total-line-discount">
+                                    <span className="order-summary-emphasis" value="40000" id="discount" codfee="0" data-curentvalue="40000">40,000  đ</span>
+                                </span>
+                            </div>
+                            <div className="total-line table__footer">
 											<div className="total-line payment-due">
 												<span className="total-line__name">
 													<span className="payment-due__label-total">
@@ -331,7 +345,7 @@ const ViewPayment = () => {
 													</span>
 												</span>
 												<span className="total-line__price">
-													<span className="payment-due__price" data-bind="getTextTotalPrice()">319.840.000₫</span>
+													<span className="payment-due__price" data-bind="getTextTotalPrice()"> <span>₫</span></span>
 												</span>
 											</div>
 										</div>

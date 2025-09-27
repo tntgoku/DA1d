@@ -1,15 +1,17 @@
 import "../../css/client/header.css";
-import SvgIcon from "./Svg";
 import anh1 from '../../assets/anh1.webp';
 import {Routes,Route,Link,useNavigate} from 'react-router-dom';
 // import Dashboard from '../admin/Dashboard';
 import { useState,useEffect } from "react";
 import '../../css/client/payment.css';
 import logo_store from '../../assets/logo_store.jpg';
+import { Cart } from "../Cart";
 const Header = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [animate, setAnimate] = useState(false);
     const [isOpennav,setIsOpennav]= useState(false);
+    const [username,setUsername]=useState();
+    const [quantity, setQuantity] = useState(1);
     const navigate=useNavigate();
     const handleToggleLogin = () => {
     //      if (!isOpen) {
@@ -40,6 +42,9 @@ const Header = () => {
       document.body.style.overflow = "auto"; // cleanup
     };
   }, [isOpen]);
+  useEffect(()=>{
+
+  },[username])
     return (
         <header  className="header-top">
             <div className="container-lg">
@@ -92,65 +97,10 @@ const Header = () => {
                             </form>                    
                         </div>
                     </div>
-                    <div className="header-cart header-control d-none block-cart d-lg-flex">
-                        <div title="Giỏ hàng" className="icon">
-                            <i className="fa-solid fa-cart-shopping"></i>
-                        </div>
-                        <div className="content-cart">
-                            <a href="http://"><span className="label-cart">Giỏ hàng </span> <br /><span className="label-cart">Sản phẩm:</span> <span className="count-item">0</span></a>
-                        </div>
-                        <div className="top-content-cart">
-                            <div className="content-cartHeader">
-                                {/* <div className="cart--empty">
-                                    <SvgIcon width={24} height={24} className="text-blue-400 svgicon" />
-                                    <p>Không có sản phẩm nào trong giỏ hàng của bạn</p>
-                                </div> */}
-                                <div className="cart cart-form">
-                                    <div className="cart_body items">
-                                        <div className="cart-item">
-                                            <div className="cart-product" data-line="1">
-                                                <a href="http://">
-                                                    <img src={anh1} alt="" width={80} height={80} />
-                                                </a>
-                                                <div className="cart__info">
-                                                    <div className="cart__product_name">
-                                                        <a href="http://" className="cart__product_item-name h4">MacBook Air M4 15" 10CPU 10GPU 16GB 256GB 2025</a>
-                                                        <span className="cart__product-meta variant-title">Xanh Dương / BH chính hãng Miễn Phí</span>
-                                                        <a href="" data-line="1" className="cart__btn-remove remove-item-cart ">Xóa</a>
-                                                    </div>
-                                                    <div className="grid">
-                                                        <div className="grid__item cart_select cart_item_name">
-                                                            <label>Số lượng</label>
-                                                            <div className="cart__qty">
-                                                                <button type="button" className="qty-btn minus item-count" data-line="1">-</button>
-                                                                <input type="text" name="updates[]" className="cart__qty-input qty" value="1" min="1" data-line="1" />
-                                                                <button type="button" className="qty-btn plus item-count" data-line="1">+</button>
-                                                            </div>
-                                                        </div>
-                                                        <div className="grid__item cart_select cart_item_price">
-                                                            <p className="money">31.980.000₫</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="cart_footer">
-                                        <div className="cart_subtotal">
-                                            <div className="cart__col">Tổng tiền:</div>
-                                            <div className="cart__total text-right"><p className="money">31.980.000₫</p></div>
-                                        </div>
-                                        <div className="cart__process-checkout">
-                                            <button type="button" className="button btn btn-default cart__btn-proceed-checkout" id="btn-proceed-checkout">Tiến hành thanh toán</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <Cart  />
                     <div className="header-account">
                         <div className="button__login">
-                            <button type="button" className="btn-login" onClick={handleToggleLogin}><span className="user-text">Đăng nhập</span>
+                            <button type="button" className="btn-login" onClick={handleToggleLogin}><span className="user-text"> {username ? username : "Đăng nhập"}</span>
                             <i className="fa-solid fa-user" style={{marginLeft :"5px"}}></i>
                             </button>
                         </div>

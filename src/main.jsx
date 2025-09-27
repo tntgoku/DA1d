@@ -10,7 +10,6 @@ import Cart from './page/Cart.jsx';
 import AuthForms from './page/AuthForms.jsx';
 import Account from './page/Account.jsx';
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />} />
@@ -25,6 +24,6 @@ createRoot(document.getElementById('root')).render(
         <Route path='/account' element ={<Account/>}/>
       </Routes>
     </BrowserRouter>
-  </StrictMode>,
+,
 )
 
