@@ -37,11 +37,11 @@ body {
 }
 
 .sidebar.sidebar-user {
-    position: absolute !important;
+    position: relative;
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    height: fit-content;
+    /* height: fit-content; */
 }
 
 .user-info {
@@ -91,9 +91,14 @@ body {
     background-color: #f0f4ff;
 }
 
+.menu-item:hover span,
+.menu-item:hover i {
+    color: #333;
+}
+
 .menu-item.active {
-    background-color: #3498db;
-    color: white;
+    background-color: #f0f4ff;
+    color: #333;
 }
 
 .menu-item i {
@@ -102,7 +107,7 @@ body {
     text-align: center;
 }
 
-.main-content {
+.account-container .main-content-account {
     flex: 1;
     background: white;
     border-radius: 10px;
@@ -111,22 +116,22 @@ body {
 }
 
 .profile-section {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+    /* display: flex; */
+    /* flex-direction: column; */
+    /* gap: 20px; */
 }
 
 .avatar-section {
-    display: flex;
+    /* display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: center; */
     padding-bottom: 20px;
     border-bottom: 1px solid #eee;
 }
 
 .avatar {
-    width: 150px;
-    height: 150px;
+    max-width: 100px;
+    max-height: 100px;
     border-radius: 50%;
     overflow: hidden;
     position: relative;
@@ -227,7 +232,7 @@ body {
 }
 
 .btn-primary {
-    padding: 12px 20px;
+    /* padding: 12px 20px; */
     border: none;
     border-radius: 5px;
     /* background: linear-gradient(to right, #3498db, #2c3e50); */
@@ -245,8 +250,8 @@ body {
     padding: 12px 20px;
     border: 1px solid #3498db;
     border-radius: 5px;
-    background: white;
-    color: #3498db;
+    /* background: white; */
+    /* color: #f7f7f8; */
     font-size: 16px;
     cursor: pointer;
     transition: background 0.3s;
@@ -254,6 +259,7 @@ body {
 
 .btn-outline:hover {
     background: #f0f4ff;
+    color: #333;
 }
 
 .order-history h3,

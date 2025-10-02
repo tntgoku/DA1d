@@ -1,8 +1,8 @@
 
 
-export const FormImages=({activeTab,images,featuredImageIndex,setFeaturedImage,handleRemoveImage,handleImageUpload})=>{
+export const FormImages=({images,featuredImageIndex,setFeaturedImage,handleRemoveImage,handleImageUpload})=>{
     return(
-                        <div className={`tab-pane fade ${activeTab === 'images' ? 'show active' : ''}`}>
+                        <div >
                   <div className="row">
                     <div className="col-md-12">
                       <h6>Quản lý ảnh sản phẩm</h6>
@@ -54,7 +54,7 @@ export const FormImages=({activeTab,images,featuredImageIndex,setFeaturedImage,h
                             type="button"
                             className="btn btn-sm btn-outline-danger"
                             onClick={() => handleRemoveImage(index)}
-                            >
+                            style={{color:'#fff'}}>
                             <i className="fas fa-trash"></i>
                             </button>
                         </div>

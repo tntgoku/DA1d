@@ -73,6 +73,15 @@
     }
 }
 
+@media screen and(max-width:768px) {
+    .ck-editor__editable_inline {
+        min-height: 150px;
+        /* nhỏ hơn cho mobile */
+        font-size: 0.9rem;
+        /* chữ nhỏ hơn để vừa màn hình */
+    }
+}
+
 @media screen and (max-width: 535px) {
     .header-searcher,
     .label-cart {

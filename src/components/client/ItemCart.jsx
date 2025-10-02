@@ -11,7 +11,9 @@ export const ItemCart=({key,idproduct,item,nameproduct,Listimg,handleChange,hand
                         <div className="cart__product_name">
                             <a href="http://" className="cart__product_item-name h4">{nameproduct}</a>
                             <span className="cart__product-meta variant-title">{item.color} / BH chính hãng Miễn Phí</span>
-                            <button href="" data-line="1" className="cart__btn-remove remove-item-cart  " >Xóa</button>
+                            <button href="" data-line="1" className="cart__btn-remove remove-item-cart  " onClick={(e)=>{
+                                console.log("Remove item:" +item.variantId);
+                            }}>Xóa</button>
                         </div>
                         <div className="grid">
                             <div className="grid__item cart_select cart_item_name">

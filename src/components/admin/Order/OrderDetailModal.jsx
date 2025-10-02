@@ -1,9 +1,22 @@
+import React from "react";
+
 export const OrderDetailModal = ({ getStatusColor,showModal, setShowModal, order, formatCurrency }) => {
   if (!showModal || !order) return null;
 
   const calculateTotal = () => {
     return order.items.reduce((total, item) => total + (item.price * item.quantity), 0);
   };
+const [currentPage, setCurrentPage] = React.useState(1);
+const itemsPerPage = 10;
+
+// tính tổng trang
+const totalPages = Math.ceil(order.items.length / itemsPerPage);
+
+// lấy items của trang hiện tại
+const currentItems = order.items.slice(
+  (currentPage - 1) * itemsPerPage,
+  currentPage * itemsPerPage
+);
 
   return (
     <div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}>
@@ -43,7 +56,7 @@ export const OrderDetailModal = ({ getStatusColor,showModal, setShowModal, order
                   </tr>
                 </thead>
                 <tbody>
-                  {order.items.map((item, index) => (
+                  {currentItems.map((item, index) => (
                     <tr key={index}>
                       <td>{item.productName}</td>
                       <td className="hide-print">{formatCurrency(item.price)}</td>
@@ -53,6 +66,23 @@ export const OrderDetailModal = ({ getStatusColor,showModal, setShowModal, order
                   ))}
                 </tbody>
               </table>
+                  <div className="pagination">
+                      <button 
+                        disabled={currentPage === 1} 
+                        onClick={() => setCurrentPage(currentPage - 1)}
+                      >
+                        Prev
+                      </button>
+                                    
+                      <span>{currentPage} / {totalPages}</span>
+                                    
+                      <button 
+                        disabled={currentPage === totalPages} 
+                        onClick={() => setCurrentPage(currentPage + 1)}
+                      >
+                        Next
+                      </button>
+                    </div>
             </div>
 
             <div className="row mt-3">

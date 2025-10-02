@@ -105,7 +105,7 @@ const Profile = ({ userData, setUserData, isEditing, setIsEditing }) => {
             <button className="btn-outline" onClick={handleCancel}>Hủy</button>
           </div>
         ) : (
-          <button className="btn-primary" onClick={() => setIsEditing(true)}>
+          <button className="btn-primary  btn-outline" onClick={() => setIsEditing(true)}>
             Chỉnh sửa thông tin
           </button>
         )}

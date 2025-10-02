@@ -4,6 +4,7 @@ import{ useState,useEffect } from 'react';
 import ItemProduct from './Product/ItemProduct';
 import { productsvariant1 } from '../../entity/Entity';
 import { getAllProduct, getProductFeatured } from '../../service/productService';
+import { getall } from '../../service/OrderService';
 const Main = () => {
     const products1 =productsvariant1;
     const [activeTab, setActiveTab] = useState("1");
@@ -13,6 +14,7 @@ const Main = () => {
     const fetchData = async () => {
       try {
         const response = await getProductFeatured();
+        const dataorder=await getall();
         setProductAPI(response);
         console.log("Fetched productsFeatured oday ne:", response);
         // products1=data;

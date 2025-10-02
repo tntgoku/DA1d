@@ -34,7 +34,7 @@ const testOrders = [
     status: 'Chờ xác nhận',
     notes: 'Giao giờ hành chính',
     items: [
-      { productId: 101, productName: 'iPhone 13 128GB', price: 19990000, quantity: 1 },
+      { productId: 101, productName: 'iPhone 13 128GB', price: 190000, quantity: 1 },
       { productId: 202, productName: 'Ốp lưng iPhone 13', price: 250000, quantity: 2 }
     ],
     shippingFee: 30000,
@@ -100,56 +100,187 @@ const testOrders = [
     paid:false
   }
 ];
+// Trong file test data hoặc Entity.js
+ const testDiscounts = [
+  {
+    id: 1,
+    discount_code: 'SUMMER2024',
+    discount_name: 'Giảm giá mùa hè 2024',
+    type: 0, // Phần trăm
+    category: 1, // Sản phẩm
+    value: 15.00,
+    max_value: 500000,
+    discount_condition: 1000000,
+    quantity: 100,
+    enable: true,
+    start_time: '2024-06-01T00:00:00',
+    end_time: '2024-08-31T23:59:59',
+    status: 1,
+    created_at: '2024-05-20T10:00:00',
+    updated_at: '2024-05-20T10:00:00'
+  },
+  {
+    id: 2,
+    discount_code: 'FREESHIP50',
+    discount_name: 'Miễn phí ship 50K',
+    type: 1, // Tiền mặt
+    category: 2, // Vận chuyển
+    value: 50000,
+    max_value: 50000,
+    discount_condition: 500000,
+    quantity: 200,
+    enable: true,
+    start_time: '2024-07-01T00:00:00',
+    end_time: '2024-07-31T23:59:59',
+    status: 1,
+    created_at: '2024-06-25T14:30:00',
+    updated_at: '2024-06-25T14:30:00'
+  },
+  {
+    id: 3,
+    discount_code: 'WELCOME10',
+    discount_name: 'Chào mừng thành viên mới',
+    type: 0, // Phần trăm
+    category: 1, // Sản phẩm
+    value: 10.00,
+    max_value: 200000,
+    discount_condition: null,
+    quantity: 1000,
+    enable: true,
+    start_time: '2024-01-01T00:00:00',
+    end_time: '2024-12-31T23:59:59',
+    status: 1,
+    created_at: '2024-01-01T00:00:00',
+    updated_at: '2024-01-01T00:00:00'
+  },
+  {
+    id: 4,
+    discount_code: 'BLACKFRIDAY',
+    discount_name: 'Giảm giá Black Friday',
+    type: 0, // Phần trăm
+    category: 1, // Sản phẩm
+    value: 20.00,
+    max_value: 1000000,
+    discount_condition: 0,
+    quantity: 500,
+    enable: false,
+    start_time: '2024-11-29T00:00:00',
+    end_time: '2024-11-30T23:59:59',
+    status: 0,
+    created_at: '2024-10-15T09:00:00',
+    updated_at: '2024-10-15T09:00:00'
+  }
+];
 
+ const testDiscountPeriods = [
+  {
+    id: 1,
+    discount_period_code: 'PERIOD_SUMMER24',
+    discount_period_name: 'Đợt giảm giá mùa hè 2024',
+    min_percentage_value: 10,
+    max_percentage_value: 30,
+    start_time: '2024-06-01T00:00:00',
+    end_time: '2024-08-31T23:59:59',
+    status: 1,
+    created_at: '2024-05-15T08:00:00',
+    updated_at: '2024-05-15T08:00:00'
+  },
+  {
+    id: 2,
+    discount_period_code: 'PERIOD_BACK2SCHOOL',
+    discount_period_name: 'Đợt giảm giá Back to School',
+    min_percentage_value: 5,
+    max_percentage_value: 25,
+    start_time: '2024-08-15T00:00:00',
+    end_time: '2024-09-15T23:59:59',
+    status: 1,
+    created_at: '2024-07-20T10:30:00',
+    updated_at: '2024-07-20T10:30:00'
+  },
+  {
+    id: 3,
+    discount_period_code: 'PERIOD_YE2024',
+    discount_period_name: 'Đợt giảm giá cuối năm 2024',
+    min_percentage_value: 15,
+    max_percentage_value: 40,
+    start_time: '2024-12-01T00:00:00',
+    end_time: '2024-12-31T23:59:59',
+    status: 0,
+    created_at: '2024-11-01T14:00:00',
+    updated_at: '2024-11-01T14:00:00'
+  }
+];
+
+ const testProductDiscounts = [
+  {
+    id: 1,
+    percentage_value: 15,
+    product_id: 1,
+    discount_period_id: 1,
+    created_at: '2024-06-01T09:00:00',
+    updated_at: '2024-06-01T09:00:00'
+  },
+  {
+    id: 2,
+    percentage_value: 20,
+    product_id: 2,
+    discount_period_id: 1,
+    created_at: '2024-06-01T10:00:00',
+    updated_at: '2024-06-01T10:00:00'
+  },
+  {
+    id: 3,
+    percentage_value: 10,
+    product_id: 3,
+    discount_period_id: 2,
+    created_at: '2024-08-15T08:00:00',
+    updated_at: '2024-08-15T08:00:00'
+  }
+];
+
+ const testDiscountUsers = [
+  {
+    id: 1,
+    is_used: false,
+    status: 1,
+    bill_id: null,
+    user_id: 1,
+    discount_id: 1,
+    created_at: '2024-06-01T10:00:00',
+    updated_at: '2024-06-01T10:00:00'
+  },
+  {
+    id: 2,
+    is_used: true,
+    status: 1,
+    bill_id: 1001,
+    user_id: 2,
+    discount_id: 1,
+    created_at: '2024-06-02T14:30:00',
+    updated_at: '2024-06-02T15:00:00'
+  }
+];
 const productsvariant = [
-  { product_id:1, id: 101, name: 'iPhone 14 Pro Max', category: 1, price: '28.990.000', discount: '10', stock: 15, status: 'Còn hàng', description: 'iPhone 14 Pro Max 128GB Chính Hãng VN/A - Mới 100', warranty: '12 tháng', isNew: true, imgSrc: anh1, imgAlt: 'iPhone 14 Pro Max', href:'iphone-14-pro-max-128gb-chinh-hang-vn-a-1'},
-  { product_id:1, id: 102, name: 'iPhone 14 Pro Max 1TB 99', category: 1, price: '24.990.000', discount: '5', stock: 8, status: 'Còn hàng', description: 'iPhone 14 Pro Max 1TB Chính Hãng VN/A - Mới 100', warranty: '12 tháng', isNew: true, imgSrc: anh1, imgAlt: 'iPhone 14 Pro Max 1TB', href: 'iphone-14-pro-max-1tb-chinh-hang-vn-a-1'},
-  { product_id:1, id: 103, name: 'iPhone 14 Pro Max 512GB 99', category: 1, price: '20.990.000', discount: '5', stock: 8, status: 'Còn hàng', description: 'iPhone 14 Pro Max 1TB Chính Hãng VN/A - Mới 100', warranty: '12 tháng', isNew: false, imgSrc: anh1, imgAlt: 'iPhone 14 Pro Max 1TB', href: 'iphone-14-pro-max-cu'},
-  { product_id:2, id: 201, name: 'Ốp lưng iPhone 14 Pro', category: 3, price: '450.000', discount: null, stock: 32, status: 'Còn hàng', description: 'Ốp lưng iPhone 14 Pro Chính Hãng Apple Silicone Case with MagSafe', warranty: '6 tháng', isNew: false, imgSrc: anh1, imgAlt: 'Ốp lưng iPhone 14 Pro', href: '/op-lung-iphone-14-pro-chinh-hang-apple-silicone-case-with-magsafe-1'},
-  { product_id:2, id: 202, name: 'Cáp sạc iPhone', category: 3, price: '290.000', discount: null, stock: 50, status: 'Còn hàng', description: 'Cáp sạc iPhone Chính Hãng Apple Lightning to USB-C (1m)', warranty: '6 tháng', isNew: false, imgSrc: anh1, imgAlt: 'Cáp sạc iPhone', href: '/cap-sac-iphone-chinh-hang-apple-lightning-to-usb-c-1m-1'},
+  { product_id:1, id: 101, name: 'iPhone 14 Pro Max', category: 1, price: '28.990.000', discount: '10', stock: 15, status: 1, description: 'iPhone 14 Pro Max 128GB Chính Hãng VN/A - Mới 100', warranty: '12 tháng', isNew: true, imgSrc: anh1, imgAlt: 'iPhone 14 Pro Max', href:'iphone-14-pro-max-128gb-chinh-hang-vn-a-1'},
+  { product_id:1, id: 102, name: 'iPhone 14 Pro Max 1TB 99', category: 1, price: '24.990.000', discount: '5', stock: 8, status: 1, description: 'iPhone 14 Pro Max 1TB Chính Hãng VN/A - Mới 100', warranty: '12 tháng', isNew: true, imgSrc: anh1, imgAlt: 'iPhone 14 Pro Max 1TB', href: 'iphone-14-pro-max-1tb-chinh-hang-vn-a-1'},
+  { product_id:1, id: 103, name: 'iPhone 14 Pro Max 512GB 99', category: 1, price: '20.990.000', discount: '5', stock: 8, status: 1, description: 'iPhone 14 Pro Max 1TB Chính Hãng VN/A - Mới 100', warranty: '12 tháng', isNew: false, imgSrc: anh1, imgAlt: 'iPhone 14 Pro Max 1TB', href: 'iphone-14-pro-max-cu'},
+  { product_id:2, id: 201, name: 'Ốp lưng iPhone 14 Pro', category: 3, price: '450.000', discount: null, stock: 32, status: 1, description: 'Ốp lưng iPhone 14 Pro Chính Hãng Apple Silicone Case with MagSafe', warranty: '6 tháng', isNew: false, imgSrc: anh1, imgAlt: 'Ốp lưng iPhone 14 Pro', href: '/op-lung-iphone-14-pro-chinh-hang-apple-silicone-case-with-magsafe-1'},
+  { product_id:2, id: 202, name: 'Cáp sạc iPhone', category: 3, price: '290.000', discount: null, stock: 50, status: 1, description: 'Cáp sạc iPhone Chính Hãng Apple Lightning to USB-C (1m)', warranty: '6 tháng', isNew: false, imgSrc: anh1, imgAlt: 'Cáp sạc iPhone', href: '/cap-sac-iphone-chinh-hang-apple-lightning-to-usb-c-1m-1'},
 ];
 const productsvariant1 = [
-  {product_id:1, id: 101, name: 'iPhone 14 Pro Max 128GB'    , category: 2, price: '28.990.000', discount: '10', storage:"128",color :"Trắng" ,stock: 15, status: 'Còn hàng',
+  {product_id:1, id: 101, name: 'iPhone 14 Pro Max 128GB'    , category: 2, price: '28.990.000', discount: '10', storage:"128",color :"Trắng" ,stock: 15, status: 1,
      description: 'iPhone 14 Pro Max 128GB Chính Hãng VN/A - Mới 100', warranty: '12 tháng',
       isNew: true, images:[
         {imgSrc: anh1, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:1,primary:true},
         {imgSrc: anh2, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:2,primary:false},
         {imgSrc: anh3, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:3,primary:false},
       ], featuredImageIndex: 3, href: 'iphone-14-pro-max-128gb-chinh-hang-vn-a-1'},
-  {product_id:1, id: 102, name: 'iPhone 14 Pro Max 256GB 99', category: 1, price: '19.990.000', discount: '10', storage:"256",color :"Xanh" ,stock: 8, status: 'Còn hàng',
-     description: 'iPhone 14 Pro Max 256GB Chính Hãng VN/A - Mới 100', warranty: '6 tháng',
-      isNew: false, images:[
-        {imgSrc: anh1, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:1,primary:true},
-        {imgSrc: anh2, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:2,primary:false},
-      ], featuredImageIndex: 2, href: 'iphone-14-pro-max-256gb-chinh-hang-vn-a-1'},
-  {product_id:1, id: 103, name: 'iPhone 14 Pro Max 1T 99', category: 1, price: '20.990.000', discount: '8' , storage:"1024",color :"Đen" ,stock: 8, status: 'Còn hàng',
-     description: 'iPhone 14 Pro Max 1TB Chính Hãng VN/A - Mới 100', warranty: '6 tháng',
-      isNew: false, images:[
-        {imgSrc: anh2, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:2,primary:false},
-        {imgSrc: anh3, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:3,primary:false},
-      ], featuredImageIndex: 1, href: 'iphone-14-pro-max-cu-99-1t'},
-  {product_id:1, id: 104, name: 'iPhone 14 Pro Max 512GB 99', category: 1, price: '19.990.000', discount: '10', storage:"512",color :"Tím" ,stock: 8, status: 'Còn hàng',
-     description: 'iPhone 14 Pro Max 256GB Chính Hãng VN/A - Mới 100', warranty: '6 tháng',
-      isNew: false, images:[
-        {imgSrc: anh1, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:1,primary:true},
-        {imgSrc: anh2, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:2,primary:false},
-      ],featuredImageIndex: 2, href: 'iphone-14-pro-max-256gb-chinh-hang-vn-a-1'},
-  {product_id:1, id: 105, name: 'iPhone 14 Pro Max 256GB 99', category: 1, price: '19.990.000', discount: '10', storage:"256",color :"Vàng" ,stock: 8, status: 'Còn hàng',
-     description: 'iPhone 14 Pro Max 256GB Chính Hãng VN/A - Mới 100', warranty: '6 tháng',
-      isNew: false, images:[
-        {imgSrc: anh1, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:1,primary:true},
-      ], href: 'iphone-14-pro-max-256gb-chinh-hang-vn-a-1'},
-  {product_id:1, id: 106, name: 'iPhone 14 Pro Max 128GB 99', category: 1, price: null, discount: '10', storage:"128",color :"Vàng-gold" ,stock: 8, status: 'Còn hàng', description: 'iPhone 14 Pro Max 128GB Chính Hãng VN/A - Mới 100', warranty: '6 tháng', isNew: false, images:[
-        {imgSrc: anh1, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:1,primary:true},
-        {imgSrc: anh2, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:2,primary:false},
-        {imgSrc: anh3, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:3,primary:false},
-      ],featuredImageIndex: 2, href: 'iphone-14-pro-max-128gb-99-vn-a-1'},
-  {product_id:2, id: 201, name: 'Ốp lưng iPhone 14 Pro', category: 3, price: '450.000', discount: null, stock: 32, status: 'Còn hàng', description: 'Ốp lưng iPhone 14 Pro Chính Hãng Apple Silicone Case with MagSafe', warranty: '6 tháng', isNew: false, images:[
+  {product_id:2, id: 201, name: 'Ốp lưng iPhone 14 Pro', category: 3, price: '450.000', discount: null, stock: 32, status: 1, description: 'Ốp lưng iPhone 14 Pro Chính Hãng Apple Silicone Case with MagSafe', warranty: '6 tháng', isNew: false, images:[
         {imgSrc: anh1, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:1,primary:true},
         {imgSrc: anh2, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:2,primary:false},
         {imgSrc: anh3, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:3,primary:false},
       ], featuredImageIndex: 1, href: 'op-lung-iphone-14-pro-chinh-hang-apple-silicone-case-with-magsafe-1'},
-  {product_id:2, id: 202, name: 'Cáp sạc iPhone', category: 3, price: '290.000', discount: null, stock: 50, status: 'Còn hàng', description: 'Cáp sạc iPhone Chính Hãng Apple Lightning to USB-C (1m)', warranty: '6 tháng', isNew: false, images:[
+  {product_id:2, id: 202, name: 'Cáp sạc iPhone', category: 3, price: '290.000', discount: null, stock: 50, status: 1, description: 'Cáp sạc iPhone Chính Hãng Apple Lightning to USB-C (1m)', warranty: '6 tháng', isNew: false, images:[
         {imgSrc: anh1, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:1,primary:true},
         {imgSrc: anh2, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:2,primary:false},
         {imgSrc: anh3, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:3,primary:false},
@@ -205,7 +336,7 @@ const categories=[
         isFromTradeIn : false, 
         isFeatured : false, 
         originalOwnerId : 0, 
-        quantity_cart:99, 
+        quantity_cart:1, 
         region : "VN/A", 
         slug : "ip13pm-128"}
       ],
@@ -245,7 +376,7 @@ const categories=[
         isFromTradeIn : false, 
         isFeatured : false, 
         originalOwnerId : 0, 
-        quantity_cart:99, 
+        quantity_cart:1, 
         region : "VN/A", 
         slug : "ip13pm-128"}
       ],
@@ -260,5 +391,33 @@ const categories=[
 
   }
 ]
- 
-export { users, productsvariant,productsvariant1, categories,orders,testOrders,itemtest, repairs, reviews,formatPrice };
+   const defaultFormData = {
+  name: '',
+  category: '',
+  price: '',
+  stock: '',
+  status: 'Active',
+  isFeatured: false,
+  images: [],
+  featuredImageIndex: 0,
+  specifications: {
+    color: '',
+    storage: '',
+    ram: '',
+    screen: '',
+    battery: '',
+    chip: '',
+    camera: '',
+    weight: '',
+    connectivity: '',
+    features: ''
+  }
+};
+
+export { defaultFormData,users, 
+  productsvariant,productsvariant1, categories,
+  orders,
+  testOrders,itemtest, repairs, reviews
+  ,testDiscounts,
+  testDiscountPeriods,testDiscountUsers,
+  testProductDiscounts,formatPrice };

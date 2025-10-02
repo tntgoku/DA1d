@@ -16,7 +16,7 @@ body {
 }
 
 .sidebar {
-    background-color: var(--secondary);
+    /* background-color: var(--secondary);
     color: white;
     height: 100%;
     position: fixed;
@@ -25,7 +25,19 @@ body {
     z-index: 1000;
     transition: all 0.3s;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    height: fit-content;
+    height: fit-content; */
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    /* quan trọng */
+    width: 220px;
+    background-color: var(--secondary);
+    color: white;
+    padding-top: 20px;
+    z-index: 90;
+    transition: all 0.3s;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .sidebar .nav-link {
@@ -50,7 +62,7 @@ body {
 
 .main-content {
     margin-left: 220px;
-    padding: 20px;
+    padding: 8px;
     transition: all 0.3s;
 }
 
@@ -87,14 +99,21 @@ body {
     padding: 20px;
 }
 
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
 .card-body .table-responsive .handle-btn button {
     margin-left: 10px;
     width: 40%;
 }
 
+
+/* 
 .card-body .table-responsive table tr td {
     text-align: left;
-}
+} */
 
 .stat-card {
     text-align: center;
@@ -107,11 +126,33 @@ body {
     color: var(--primary);
 }
 
-.handle-btn {}
+.modal.fade.show {
+    display: block;
+}
+
+.handle-btn button i {
+    color: #121617;
+}
+
+.handle-btn button:hover i {
+    color: #ecf0f1;
+}
 
 .stat-card .label {
     font-size: 0.9rem;
     color: #6c757d;
+}
+
+.ck-editor__editable_inline {
+    min-height: 300px;
+    /* chiều cao tối thiểu */
+    max-height: 450px;
+    /* nếu muốn giới hạn tối đa */
+    overflow-y: auto;
+    /* scroll nếu nội dung vượt chiều cao */
+    width: 100%;
+    /* rộng full theo container */
+    box-sizing: border-box;
 }
 
 .table th {
@@ -124,20 +165,22 @@ body {
 }
 
 button.btn.btn-sm.btn-outline-primary.me-1 {
-    background: #0d6efd;
+    /* background: #0d6efd; */
 }
 
 button.btn.btn-sm.btn-outline-danger {
     background: #dc3545;
+    color: #ecf0f1;
 }
 
 button.btn.btn-sm.btn-outline-warning,
 button.btn.btn-sm.btn-warning {
     background: #ffc107;
+    color: #121617;
 }
 
 button.btn.btn-sm.btn-warning i.fas.fa-star {
-    color: #fff;
+    color: #f7f5f5;
 }
 
 .badge {
@@ -274,4 +317,37 @@ button.btn.btn-sm.btn-warning i.fas.fa-star {
         align-items: center;
         /* padding: 0 0; */
     }
+}
+
+@media (hover: none) and (pointer: coarse) {
+    .btn,
+    .btn-action,
+    .btn-filter {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    .data-table th,
+    .data-table td {
+        padding: 16px 8px;
+    }
+}
+
+.discounts-section .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.discounts-section .nav-tabs-container {
+    margin-bottom: 20px;
+}
+
+.tab-content.card-body {
+    display: block !important;
+}
+
+.discounts-section .table-responsive {
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }

@@ -129,7 +129,8 @@ export const getListProductByVariantId = async (id) => {
 // Create a new product
 export const createProduct = async (productData) => {
   try {
-    const response = await apiClient.post('/products', productData);
+    console.log("Data khi push:",productData);
+    const response = await apiClient.post('products', productData);
     return response.data;
   } catch (error) {
     console.error('Error creating product:', error);
@@ -138,18 +139,19 @@ export const createProduct = async (productData) => {
 };
 
 // Update an existing product by ID
-export const updateProduct = async (productId, productData) => {
+export const updateProduct = async (id, productData) => {
   try {
-    const response = await apiClient.put(`/products/${productId}`, productData);
+    console.log("Update:",productData);
+    const response = await apiClient.put(`products/${id}`, productData);
     return response.data;
   } catch (error) {
-    console.error(`Error updating product with ID ${productId}:`, error);
+    console.error(`Error updating product with ID ${id}:`, error);
     throw error;
   }
 };
 
 // Delete a product by ID
-export const deleteProduct = async (productId) => {
+export const deleteProduct = async (id) => {
   try {
     const response = await apiClient.delete(`/products/${productId}`);
     return response.data;

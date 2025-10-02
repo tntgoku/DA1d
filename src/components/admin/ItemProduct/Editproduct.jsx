@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FormImages } from './FormImages';
 import { FormAttributeBasic } from './FormAttributeBasic';
 import { FormTechnine } from './FormTechnice';
-
+import { createProduct,updateProduct } from '../../../service/productService';
 export const EditProductModal = ({ 
   showModal, 
   setShowModal, 
@@ -53,8 +53,6 @@ const handleImageUpload = (e) => {
     reader.readAsDataURL(file);
   });
 };
-
-
   // Hàm xóa ảnh
   const handleRemoveImage = (index) => {
     const updatedImages = formData.images.filter((_, i) => i !== index);
@@ -81,7 +79,6 @@ const handleImageUpload = (e) => {
       }
     });
   };
-
   // Hàm đặt ảnh chính
   const setFeaturedImage = (index) => {
     setFormData({
@@ -92,8 +89,10 @@ const handleImageUpload = (e) => {
 
   let price = parseInt((formData.price || "0").toString().replace(/\./g, ""), 10);
 
+
+
   return (
-    <div className="modal fade show" style={{display: 'block', backgroundColor: 'rgba(0,0,0,0.5)'}}>
+    <div className={`modal fade ${showModal ? "show":'' }`} style={{ backgroundColor: 'rgba(0,0,0,0.5)'}}>
       <div className="modal-dialog modal-xl">
         <div className="modal-content">
           <div className="modal-header">
@@ -188,7 +187,8 @@ const handleImageUpload = (e) => {
                     >
                       <i className="fas fa-arrow-left"></i> Quay lại
                     </button>
-                    <button type="submit" className="btn btn-primary">
+                    <button type="submit" className="btn btn-primary"
+                    >
                       {editingProduct ? 'Cập nhật' : 'Thêm mới'}
                     </button>
                   </>

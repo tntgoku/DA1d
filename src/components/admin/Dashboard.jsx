@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../css/admin/dashboard.css';
-import {users, productsvariant, testOrders, repairs, reviews} from '../../entity/Entity'; 
+import {users, productsvariant, testOrders, repairs, reviews,testDiscountPeriods,testDiscounts} from '../../entity/Entity'; 
 import DashboardSection from './DashboardSection';
 import UsersSection from './User/UserSection';
 import ProductsSection from './ProductsSection';
@@ -12,17 +12,25 @@ import RepairsSection from './RepairsSection';
 // import ReviewsSection from './ReviewsSection';
 import ReportsSection from './ReportsSection';
 import SettingsSection from'./SettingsSection';
+import { useLocation } from 'react-router-dom';
+import { DiscountsSection } from './DiscountSection';
 // Dữ liệu mẫu
 
 const Dashboard = () => {
   const [activeSection, setActiveSection] = useState('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
+  const location = useLocation();
   const products=productsvariant;
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
-
+// Đồng bộ activeSection theo path
+  useEffect(() => {
+    const path = location.pathname.split("/").pop(); // lấy phần cuối của URL
+    if (path) {
+      setActiveSection(path);  // ví dụ "products"
+    }
+  }, [location]);
   const renderSection = () => {
     switch(activeSection) {
       case 'dashboard':
@@ -35,6 +43,8 @@ const Dashboard = () => {
         return <OrdersSection orders={testOrders}  products={products}/>;
       case 'repairs':
         return <RepairsSection repairs={repairs} />;
+      case 'discounts':
+        return <DiscountsSection discounts={testDiscounts} discountPeriods={testDiscountPeriods} products={products} />
       // case 'reviews':
       //   return <ReviewsSection reviews={reviews} />;
       case 'reports':
@@ -85,6 +95,11 @@ const Dashboard = () => {
           <li className="nav-item">
             <a className={`nav-link ${activeSection === 'repairs' ? 'active' : ''}`} href="#" onClick={() => setActiveSection('repairs')}>
               <i className="fas fa-tools"></i> Sửa chữa
+            </a>
+          </li>
+          <li className="nav-item">
+            <a className={`nav-link ${activeSection === 'discounts' ? 'active' : ''}`} href="#" onClick={() => setActiveSection('discounts')}>
+              <i className="fas fa-tag"></i> Khuyến mãi
             </a>
           </li>
           <li className="nav-item">

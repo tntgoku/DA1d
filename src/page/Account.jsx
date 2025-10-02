@@ -60,7 +60,7 @@ useEffect(() => {
           setActiveTab={setActiveTab} 
         />
 
-        <div className="main-content">
+        <div className="main-content-account">
           {activeTab === 'profile' && (
             <Profile 
               userData={userData} 

@@ -1,9 +1,12 @@
 import { ItemCart } from "./client/ItemCart"
-import { useState,useEffect } from "react";
+import { useState,useEffect,useNa } from "react";
 import { formatPrice, itemtest, productsvariant1 } from "../entity/Entity";
 import SvgIcon from "./client/Svg";
+import { Link,useNavigate } from "react-router-dom";
+import { Button } from "bootstrap";
 
 export const Cart=() =>{
+        const navigate = useNavigate();
     const [quantity, setQuantity] = useState(1);
     const [finaltotla,setFinalTotal]=useState();
     const[totalProduct,setTotalProduct]=useState();
@@ -135,7 +138,13 @@ const handleChange = (e, productId, variantId) => {
                                             <div className="cart__total text-right"><p className="money">{finaltotla ?finaltotla:""}</p></div>
                                         </div>
                                         <div className="cart__process-checkout">
-                                            <button type="button" className="button btn btn-default cart__btn-proceed-checkout" id="btn-proceed-checkout">Tiến hành thanh toán</button>
+                                            <button type="button" 
+                                            className="button btn btn-default cart__btn-proceed-checkout" 
+                                            id="btn-proceed-checkout"
+                                            onClick={(e)=>{
+                                                             navigate("/payment");
+                                            }}
+                                            >Tiến hành thanh toán</button>
                                         </div>
                                     </div>
                                 </div>

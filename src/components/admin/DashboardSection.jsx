@@ -1,7 +1,7 @@
 import React from 'react';
 const DashboardSection = ({ users, products, orders, repairs, sidebarOpen }) => {
   return (
-    <div>
+    <div className='dashboard-container'>
       <div className="header d-flex justify-content-between align-items-center">
         <h4>Dashboard - Tổng quan</h4>
 

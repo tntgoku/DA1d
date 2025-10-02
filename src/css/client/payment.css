@@ -402,6 +402,11 @@ a.previous-link {
     margin-left: 15px;
 }
 
+.total-line.line-discount {
+    display: flex;
+    flex-direction: column;
+}
+
 .field__input-wrapper.error .field__input {
     border: 1px solid red;
 }
@@ -409,4 +414,30 @@ a.previous-link {
 .field__message--error {
     padding-top: 6px;
     color: #c23527;
+}
+
+@media (max-width: 480px) {
+    #checkout form {
+        display: flex;
+        flex-direction: column;
+    }
+    .checkout .main {
+        padding: none;
+    }
+    .checkout.container-md {
+        padding: 10px 5px;
+    }
+    .payment-method {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .payment-method label {
+        margin-top: 5px;
+    }
+    .main__content {
+        flex-direction: column;
+    }
+    .sidebar-payment {
+        margin-bottom: 30px;
+    }
 }

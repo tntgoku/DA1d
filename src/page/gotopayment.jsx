@@ -3,16 +3,43 @@ import React, { useState, useEffect } from "react";
 import anh from '../assets/logo_store.jpg';
 import anh1 from '../assets/iphone-17-pro-max_1.webp';
 import { getProvinces, getDistricts} from "../service/getAPI";
+import { formatPrice, itemtest } from "../entity/Entity";
+import { ItemOrder } from "../components/ItemOrder";
+import { PostOrder } from "../service/OrderService";
 const ViewPayment = () => {
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [communes, setCommunes] = useState([]);
+  const [listCart,setListCart]=useState(itemtest);
   const [paymentMethod, setPaymentMethod] = useState("");
   const [value, setValue] = useState("");
   const [isInvalid,setIsInvalid]=useState(false);
   const [selectedProvince, setSelectedProvince] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
+  const [id,setId]=useState(-1);
+  const [email, setEmail] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
+  const [note, setNote] = useState("");
   const [totalPrice,setTotalPrice]=useState();
+  const[totalproduct,setTotalProduct]=useState();
+  const [voucherApplied, setVoucherApplied] = useState(false);
+  const [voucher, setVoucher] = useState("");
+  const [formData,setFormData] =useState({
+        id:"",
+        email: "",
+        fullname: "",
+        phone: "",
+        province: selectedProvince,
+        district: selectedDistrict,
+        address: "",
+        note: "",
+        paymentMethod: "",
+        voucher: "",
+        totalPrice: 0,
+        listCart:[],
+  });
   // Lấy danh sách tỉnh/thành
   useEffect(() => {
     const fetchData = async () => {
@@ -42,7 +69,6 @@ const ViewPayment = () => {
     fetchDistricts();
   }, [selectedProvince]);
 
-//   // Khi chọn quận -> load xã ---> Commit lại rồi vì dùng API mới sau khi Sáp nhập tỉnh, thành Việt Nam 2025
 //   useEffect(() => {
 //     const fetchCommunes = async () => {
 //       if (!selectedDistrict) return;
@@ -56,25 +82,74 @@ const ViewPayment = () => {
 //     fetchCommunes();
 //   }, [selectedDistrict]);
   const handleChange = (e) => {
-    setPaymentMethod(e.target.value);
-    console.log("Phương thức thanh toán:", e.target.value);
+    const{name,value}=e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    console.log("Update Form",formData);
   };
-  const handleSubmitDiscount = ()=>{
-  if (value !== "SALE2025") {   // ví dụ mã hợp lệ là SALE2025
+const handleSubmitDiscount = () => {
+  console.log("value:", value);
+
+  if (voucherApplied) {
+    alert("Mã giảm giá đã được áp dụng!");
+    return;
+  }
+
+  if (value !== "SALE2025") {
     setIsInvalid(true);
   } else {
     setIsInvalid(false);
+    setVoucherApplied(true);   // đánh dấu là đã áp dụng
+    setVoucher(20);
     console.log("Áp dụng mã:", value);
+
+    const pricediscount = getTextTotalPrice();
+    setTotalPrice(pricediscount);
+  }
 };
+
+useEffect(() => {
+  if (!listCart || listCart.length === 0) return;
+
+  let totalPrice = 0;
+  let totalQuantity = 0;
+
+  listCart.forEach(product => {
+    product.variants.forEach(variant => {
+      totalPrice += variant.price * variant.quantity_cart;
+      totalQuantity += variant.quantity_cart;
+    });
+  });
+
+  // Nếu chưa áp dụng voucher thì reset về giá gốc
+  if (!voucherApplied) {
+    setTotalPrice(totalPrice);
   }
 
-  const getTextTotalPrice = () => {
+  setTotalProduct(totalQuantity);
+}, [listCart, voucherApplied,totalPrice]);
+
+const getTextTotalPrice = () => {
   let finalPrice = totalPrice;
-  if (!isInvalid && value === "SALE2025") {
+  if (voucherApplied && value === "SALE2025") {
     finalPrice = totalPrice * 0.8; // giảm 20%
   }
-  return finalPrice.toLocaleString("vi-VN") ;
+  return finalPrice;
 };
+const postBE=async ()=>{
+  const formDatas = {
+    ...formData,
+    province: selectedProvince,
+    district: selectedDistrict,
+    voucher,
+    totalPrice,
+    listCart
+  };
+    console.log("Data post",formDatas);
+  await PostOrder(formDatas);
+}
   return (
     <div>
       <header className="banner"></header>
@@ -103,21 +178,21 @@ const ViewPayment = () => {
                                 <div className="field">
                                 <div className="field__input-wrapper form-group">
                                     <label htmlFor="email" className="field__label" style={ {display :'none'}}>Email</label>
-                                    <input  type="email"  className=" form-control"  id="email"  placeholder="Enter email"/>
+                                    <input  type="email"  className=" form-control"  name="email" id="email"  placeholder="Enter email" onChange={handleChange}/>
                                 </div>
                                 </div>
 
                                 <div className="field">
                                 <div className="field__input-wrapper form-group">
                                     <label htmlFor="full_name" className="field__label"style={ {display :'none'}}>Họ và tên</label>
-                                    <input type="text" className=" form-control" id="full_name" placeholder="Enter full name" />
+                                    <input type="text" className=" form-control" name="fullname" id="full_name" placeholder="Enter full name" onChange={handleChange} />
                                 </div>
                                 </div>
 
                                 <div className="field">
                                 <div className="field__input-wrapper form-group">
                                     <label htmlFor="phone" className="field__label" style={ {display :'none'}}>Số điện thoại </label> 
-                                    <input type="tel" className=" form-control" id="phone" placeholder="Enter phone number" />
+                                    <input type="tel" className=" form-control" id="phone" name="phone" placeholder="Enter phone number" onChange={handleChange}/>
                                 </div>
                                 </div>
 
@@ -168,13 +243,13 @@ const ViewPayment = () => {
                                 <div className="field">
                                     <div className="field__input-wrapper form-group">
                                         <label htmlFor="address" className="field__label" style={ {display :'none'}}>Địa chỉ</label>
-                                        <input type="text" className="form-control" id="address" placeholder="Địa chỉ" />
+                                        <input type="text" className="form-control" name="address" id="address" placeholder="Địa chỉ" onChange={handleChange}/>
                                     </div>
                                 </div>
                                 <div className="field">
                                     <div className="field__input-wrapper form-group">
                                         <label htmlFor="note" className="field__label" style={ {display :'none'}}>Ghi chú</label>
-                                        <textarea className="form-control" id="note" rows="5" placeholder="Ghi chú" ></textarea>
+                                        <textarea className="form-control" id="note" name="note" rows="5" placeholder="Ghi chú" onChange={handleChange}></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -191,7 +266,7 @@ const ViewPayment = () => {
                                          <div className="form-check content-box__row ">
                                             <div className="content-box__row">
                                                 <div className="group-check">
-                                                <input className="form-check-input" type="radio" name="paymentMethod" id="mbbank" defaultChecked  value="freeship" onChange={handleChange} />
+                                                <input className="form-check-input" type="radio" name="paymentMethod" id="freeship" defaultChecked  value="freeship" />
                                                 <label className="form-check-label radio__label__primary" htmlFor="flexRadioDefault1">thanh toán khi nhận hàng (COD)</label>
                                                 </div>
                                                 <label htmlFor="" className=" radio__label__accessory"> <i className="fa-solid fa-money-bill"></i></label>
@@ -213,19 +288,10 @@ const ViewPayment = () => {
                     
 									</div>
                                     <div className="content-box">
-                                        <div className="form-check">
-                                            <div className="content-box__row">
-                                                <div className="group-check">
-                                                <input className="form-check-input" type="radio" name="paymentMethod" id="mbbank" value="mbbank" onChange={handleChange} />
-                                                <label className="form-check-label radio__label__primary" htmlFor="flexRadioDefault1">thanh toán khi nhận hàng (COD)</label>
-                                                </div>
-                                                <label htmlFor="" className=" radio__label__accessory"> <i className="fa-solid fa-money-bill"></i></label>
-                                            </div>
-                                        </div>
                                         <div className="form-check ">
                                             <div className="content-box__row">
                                             <div className="group-check">
-                                                <input className="form-check-input" type="radio" name="paymentMethod" id="cod" value="cod" onChange={handleChange} />
+                                                <input className="form-check-input" type="radio" name="paymentMethod" id="cod" value="cod" defaultChecked   onChange={handleChange} />
                                                 <label className="form-check-label radio__label__primary" htmlFor="flexRadioDefault1">thanh toán khi nhận hàng (COD)</label>
                                                 </div>
                                                 <label htmlFor="" className=" radio__label__accessory"> <i className="fa-solid fa-money-bill"></i></label>
@@ -274,6 +340,19 @@ const ViewPayment = () => {
 											</tr>
 							   </thead>
                                 <tbody>
+                                    {
+                                       listCart &&(
+                                            listCart.map((product) => 
+                                                    product.variants?.map((variant) => (
+                                                        <ItemOrder 
+                                                            item={variant}
+                                                            idproduct={product.productId}
+                                                            Listimg={product?.images}
+                                                            nameproduct={product.productName}
+                                                         />
+                                                    ))
+                                                )
+                                    )}
                                 </tbody>
                             </table>
                         </div>
@@ -299,7 +378,7 @@ const ViewPayment = () => {
                                         />
                                                                                 {
                                             isInvalid &&(
-                                                <p class="field__message field__message--error">Mã khuyến mãi không hợp lệ</p>
+                                                <p class="field__message field__message--error" style={{    paddingLeft: "12px"}}>Mã khuyến mãi không hợp lệ</p>
                                             )
                                         }
                                         </div>
@@ -314,15 +393,14 @@ const ViewPayment = () => {
                                 </div>
 
                             </div>
-                        </div>
-                        
+                        </div>                    
                         <div className="order-summary__section order-summary__section--total-lines">
                             <div className="total-line total-line--subtotal">
 												<span className="total-line-name">Tạm tính</span>
 												<span className="total-line-price">
                                                      <span className="order-summary-emphasis" 
                                                      value="40000" id="shipFee" codfee="0" data-curentvalue="40000">
-                                                        <span>319.800.000</span>  đ</span>
+                                                        <span>{formatPrice(totalPrice)}</span></span>
                                                 </span>
 											</div>
                             <div className="total-line total-line-shipping shipFeeCheckHost">
@@ -332,10 +410,31 @@ const ViewPayment = () => {
                                 </span>
                             </div>
                             <div className="total-line line-discount">
-                                <span className="total-line-name">Giảm giá </span>
-                                  <span className="total-line-price total-line-discount">
-                                    <span className="order-summary-emphasis" value="40000" id="discount" codfee="0" data-curentvalue="40000">40,000  đ</span>
+                                <div className="discount">
+                                    <span className="total-line-name">Giảm giá </span>
+                                        <span className="total-line-price total-line-discount">
+                                            <span className="order-summary-emphasis" value="40000" id="discount" codfee="0" data-curentvalue="40000">- 40,000  đ</span>
                                 </span>
+                                </div>
+                                {voucherApplied && (
+                                    <div className="discount-have-voucher">
+                                        <span className="total-line-name">
+                                        Áp dụng mã giảm giá ({voucher})
+                                        </span>
+                                        <span className="total-line-price total-line-discount">
+                                        <span
+                                            className="order-summary-emphasis"
+                                            value={totalPrice}
+                                            id="discount"
+                                            codfee="0"
+                                            data-curentvalue={totalPrice}
+                                        >
+                                            - {formatPrice(totalPrice*0.2)}
+                                        </span>
+                                        </span>
+                                    </div>
+                                )}
+
                             </div>
                             <div className="total-line table__footer">
 											<div className="total-line payment-due">
@@ -345,7 +444,8 @@ const ViewPayment = () => {
 													</span>
 												</span>
 												<span className="total-line__price">
-													<span className="payment-due__price" data-bind="getTextTotalPrice()"> <span>₫</span></span>
+													<span className="payment-due__price" data-bind="getTextTotalPrice()"> <span>
+                                                        {voucherApplied ? formatPrice(totalPrice*0.8): formatPrice(totalPrice)}</span></span>
 												</span>
 											</div>
 										</div>
@@ -355,7 +455,7 @@ const ViewPayment = () => {
 										<i className="previous-link__arrow" style={{marginRight: '8px'}}>❮</i>
 										<span className="previous-link__content">Quay về giỏ hàng</span>
 									</a>
-                                    <button type="submit" className=" btn btn-checkout btn-success spinner">
+                                    <button type="button" className=" btn btn-checkout btn-success spinner" onClick={postBE}>
 										<span className="spinner-label">ĐẶT HÀNG</span>
 									</button>
 								</div>

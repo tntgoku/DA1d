@@ -53,8 +53,8 @@ const getStatusColor = (status) => {
             </div>
           </div>
           <div className="order-actions">
-            <button className="btn-outline" onClick={() => handleViewDetail(order)}>Xem chi tiết</button>
-            <button className="btn-primary">Mua lại</button>
+            <button className="btn-outline" onClick={() => handleViewDetail(order)} >Xem chi tiết</button>
+            <button className="btn-primary btn-outline">Mua lại</button>
           </div>
         </div>
       ))}

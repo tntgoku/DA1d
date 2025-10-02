@@ -59,11 +59,12 @@ body {
 }
 
 .search-match .input-groups1 {
-    position: initial;
+    border: 1px solid;
+    position: relative;
     border-radius: 5px;
     overflow: hidden;
     height: 40px;
-    width: 480px;
+    /* width: 480px; */
 }
 
 .input-groups1 .icon-fallback-text {
@@ -426,6 +427,10 @@ body {
 .popup.show {
     transform: translate(-50%, -50%);
     opacity: 1;
+}
+
+.modal.face.show {
+    display: block;
 }
 
 .modal-close {

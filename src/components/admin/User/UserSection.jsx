@@ -138,7 +138,7 @@ const UsersSection = ({ users: initialUsers }) => {
       <div className="header d-flex justify-content-between align-items-center">
         <h4>Quản lý Người dùng</h4>
         <button 
-          className="btn btn-primary" 
+          className="btn btn-primary-2 btn-success" 
           onClick={() => setShowModal(true)}
         >
           <i className="fas fa-plus"></i> Thêm người dùng
@@ -146,7 +146,7 @@ const UsersSection = ({ users: initialUsers }) => {
       </div>
 
       <div className="card">
-        <div className="card-header" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+        <div className="card-header" style={{display: 'flex', gap: 25, alignItems: 'center'}}>
           <span>Danh sách Người dùng</span>
           <div className="search-match">
             <form 

@@ -170,26 +170,14 @@ const OrdersSection = ({ orders: initialOrders, products }) => {
       <div className="header d-flex justify-content-between align-items-center">
         <h4>Quản lý Đơn hàng</h4>
         <div>
-          <select 
-            className="form-select me-2 d-inline-block w-auto"
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-          >
-            <option value="all">Tất cả trạng thái</option>
-            <option value="Chờ xác nhận">Chờ xác nhận</option>
-            <option value="Đã xác nhận">Đã xác nhận</option>
-            <option value="Đang giao">Đang giao</option>
-            <option value="Đã giao">Đã giao</option>
-            <option value="Đã hủy">Đã hủy</option>
-          </select>
-          <button className="btn btn-primary" onClick={() => setShowModal(true)}>
+          <button className="btn btn-primary-2 btn-success" onClick={() => setShowModal(true)}>
             <i className="fas fa-plus"></i> Tạo đơn mới
           </button>
         </div>
       </div>
 
       <div className="card">
-        <div className="card-header" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+        <div className="card-header" style={{display: 'flex',gap: 25, alignItems: 'center'}}>
           <span>Danh sách Đơn hàng</span>
           <div className="search-match">
             <form className="input-groups1">
@@ -206,6 +194,18 @@ const OrdersSection = ({ orders: initialOrders, products }) => {
               </button>
             </form>
           </div>
+                    <select 
+            className="form-select me-2 d-inline-block w-auto"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            <option value="all">Tất cả trạng thái</option>
+            <option value="Chờ xác nhận">Chờ xác nhận</option>
+            <option value="Đã xác nhận">Đã xác nhận</option>
+            <option value="Đang giao">Đang giao</option>
+            <option value="Đã giao">Đã giao</option>
+            <option value="Đã hủy">Đã hủy</option>
+          </select>
         </div>
         <div className="card-body">
           <div className="table-responsive">
@@ -238,13 +238,15 @@ const OrdersSection = ({ orders: initialOrders, products }) => {
                       display: 'flex',
                     }}>
                       <button 
-                        className="btn btn-sm btn-outline-primary me-1" 
+                        className="
+                        btn btn-sm btn-outline-success me-1
+                        " 
                         onClick={() => handleView(order)}
                       >
                         <i className="fas fa-eye"></i>
                       </button>
                       <button 
-                        className="btn btn-sm btn-outline-success me-1" 
+                        className="btn btn-sm btn-outline-primary me-1" 
                         onClick={() => handleEdit(order)}
                       >
                         <i className="fas fa-edit"></i>

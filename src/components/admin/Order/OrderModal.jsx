@@ -211,6 +211,7 @@ const calculateOrderTotal = () => {
                 <button type="button" className="btn btn-sm btn-outline-primary" onClick={addItem}>
                   <i className="fas fa-plus"></i> Thêm sản phẩm
                 </button>
+                
               </div>
 
               <div className="row mt-3">
