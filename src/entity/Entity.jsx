@@ -3,6 +3,7 @@ import React from 'react';
 import anh1 from '../assets/iphone-17-pro-max_1.webp'
 import anh2 from '../assets/17_mist_blue.webp'
 import anh3 from '../assets/17_sage.webp'
+import { ProductVariantGroup } from './Object/ProductVariantGroup';
 function formatPrice(price) {
   if (typeof price === "number") {
     return price.toLocaleString("vi-VN") + " đ";
@@ -34,8 +35,8 @@ const testOrders = [
     status: 'Chờ xác nhận',
     notes: 'Giao giờ hành chính',
     items: [
-      { productId: 101, productName: 'iPhone 13 128GB', price: 190000, quantity: 1 },
-      { productId: 202, productName: 'Ốp lưng iPhone 13', price: 250000, quantity: 2 }
+      { variantId: 101, productName: 'iPhone 13 128GB', price: 190000, quantity: 1 },
+      { variantId: 202, productName: 'Ốp lưng iPhone 13', price: 250000, quantity: 2 }
     ],
     shippingFee: 30000,
     discount: 0,
@@ -53,7 +54,7 @@ const testOrders = [
     status: 'Đang giao',
     notes: '',
     items: [
-      { productId: 103, productName: 'iPhone 14 Pro 256GB', price: 30990000, quantity: 1 }
+      { variantId: 103, productName: 'iPhone 14 Pro 256GB', price: 30990000, quantity: 1 }
     ],
     shippingFee: 50000,
     discount: 1000000,
@@ -71,8 +72,8 @@ const testOrders = [
     status: 'Hoàn tất',
     notes: 'Khách kiểm  trả tiền trước rồi nhận',
     items: [
-      { productId: 301, productName: 'AirPods Pro 2', price: 5990000, quantity: 1 },
-      { productId: 401, productName: 'Cáp sạc Lightning chính hãng', price: 390000, quantity: 1 }
+      { variantId: 301, productName: 'AirPods Pro 2', price: 5990000, quantity: 1 },
+      { variantId: 401, productName: 'Cáp sạc Lightning chính hãng', price: 390000, quantity: 1 }
     ],
     shippingFee: 20000,
     discount: 500000,
@@ -91,8 +92,8 @@ const testOrders = [
     status: 'Hoàn tất',
     notes: 'Khách kiểm tra trước khi nhận',
     items: [
-      { productId: 301, productName: 'AirPods Pro 2', price: 5990000, quantity: 1 },
-      { productId: 401, productName: 'Cáp sạc Lightning chính hãng', price: 390000, quantity: 1 }
+      { variantId: 301, productName: 'AirPods Pro 2', price: 5990000, quantity: 1 },
+      { variantId: 401, productName: 'Cáp sạc Lightning chính hãng', price: 390000, quantity: 1 }
     ],
     shippingFee: 20000,
     discount: 500000,
@@ -268,19 +269,20 @@ const productsvariant = [
   { product_id:2, id: 202, name: 'Cáp sạc iPhone', category: 3, price: '290.000', discount: null, stock: 50, status: 1, description: 'Cáp sạc iPhone Chính Hãng Apple Lightning to USB-C (1m)', warranty: '6 tháng', isNew: false, imgSrc: anh1, imgAlt: 'Cáp sạc iPhone', href: '/cap-sac-iphone-chinh-hang-apple-lightning-to-usb-c-1m-1'},
 ];
 const productsvariant1 = [
-  {product_id:1, id: 101, name: 'iPhone 14 Pro Max 128GB'    , category: 2, price: '28.990.000', discount: '10', storage:"128",color :"Trắng" ,stock: 15, status: 1,
+  {product_id:1, id: 101, name: 'iPhone 14 Pro Max 128GB'    , category: 2, price: '28.990.000', discount: '10', storage:128,color :"Trắng" ,stock: 15, status: 1,
      description: 'iPhone 14 Pro Max 128GB Chính Hãng VN/A - Mới 100', warranty: '12 tháng',
       isNew: true, images:[
         {imgSrc: anh1, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:1,primary:true},
         {imgSrc: anh2, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:2,primary:false},
         {imgSrc: anh3, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:3,primary:false},
       ], featuredImageIndex: 3, href: 'iphone-14-pro-max-128gb-chinh-hang-vn-a-1'},
-  {product_id:2, id: 201, name: 'Ốp lưng iPhone 14 Pro', category: 3, price: '450.000', discount: null, stock: 32, status: 1, description: 'Ốp lưng iPhone 14 Pro Chính Hãng Apple Silicone Case with MagSafe', warranty: '6 tháng', isNew: false, images:[
+  {product_id:2, id: 201, name: 'Ốp lưng iPhone 14 Pro', category: 3, price: '450.000', discount: null, storage:512,stock: 32, status: 1, description: 'Ốp lưng iPhone 14 Pro Chính Hãng Apple Silicone Case with MagSafe', warranty: '6 tháng', isNew: false, images:[
         {imgSrc: anh1, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:1,primary:true},
         {imgSrc: anh2, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:2,primary:false},
         {imgSrc: anh3, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:3,primary:false},
       ], featuredImageIndex: 1, href: 'op-lung-iphone-14-pro-chinh-hang-apple-silicone-case-with-magsafe-1'},
-  {product_id:2, id: 202, name: 'Cáp sạc iPhone', category: 3, price: '290.000', discount: null, stock: 50, status: 1, description: 'Cáp sạc iPhone Chính Hãng Apple Lightning to USB-C (1m)', warranty: '6 tháng', isNew: false, images:[
+  {product_id:2, id: 202, name: 'Cáp sạc iPhone', category: 3, price: '290.000', discount: null, stock: 50, status: 1, 
+    description: 'Cáp sạc iPhone Chính Hãng Apple Lightning to USB-C (1m)', warranty: '6 tháng', isNew: false, images:[
         {imgSrc: anh1, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:1,primary:true},
         {imgSrc: anh2, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:2,primary:false},
         {imgSrc: anh3, imgAlt: 'iPhone 14 Pro Max 256GB',displayOrder:3,primary:false},
@@ -311,7 +313,7 @@ const categories=[
 ]
  const itemtest=
      [ {
-      productId: 9,
+      productId: 101,
       productName: "iPhone 13 Pro Max Cu",
       slug: "iphone-13-pro-max-cu",
       categoryId: 1,
@@ -320,9 +322,10 @@ const categories=[
       description: "iPhone 13 Pro Max 128GB dã qua s? d?ng, còn m?i 95%",
       isActive: true,
       isFeatured: true,
+      featuredImageIndex:1,
       variants:[ { 
         variantId : 4, 
-        productId : 9, 
+        productId : 101, 
         sku : "IP13PM-128-SILVER", 
         price : 18500000, 
         stock : 5, 
@@ -360,6 +363,7 @@ const categories=[
       description: "iPhone 13 Pro Max 128GB dã qua s? d?ng, còn m?i 95%",
       isActive: true,
       isFeatured: true,
+      featuredImageIndex:1,
       variants:[ { 
         variantId : 5, 
         productId : 9, 
@@ -391,28 +395,24 @@ const categories=[
 
   }
 ]
-   const defaultFormData = {
-  name: '',
-  category: '',
-  price: '',
-  stock: '',
-  status: 'Active',
+  const defaultFormData = new ProductVariantGroup({
+  id: null,
+  productType: "physical",
+  category: null,
+  name: "",
+  slug: "",
+  description: "",
+  brand: "",
+  model: "",
+  specifications: null,
+  isActive: true,
   isFeatured: false,
-  images: [],
-  featuredImageIndex: 0,
-  specifications: {
-    color: '',
-    storage: '',
-    ram: '',
-    screen: '',
-    battery: '',
-    chip: '',
-    camera: '',
-    weight: '',
-    connectivity: '',
-    features: ''
-  }
-};
+  isHot: false,
+  createdAt: null,
+  updatedAt: null,
+  variants: [],    // Mảng VariantColor
+  images: [],      // Mảng ImageProduct
+  });
 
 export { defaultFormData,users, 
   productsvariant,productsvariant1, categories,

@@ -1,7 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Dashboard from "./components/admin/Dashboard";
 import './index.css'
 import App from './App.jsx'
 import Detail from './page/Detail.jsx';
@@ -9,6 +8,7 @@ import ViewPayment from './page/gotopayment.jsx';
 import Cart from './page/Cart.jsx';
 import AuthForms from './page/AuthForms.jsx';
 import Account from './page/Account.jsx';
+import Dashboard from './page/Dashboard.jsx';
 createRoot(document.getElementById('root')).render(
     <BrowserRouter>
       <Routes>

@@ -9,15 +9,27 @@ import Footer from './components/client/Footer';
 import FixedRight from './components/client/Fixed_Right';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './App.css'
-import Dashboard from './components/admin/Dashboard'
+import { SliderSection } from './components/SliderSection';
+import { productsvariant1 } from './entity/Entity';
 
 function App() {
   const [count, setCount] = useState(0)
+const listimg = [
+  {
+    imgSrc: "/src/assets/banner/48.webp",
+    imgAlt: "123123123"
+  },
+  {
+    imgSrc: "/src/assets/banner/532532532253.png",
+    imgAlt: "Ảnh 2"
+  }
+];
 
   return (
     <>
     <Header />
-    <Main />
+    <SliderSection listimg={listimg}/>
+    <Main  />
     <Footer/>
     <FixedRight/>
     </>

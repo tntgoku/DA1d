@@ -1,6 +1,11 @@
-import React from 'react';
+import { React,useState } from "react";
 
 const ServiceHistory = ({ services }) => {
+const [showDetailModal, setShowDetailModal] = useState(false);
+const handleOpenService = (order) => {
+    setShowDetailModal(true);
+    console.log(order);
+  };
   return (
     <div className="service-history">
       <h3>Lịch sử dịch vụ sửa chữa</h3>
@@ -30,7 +35,7 @@ const ServiceHistory = ({ services }) => {
             </div>
           </div>
           <div className="service-actions">
-            <button className="btn-outline">Xem chi tiết</button>
+            <button className="btn-outline" onClick={(e)=>handleOpenService(services)}>Xem chi tiết</button>
             <button className="btn-primary">Đặt lại</button>
           </div>
         </div>

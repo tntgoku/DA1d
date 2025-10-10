@@ -11,6 +11,13 @@ export const DiscountPeriods = ({
   selectedProductForDiscount
 }) => {
   const [discountPeriods, setDiscountPeriods] = useState([]);
+const imageSrc = selectedProductForDiscount?.images &&
+                 selectedProductForDiscount.images.length > 0 &&
+                 selectedProductForDiscount.featuredImageIndex > 0 &&
+                 selectedProductForDiscount.images[selectedProductForDiscount.featuredImageIndex - 1]
+                 ? selectedProductForDiscount.images[selectedProductForDiscount.featuredImageIndex - 1].imgSrc
+                 : ""; // ảnh mặc định nếu null
+
 
   const fetchActiveDiscountPeriods = async () => {
     try {
@@ -60,7 +67,7 @@ export const DiscountPeriods = ({
             <button 
               type="button" 
               className="btn-close" 
-              onClick={() => setShowProductDiscountModal(false)}
+              onClick={() => setShowProductDiscountModal()}
             ></button>
           </div>
           
@@ -119,7 +126,7 @@ export const DiscountPeriods = ({
                   <div className="card-body">
                     <div className="d-flex align-items-center">
                       <img 
-                        src={selectedProductForDiscount.images.at(selectedProductForDiscount.featuredImageIndex-1).imgSrc} 
+                        src={imageSrc} 
                         alt={selectedProductForDiscount.name}
                         style={{width: '60px', height: '60px', objectFit: 'cover'}}
                         className="me-3"

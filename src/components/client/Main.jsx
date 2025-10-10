@@ -3,8 +3,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import{ useState,useEffect } from 'react';
 import ItemProduct from './Product/ItemProduct';
 import { productsvariant1 } from '../../entity/Entity';
-import { getAllProduct, getProductFeatured } from '../../service/productService';
+import { productService } from '../../service/productService';
 import { getall } from '../../service/OrderService';
+import { groupProductsByVariant } from '../../entity/Object/Product';
 const Main = () => {
     const products1 =productsvariant1;
     const [activeTab, setActiveTab] = useState("1");
@@ -13,9 +14,11 @@ const Main = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await getProductFeatured();
-        const dataorder=await getall();
-        setProductAPI(response);
+        const response = await productService.getProductFeatured();
+        console.log(response);
+        const dataorder=groupProductsByVariant(response);
+        setProductAPI(dataorder);
+        console.log("convertVariant",dataorder);
         console.log("Fetched productsFeatured oday ne:", response);
         // products1=data;
       } catch (error) {
@@ -31,7 +34,7 @@ const Main = () => {
         setActiveTab(tab);
     };
     return (
-        <main>
+        <main className='Main-Container'>
             <div className="container" style={{marginTop: '20px'}}>
                 <div className="row row-fix">
                 </div>
@@ -97,13 +100,12 @@ const Main = () => {
                                     <div className={`tab-1 tab-content ${activeTab ==="1" ? "current" : ""}`}>
                                             <div className="row row-fix">
                                                 {productAPI && productAPI.map((product,index) => (
-                                                    product.variants.map((productclone)=>(
-                                                        <ItemProduct key={`${product.id}-${productclone.variantId}`}
-                                                                     nameproduct={product.productName}
-                                                                     product={productclone}
-                                                                     description={product.description}
+                                                        <ItemProduct idkey={index}
+                                                                     nameproduct={`${product.name} ${product?.variants?.at(0).storage} ${product?.variants?.at(0).regionCode!=null ?product?.variants?.at(0).regionCode:'' }`}
+                                                                     product={product?.variants.at(0)}
+                                                                     description={product?.description}
                                                                      Listimg={product?.images} />
-                                                    ))))}
+                                                ))}
                                                 <div className="text-center no-padding">
                                                     <a className="see-more" title="Xem toàn bộ sản phẩm" href="/danh-muc-tu-dong">Xem toàn bộ sản phẩm <i className="fa-solid fa-arrow-right"></i>
                                                     </a>

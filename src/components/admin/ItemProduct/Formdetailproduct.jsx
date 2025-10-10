@@ -5,7 +5,8 @@ import { FormAttributeBasic } from './FormAttributeBasic';
 import { FormImages } from './FormImages';
 import { FormTechnine } from './FormTechnice';
 
-const FormDetailProduct = ({ 
+const FormDetailProduct = ({
+  editingProduct, 
   product = null, 
   onSubmit, 
   onCancel,
@@ -13,32 +14,22 @@ const FormDetailProduct = ({
 }) => {
   const [activeTab, setActiveTab] = useState('basic');
   const [formData, setFormData] = useState({ ...defaultFormData });
-
+  // console.log(product?.variants);
   // Khởi tạo form data khi product thay đổi
   useEffect(() => {
     if (product) {
       setFormData({
         id: product.id,
-        product_id: product.product_id,
         name: product.name,
         category: product.category,
         price: product.price,
         stock: product.stock,
         status: product.status,
-        specifications: product.specifications || {
-          color: product.color || '',
-          storage: product.storage || '',
-          ram: '',
-          screen: '',
-          battery: '',
-          chip: '',
-          camera: '',
-          weight: '',
-          connectivity: '',
-          features: ''
-        },
+        specifications:[],
+        description:product.description,
         images: product.images || [],
-        featuredImageIndex: product.featuredImageIndex || 0,
+        featuredImageIndex: product?.images?.[0]?.imgSrc || 0,
+        variants:product.variants,
         isNew: product.isNew || false
       });
     } else {
@@ -46,27 +37,19 @@ const FormDetailProduct = ({
     }
   }, [product]);
 
-  // Xử lý thay đổi input
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    
-    if (name.startsWith('spec_')) {
-      const specField = name.replace('spec_', '');
-      setFormData({
-        ...formData,
-        specifications: {
-          ...formData.specifications,
-          [specField]: value
-        }
-      });
-    } else {
-      setFormData({
-        ...formData,
-        [name]: value
-      });
+  // Component cha
+const handleInputChange = ({ target }) => {
+  const { name, value } = target;
+  console.log("Name: ",name);
+  console.log("Value:",value);
+  setFormData(prev => {
+    if (name === "variants") {
+      return { ...prev, variants: value };
     }
-  };
-
+    return { ...prev, [name]: value };
+  });
+  console.log(formData);
+};
 const handleImageUpload = (e) => {
   const files = Array.from(e.target.files);
 
@@ -85,8 +68,6 @@ const handleImageUpload = (e) => {
     images: [...formData.images, ...newImages]
   });
 };
-
-
   // Xử lý xóa ảnh
   const handleRemoveImage = (index) => {
     const newImages = formData.images.filter((_, i) => i !== index);
@@ -118,13 +99,14 @@ const handleImageUpload = (e) => {
     e.preventDefault();
     const submitData = {
       ...formData,
-      price: parseInt(formData.price),
-      stock: parseInt(formData.stock),
       imgSrc: formData.images[formData.featuredImageIndex] || ''
     };
+    if(formData.category ===null || formData.name===null){
+      alert("Không được để trống danh mục hoặc tên sản phẩm!");
+      return;
+    }
     onSubmit(submitData);
   };
-
   return (
     <div className="modal fade show" >
       <div className="main-content">
@@ -169,7 +151,9 @@ const handleImageUpload = (e) => {
               {/* Basic Information Tab */}
               {activeTab === 'basic' && (
                 <FormAttributeBasic
+                    editingProduct={product}
                     formData={formData}
+                    setFormData={setFormData}
                     handleImageUpload={handleImageUpload}
                     handleInputChange={handleInputChange}
                 />
@@ -194,16 +178,17 @@ const handleImageUpload = (e) => {
               )}
 
               {/* Form Actions */}
-              <div className="modal-footer">
+            </form>
+            
+          </div>
+                <div className="modal-footer">
                 <button type="button" className="btn btn-secondary" onClick={onCancel}>
                   Hủy
                 </button>
-                <button type="submit" className="btn btn-primary">
+                <button type="submit" className="btn btn-primary" onClick={handleSubmit}>
                   {product ? 'Cập nhật' : 'Thêm mới'}
                 </button>
               </div>
-            </form>
-          </div>
         </div>
       </div>
     </div>

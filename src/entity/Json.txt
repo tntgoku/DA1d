@@ -1,0 +1,848 @@
+[{
+    "product_id": 1,
+
+    "product_name": "iPhone 16 Pro Max 256GB",
+
+    "product_description": "iPhone 16 Pro Max v?i chip A18 Pro,camera 48MP",
+    "brand": "Apple",
+    "model": "iPhone 16 Pro Max",
+
+    "specifications": [{
+            "spec_name": "Kích thu?c màn hình",
+            "spec_value": "6.9",
+            "spec_unit": "inch",
+            "display_order": 1,
+            "group_name": "Màn hình"
+        },
+        {
+            "spec_name": "Ð? phân gi?i",
+            "spec_value": "2796 x 1290",
+            "spec_unit": "pixel",
+            "display_order": 2,
+            "group_name": "Màn hình"
+        },
+        {
+            "spec_name": "Công ngh? màn hình",
+            "spec_value": "Super Retina XDR OLED",
+            "display_order": 3,
+            "group_name": "Màn hình"
+        },
+        {
+            "spec_name": "Camera chính",
+            "spec_value": "48",
+            "spec_unit": "MP",
+            "display_order": 1,
+            "group_name": "Camera"
+        },
+        {
+            "spec_name": "Camera tele",
+            "spec_value": "12",
+            "spec_unit": "MP",
+            "display_order": 2,
+            "group_name": "Camera"
+        },
+        {
+            "spec_name": "Camera góc siêu r?ng",
+            "spec_value": "48",
+            "spec_unit": "MP",
+            "display_order": 3,
+            "group_name": "Camera"
+        },
+        {
+            "spec_name": "Chip",
+            "spec_value": "A18 Pro",
+            "display_order": 1,
+            "group_name": "Hi?u nang"
+        },
+        {
+            "spec_name": "RAM",
+            "spec_value": "8",
+            "spec_unit": "GB",
+            "display_order": 2,
+            "group_name": "Hi?u nang"
+        },
+        {
+            "spec_name": "Dung lu?ng pin",
+            "spec_value": "4676",
+            "spec_unit": "mAh",
+            "display_order": 1,
+            "group_name": "Pin & S?c"
+        },
+        {
+            "spec_name": "S?c nhanh",
+            "spec_value": "20",
+            "spec_unit": "W",
+            "display_order": 2,
+            "group_name": "Pin & S?c"
+        },
+        {
+            "spec_name": "S?c không dây",
+            "spec_value": "15",
+            "spec_unit": "W",
+            "display_order": 3,
+            "group_name": "Pin & S?c"
+        },
+        {
+            "spec_name": "Kích thu?c",
+            "spec_value": "160.9 x 76.6 x 8.3",
+            "spec_unit": "mm",
+            "display_order": 1,
+            "group_name": "Thi?t k?"
+        },
+        {
+            "spec_name": "Tr?ng lu?ng",
+            "spec_value": "221",
+            "spec_unit": "g",
+            "display_order": 2,
+            "group_name": "Thi?t k?"
+        },
+        {
+            "spec_name": "5G",
+            "spec_value": "H? tr?",
+            "display_order": 1,
+            "group_name": "K?t n?i"
+        },
+        {
+            "spec_name": "WiFi",
+            "spec_value": "Wi-Fi 6E",
+            "display_order": 2,
+            "group_name": "K?t n?i"
+        }
+    ],
+    "variants": [{
+        "variant_id": 1,
+        "sku": "IP16PM256-DESERT",
+        "color": "Titan Sa M?c",
+        "color_code": "#D4B896",
+        "storage": "256GB",
+        "ram": "8GB",
+        "region_code": "VN\/A",
+        "variant_active": true,
+        "images": [{
+            "image_url": "https:\/\/example.com\/images\/iphone-16-pro-max-desert-1.jpg",
+            "display_order": 1
+        }]
+    }]
+}]
+
+
+CREATE DATABASE trungghieu
+GO
+
+USE trungghieu
+go
+
+-- === === === === === === === === === === === === === === ===
+--DANH MỤC & SẢN PHẨM
+    -- === === === === === === === === === === === === === === ===
+    CREATE TABLE categories(
+        id INT IDENTITY(1, 1) PRIMARY KEY,
+        name NVARCHAR(255) NOT NULL,
+        slug NVARCHAR(255) UNIQUE NOT NULL,
+        parent_id INT NULL,
+        description NVARCHAR(500),
+        image_url NVARCHAR(500),
+        display_order INT DEFAULT 0,
+        is_active BIT DEFAULT 1,
+        created_at DATETIME2 DEFAULT GETDATE(),
+        updated_at DATETIME2 DEFAULT GETDATE(),
+        FOREIGN KEY(parent_id) REFERENCES categories(id)
+    );
+CREATE TABLE products(
+    id INT IDENTITY(1, 1) PRIMARY KEY,
+    category_id INT NOT NULL,
+    product_type NVARCHAR(20) DEFAULT NULL,
+    name NVARCHAR(255) NOT NULL,
+    slug NVARCHAR(300) UNIQUE NOT NULL,
+    description NVARCHAR(MAX),
+    brand NVARCHAR(100) NOT NULL,
+    model NVARCHAR(100),
+    specifications NVARCHAR(MAX),
+    is_active BIT DEFAULT 1,
+    is_featured BIT DEFAULT 0,
+    is_hot BIT DEFAULT 0,
+    created_at DATETIME2 DEFAULT GETDATE(),
+    updated_at DATETIME2 DEFAULT GETDATE(),
+    FOREIGN KEY(category_id) REFERENCES categories(id)
+);
+
+-- === === === === === === === === === === === === === === ===
+--PHIÊN BẢN SẢN PHẨM
+-- === === === === === === === === === === === === === === ===
+CREATE TABLE product_variants(
+    id INT IDENTITY(1, 1) PRIMARY KEY,
+    product_id INT NOT NULL,
+    sku NVARCHAR(100) UNIQUE NOT NULL,
+    color NVARCHAR(50) NOT NULL,
+    color_code NVARCHAR(20),
+    storage NVARCHAR(50) NOT NULL,
+    ram NVARCHAR(20),
+    region_code NVARCHAR(20),
+    is_active BIT DEFAULT 1,
+    created_at DATETIME2 DEFAULT GETDATE(),
+    updated_at DATETIME2 DEFAULT GETDATE(),
+    FOREIGN KEY(product_id) REFERENCES products(id) ON DELETE CASCADE
+);
+
+-- === === === === === === === === === === === === === === ===
+--THÔNG SỐ KỸ THUẬT
+-- === === === === === === === === === === === === === === ===
+CREATE TABLE spec_groups(
+    id INT IDENTITY(1, 1) PRIMARY KEY,
+    name NVARCHAR(255) NOT NULL,
+    description NVARCHAR(500),
+    display_order INT DEFAULT 0,
+    is_active BIT DEFAULT 1
+);
+
+CREATE TABLE product_specs(
+    id INT IDENTITY(1, 1) PRIMARY KEY,
+    product_id INT NOT NULL,
+    spec_group_id INT NOT NULL,
+    spec_name NVARCHAR(255) NOT NULL,
+    spec_value NVARCHAR(255) NOT NULL,
+    spec_unit NVARCHAR(50) NULL,
+    display_order INT DEFAULT 0,
+    FOREIGN KEY(product_id) REFERENCES products(id) ON DELETE CASCADE,
+    FOREIGN KEY(spec_group_id) REFERENCES spec_groups(id)
+);
+
+-- === === === === === === === === === === === === === === ===
+--TÌNH TRẠNG & NGUỒN HÀNG
+    -- === === === === === === === === === === === === === === ===
+    CREATE TABLE product_conditions(
+        id INT IDENTITY(1, 1) PRIMARY KEY,
+        condition_name NVARCHAR(100) NOT NULL,
+        description NVARCHAR(255),
+        discount_rate DECIMAL(5, 2) DEFAULT 0,
+        is_active BIT DEFAULT 1
+    );
+
+CREATE TABLE suppliers(
+    id INT IDENTITY(1, 1) PRIMARY KEY,
+    name NVARCHAR(255) NOT NULL,
+    phone NVARCHAR(20),
+    email NVARCHAR(100),
+    address NVARCHAR(MAX),
+    supplier_type NVARCHAR(50) NOT NULL, --'OFFICIAL', 'DISTRIBUTOR', 'WHOLESALER'
+    tax_code NVARCHAR(50),
+    reliability_rating INT DEFAULT 5,
+    payment_terms NVARCHAR(MAX),
+    is_active BIT DEFAULT 1,
+    created_at DATETIME2 DEFAULT GETDATE()
+);
+
+-- === === === === === === === === === === === === === === ===
+--TÀI KHOẢN & KHÁCH HÀNG
+    -- === === === === === === === === === === === === === === ===
+    CREATE TABLE roles(
+        id INT IDENTITY(1, 1) PRIMARY KEY,
+        role_name NVARCHAR(50) NOT NULL UNIQUE,
+        description NVARCHAR(255),
+        permissions NVARCHAR(MAX)
+    );
+
+CREATE TABLE accounts(
+    id INT IDENTITY(1, 1) PRIMARY KEY,
+    username NVARCHAR(100) UNIQUE NOT NULL,
+    password_hash NVARCHAR(255) NOT NULL,
+    role_id INT NOT NULL,
+    is_active BIT DEFAULT 1,
+    last_login DATETIME2 NULL,
+    created_at DATETIME2 DEFAULT GETDATE(),
+    updated_at DATETIME2 DEFAULT GETDATE(),
+    FOREIGN KEY(role_id) REFERENCES roles(id)
+);
+
+CREATE TABLE customers(
+    id INT IDENTITY(1, 1) PRIMARY KEY,
+    account_id INT NULL,
+    full_name NVARCHAR(255) NOT NULL,
+    phone NVARCHAR(20) UNIQUE NOT NULL,
+    email NVARCHAR(100) UNIQUE,
+    email_verified BIT DEFAULT 0,
+    phone_verified BIT DEFAULT 0,
+    date_of_birth DATE NULL,
+    gender NVARCHAR(10),
+    address NVARCHAR(MAX),
+    total_orders INT DEFAULT 0,
+    total_spent DECIMAL(18, 2) DEFAULT 0,
+    notes NVARCHAR(MAX),
+    created_at DATETIME2 DEFAULT GETDATE(),
+    updated_at DATETIME2 DEFAULT GETDATE(),
+    FOREIGN KEY(account_id) REFERENCES accounts(id) ON DELETE SET NULL
+);
+
+-- === === === === === === === === === === === === === === ===
+--NGUỒN HÀNG & QUẢN LÝ KHO
+    -- === === === === === === === === === === === === === === ===
+    CREATE TABLE product_sources(
+        id INT IDENTITY(1, 1) PRIMARY KEY,
+        source_type NVARCHAR(50) NOT NULL CHECK(source_type IN('SUPPLIER', 'CUSTOMER_TRADE_IN', 'INTERNAL')),
+        supplier_id INT NULL,
+        customer_id INT NULL,
+        source_date DATETIME2 DEFAULT GETDATE(),
+        reference_number NVARCHAR(100),
+        total_amount DECIMAL(18, 2),
+        notes NVARCHAR(MAX),
+        created_at DATETIME2 DEFAULT GETDATE(),
+        FOREIGN KEY(supplier_id) REFERENCES suppliers(id),
+        FOREIGN KEY(customer_id) REFERENCES customers(id)
+    );
+
+CREATE TABLE inventory_items(
+    id INT IDENTITY(1, 1) PRIMARY KEY,
+    product_variant_id INT NOT NULL,
+    condition_id INT NOT NULL,
+    source_id INT NOT NULL,
+    imei NVARCHAR(50) DEFAULT NULL,
+    serial_number NVARCHAR(100),
+    cost_price DECIMAL(18, 2) NOT NULL,
+    sale_price DECIMAL(18, 2) NOT NULL,
+    list_price DECIMAL(18, 2),
+    status NVARCHAR(50) DEFAULT 'available'
+    CHECK(status IN('available', 'sold', 'reserved', 'defective', 'returned')),
+    position NVARCHAR(255),
+    import_date DATETIME2 DEFAULT GETDATE(),
+    sold_date DATETIME2 NULL,
+    warranty_months INT,
+    device_condition_notes NVARCHAR(MAX),
+    previous_owner_info NVARCHAR(MAX),
+    created_at DATETIME2 DEFAULT GETDATE(),
+    updated_at DATETIME2 DEFAULT GETDATE(),
+    FOREIGN KEY(product_variant_id) REFERENCES product_variants(id),
+    FOREIGN KEY(condition_id) REFERENCES product_conditions(id),
+    FOREIGN KEY(source_id) REFERENCES product_sources(id)
+);
+
+
+-- === === === === === === === === === === === === === === ===
+--KHUYẾN MÃI & VOUCHER
+    -- === === === === === === === === === === === === === === ===
+    CREATE TABLE discount_campaigns(
+        id INT IDENTITY(1, 1) PRIMARY KEY,
+        name NVARCHAR(255) NOT NULL,
+        description NVARCHAR(MAX),
+        campaign_type NVARCHAR(50) NOT NULL, --'SALE', 'HOT', 'FEATURED', 'SEASONAL'
+        start_date DATETIME2 NOT NULL,
+        end_date DATETIME2 NOT NULL,
+        banner_image_url NVARCHAR(500),
+        is_active BIT DEFAULT 1,
+        created_at DATETIME2 DEFAULT GETDATE()
+    );
+
+CREATE TABLE discounts(
+    id INT IDENTITY(1, 1) PRIMARY KEY,
+    campaign_id INT NULL,
+    discount_type NVARCHAR(50) NOT NULL CHECK(discount_type IN('percentage', 'fixed_amount')),
+    value DECIMAL(10, 2) NOT NULL,
+    max_discount DECIMAL(10, 2) NULL,
+    min_order_value DECIMAL(10, 2) NULL,
+    is_active BIT DEFAULT 1,
+    start_date DATETIME2 DEFAULT GETDATE(),
+    end_date DATETIME2 NULL,
+    created_at DATETIME2 DEFAULT GETDATE(),
+    FOREIGN KEY(campaign_id) REFERENCES discount_campaigns(id)
+);
+
+CREATE TABLE discount_targets(
+    id INT IDENTITY(1, 1) PRIMARY KEY,
+    discount_id INT NOT NULL,
+    target_type NVARCHAR(50) NOT NULL CHECK(target_type IN('product', 'category', 'variant', 'all')),
+    target_id INT NULL,
+    FOREIGN KEY(discount_id) REFERENCES discounts(id) ON DELETE CASCADE
+);
+
+CREATE TABLE vouchers(
+    id INT IDENTITY(1, 1) PRIMARY KEY,
+    code NVARCHAR(50) UNIQUE NOT NULL,
+    name NVARCHAR(255) NOT NULL,
+    description NVARCHAR(MAX),
+    discount_type NVARCHAR(50) NOT NULL CHECK(discount_type IN('percentage', 'fixed_amount')),
+    value DECIMAL(10, 2) NOT NULL,
+    max_discount DECIMAL(10, 2) NULL,
+    min_order_value DECIMAL(10, 2) NULL,
+    total_uses INT DEFAULT 0,
+    max_uses INT NULL,
+    max_uses_per_user INT NULL,
+    start_date DATETIME2 NOT NULL,
+    end_date DATETIME2 NOT NULL,
+    is_active BIT DEFAULT 1,
+    campaign_id INT NULL,
+    created_at DATETIME2 DEFAULT GETDATE(),
+    FOREIGN KEY(campaign_id) REFERENCES discount_campaigns(id)
+);
+
+CREATE TABLE campaign_products(
+    id INT IDENTITY(1, 1) PRIMARY KEY,
+    campaign_id INT NOT NULL,
+    product_id INT NOT NULL,
+    display_order INT DEFAULT 0,
+    special_note NVARCHAR(255),
+    created_at DATETIME2 DEFAULT GETDATE(),
+    FOREIGN KEY(campaign_id) REFERENCES discount_campaigns(id),
+    FOREIGN KEY(product_id) REFERENCES products(id)
+);
+
+-- === === === === === === === === === === === === === === ===
+--TAG SẢN PHẨM & HIỂN THỊ
+    -- === === === === === === === === === === === === === === ===
+    CREATE TABLE product_tags(
+        id INT IDENTITY(1, 1) PRIMARY KEY,
+        tag_name NVARCHAR(50) NOT NULL UNIQUE,
+        display_name NVARCHAR(100),
+        description NVARCHAR(255),
+        bg_color NVARCHAR(20),
+        text_color NVARCHAR(20),
+        is_active BIT DEFAULT 1
+    );
+
+CREATE TABLE product_tag_map(
+    id INT IDENTITY(1, 1) PRIMARY KEY,
+    product_id INT NOT NULL,
+    tag_id INT NOT NULL,
+    start_date DATETIME2 NULL,
+    end_date DATETIME2 NULL,
+    display_order INT DEFAULT 0,
+    is_active BIT DEFAULT 1,
+    created_at DATETIME2 DEFAULT GETDATE(),
+    FOREIGN KEY(product_id) REFERENCES products(id) ON DELETE CASCADE,
+    FOREIGN KEY(tag_id) REFERENCES product_tags(id)
+);
+
+-- === === === === === === === === === === === === === === ===
+--HÌNH ẢNH SẢN PHẨM
+-- === === === === === === === === === === === === === === ===
+CREATE TABLE product_images(
+    id INT IDENTITY(1, 1) PRIMARY KEY,
+    product_variant_id INT NOT NULL,
+    image_url NVARCHAR(500) NOT NULL,
+    image_type NVARCHAR(50) DEFAULT 'gallery',
+    display_order INT DEFAULT 0,
+    alt_img NVARCHAR(MAX),
+    is_primary BIT DEFAULT 0,
+    created_at DATETIME2 DEFAULT GETDATE(),
+    FOREIGN KEY(product_variant_id) REFERENCES product_variants(id) ON DELETE CASCADE
+);
+
+CREATE TABLE banners(
+    id INT IDENTITY(1, 1) PRIMARY KEY,
+    title NVARCHAR(255) NOT NULL,
+    image_url NVARCHAR(500) NOT NULL,
+    thumbnail_url NVARCHAR(500),
+    target_type NVARCHAR(50), --'product', 'category', 'url', 'campaign'
+    target_id INT,
+    target_url NVARCHAR(500),
+    banner_type NVARCHAR(50) NOT NULL, --'main', 'sidebar', 'popup', 'category'
+    display_order INT DEFAULT 0,
+    start_date DATETIME2,
+    end_date DATETIME2,
+    is_active BIT DEFAULT 1,
+    clicks INT DEFAULT 0,
+    created_at DATETIME2 DEFAULT GETDATE()
+);
+
+-- === === === === === === === === === === === === === === ===
+--ĐƠN HÀNG & BÁN HÀNG
+    -- === === === === === === === === === === === === === === ===
+    CREATE TABLE orders(
+        id INT IDENTITY(1, 1) PRIMARY KEY,
+        order_code NVARCHAR(50) UNIQUE NOT NULL,
+        customer_id INT NOT NULL,
+        customer_name NVARCHAR(255),
+        customer_phone NVARCHAR(20),
+        customer_email NVARCHAR(100),
+        customer_address NVARCHAR(MAX),
+        order_status NVARCHAR(50) DEFAULT 'pending'
+        CHECK(order_status IN('pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled', 'returned')),
+        payment_status NVARCHAR(50) DEFAULT 'unpaid'
+        CHECK(payment_status IN('unpaid', 'paid', 'partial', 'refunded')),
+        payment_method NVARCHAR(50),
+        subtotal_amount DECIMAL(18, 2) NOT NULL,
+        discount_amount DECIMAL(18, 2) DEFAULT 0,
+        shipping_fee DECIMAL(18, 2) DEFAULT 0,
+        tax_amount DECIMAL(18, 2) DEFAULT 0,
+        total_amount DECIMAL(18, 2) NOT NULL,
+        amount_paid DECIMAL(18, 2) DEFAULT 0,
+        voucher_id INT NULL,
+        voucher_discount DECIMAL(18, 2) DEFAULT 0,
+        shipping_address NVARCHAR(MAX),
+        shipping_method NVARCHAR(100),
+        tracking_number NVARCHAR(100),
+        notes NVARCHAR(MAX),
+        created_by INT,
+        created_at DATETIME2 DEFAULT GETDATE(),
+        updated_at DATETIME2 DEFAULT GETDATE(),
+        FOREIGN KEY(customer_id) REFERENCES customers(id),
+        FOREIGN KEY(voucher_id) REFERENCES vouchers(id)
+    );
+
+CREATE TABLE order_items(
+    id INT IDENTITY(1, 1) PRIMARY KEY,
+    order_id INT NOT NULL,
+    inventory_item_id INT NOT NULL,
+    product_name NVARCHAR(255) NOT NULL,
+    variant_attributes NVARCHAR(500) NOT NULL,
+    sku NVARCHAR(100) NOT NULL,
+    condition_type NVARCHAR(50) NOT NULL,
+    imei NVARCHAR(50), --Dùng cho sản phẩm cũ quản lý = EMEIL <= > inventory_item_id unit_cost_price DECIMAL(18, 2) NOT NULL,
+    unit_sale_price DECIMAL(18, 2) NOT NULL,
+    quantity INT NOT NULL DEFAULT 1,
+    discount_amount DECIMAL(18, 2) DEFAULT 0,
+    total_price DECIMAL(18, 2) NOT NULL,
+    warranty_months INT,
+    created_at DATETIME2 DEFAULT GETDATE(),
+    FOREIGN KEY(order_id) REFERENCES orders(id) ON DELETE CASCADE,
+    FOREIGN KEY(inventory_item_id) REFERENCES inventory_items(id)
+);
+
+-- === === === === === === === === === === === === === === ===
+--TRẢ GÓP
+-- === === === === === === === === === === === === === === ===
+CREATE TABLE installment_plans(
+    id INT IDENTITY(1, 1) PRIMARY KEY,
+    name NVARCHAR(255) NOT NULL,
+    bank_name NVARCHAR(100),
+    months INT NOT NULL,
+    interest_rate DECIMAL(5, 2) NOT NULL,
+    min_amount DECIMAL(18, 2),
+    max_amount DECIMAL(18, 2),
+    is_active BIT DEFAULT 1,
+    created_at DATETIME2 DEFAULT GETDATE()
+);
+
+-- === === === === === === === === === === === === === === ===
+--DỊCH VỤ SỬA CHỮA
+-- === === === === === === === === === === === === === === ===
+
+CREATE TABLE repair_services(
+    id INT IDENTITY(1, 1) PRIMARY KEY,
+    category_id INT NOT NULL,
+    estimated_time INT, --thời gian ước tính(phút) warranty_days INT, --bảo hành dịch vụ(ngày) base_price DECIMAL(18, 2) NOT NULL, --giá dịch vụ is_active BIT DEFAULT 1,
+    created_at DATETIME2 DEFAULT GETDATE(),
+    updated_at DATETIME2 DEFAULT GETDATE(),
+    FOREIGN KEY(category_id) REFERENCES categories(id)
+);
+CREATE TABLE repair_orders(
+    id INT IDENTITY(1, 1) PRIMARY KEY,
+    repair_code NVARCHAR(50) UNIQUE NOT NULL,
+    services_id INT NOT NULL,
+    customer_id INT NOT NULL,
+    device_type NVARCHAR(100) NOT NULL,
+    device_model NVARCHAR(100),
+    serial_number NVARCHAR(100),
+    device_condition NVARCHAR(MAX),
+    problem_description NVARCHAR(MAX),
+    diagnostic_notes NVARCHAR(MAX),
+    repair_status NVARCHAR(50) DEFAULT 'received',
+    estimated_cost DECIMAL(18, 2),
+    final_cost DECIMAL(18, 2),
+    estimated_completion_date DATETIME2,
+    actual_completion_date DATETIME2,
+    technician_notes NVARCHAR(MAX),
+    parts_used NVARCHAR(MAX),
+    warranty_until DATETIME2,
+    created_by INT,
+    created_at DATETIME2 DEFAULT GETDATE(),
+    updated_at DATETIME2 DEFAULT GETDATE(),
+    FOREIGN KEY(customer_id) REFERENCES customers(id),
+    FOREIGN KEY(services_id) REFERENCES repair_services(id)
+);
+
+CREATE TABLE repair_order_services(
+    id INT IDENTITY(1, 1) PRIMARY KEY,
+    repair_order_id INT NOT NULL,
+    repair_service_id INT NOT NULL,
+    quantity INT DEFAULT 1,
+    unit_price DECIMAL(18, 2) NOT NULL,
+    total_price DECIMAL(18, 2) NOT NULL,
+    notes NVARCHAR(MAX),
+    FOREIGN KEY(repair_order_id) REFERENCES repair_orders(id) ON DELETE CASCADE,
+    FOREIGN KEY(repair_service_id) REFERENCES repair_services(id)
+);
+
+
+-- =============================================
+-- INSERT DỮ LIỆU MẪU CHO CATEGORIES
+-- =============================================
+INSERT INTO categories (name, slug, parent_id, category_type, description, display_order, is_active) VALUES 
+-- Danh mục sản phẩm chính
+('Điện thoại', 'dien-thoai', NULL, 'product', 'Các dòng điện thoại smartphone', 1, 1),
+('Phụ kiện', 'phu-kien', NULL, 'product', 'Phụ kiện điện thoại và máy tính', 2, 1),
+('Laptop', 'laptop', NULL, 'product', 'Máy tính xách tay', 3, 1),
+('Tablet', 'tablet', NULL, 'product', 'Máy tính bảng', 4, 1),
+
+-- Danh mục con Điện thoại
+('iPhone', 'iphone', 1, 'product', 'Điện thoại iPhone', 1, 1),
+('Samsung', 'samsung', 1, 'product', 'Điện thoại Samsung', 2, 1),
+('Xiaomi', 'xiaomi', 1, 'product', 'Điện thoại Xiaomi', 3, 1),
+('Oppo', 'oppo', 1, 'product', 'Điện thoại Oppo', 4, 1),
+
+-- Danh mục con Phụ kiện
+('Cáp sạc', 'cap-sac', 2, 'product', 'Cáp sạc các loại', 1, 1),
+('Ốp lưng', 'op-lung', 2, 'product', 'Ốp lưng điện thoại', 2, 1),
+('Tai nghe', 'tai-nghe', 2, 'product', 'Tai nghe không dây và có dây', 3, 1),
+('Pin dự phòng', 'pin-du-phong', 2, 'product', 'Pin sạc dự phòng', 4, 1),
+
+-- Danh mục con Laptop
+('Macbook', 'macbook', 3, 'product', 'Laptop Apple Macbook', 1, 1),
+('Dell', 'dell', 3, 'product', 'Laptop Dell', 2, 1),
+('HP', 'hp', 3, 'product', 'Laptop HP', 3, 1),
+
+-- Danh mục con Tablet
+('iPad', 'ipad', 4, 'product', 'Máy tính bảng iPad', 1, 1),
+('Samsung Tablet', 'samsung-tablet', 4, 'product', 'Máy tính bảng Samsung', 2, 1),
+
+-- Danh mục dịch vụ
+('Dịch vụ sửa chữa', 'dich-vu-sua-chua', NULL, 'service', 'Các dịch vụ sửa chữa thiết bị', 5, 1),
+
+-- Danh mục con Dịch vụ sửa chữa
+('Sửa chữa iPhone', 'sua-chua-iphone', 17, 'service', 'Dịch vụ sửa chữa iPhone', 1, 1),
+('Sửa chữa iPad', 'sua-chua-ipad', 17, 'service', 'Dịch vụ sửa chữa iPad', 2, 1),
+('Sửa chữa Macbook', 'sua-chua-macbook', 17, 'service', 'Dịch vụ sửa chữa Macbook', 3, 1),
+('Thay màn hình', 'thay-man-hinh', 17, 'service', 'Dịch vụ thay màn hình', 4, 1),
+('Thay pin', 'thay-pin', 17, 'service', 'Dịch vụ thay pin', 5, 1),
+('Sửa mainboard', 'sua-mainboard', 17, 'service', 'Sửa chữa mainboard', 6, 1),
+('Vệ sinh thiết bị', 've-sinh-thiet-bi', 17, 'service', 'Dịch vụ vệ sinh thiết bị', 7, 1);
+
+-- =============================================
+-- INSERT DỮ LIỆU MẪU CHO PRODUCTS
+-- =============================================
+INSERT INTO products (category_id, name, slug, description, brand, model, product_type, is_active, is_featured, is_hot) VALUES 
+-- iPhone products
+(5, 'iPhone 16 Pro Max 256GB', 'iphone-16-pro-max-256gb', 'iPhone 16 Pro Max với chip A18 Pro, camera 48MP', 'Apple', 'iPhone 16 Pro Max', 'physical', 1, 1, 1),
+(5, 'iPhone 16 Pro 128GB', 'iphone-16-pro-128gb', 'iPhone 16 Pro hiệu năng mạnh mẽ', 'Apple', 'iPhone 16 Pro', 'physical', 1, 1, 0),
+(5, 'iPhone 15 Pro Max 256GB', 'iphone-15-pro-max-256gb', 'iPhone 15 Pro Max giá tốt', 'Apple', 'iPhone 15 Pro Max', 'physical', 1, 0, 1),
+(5, 'iPhone 14 128GB', 'iphone-14-128gb', 'iPhone 14 phiên bản tiêu chuẩn', 'Apple', 'iPhone 14', 'physical', 1, 0, 0),
+
+-- Samsung products
+(6, 'Samsung Galaxy S24 Ultra', 'samsung-galaxy-s24-ultra', 'Flagship Samsung với bút S-Pen', 'Samsung', 'Galaxy S24 Ultra', 'physical', 1, 1, 1),
+(6, 'Samsung Galaxy Z Fold5', 'samsung-galaxy-z-fold5', 'Điện thoại màn hình gập cao cấp', 'Samsung', 'Galaxy Z Fold5', 'physical', 1, 0, 1),
+
+-- Xiaomi products
+(7, 'Xiaomi 14 Pro', 'xiaomi-14-pro', 'Flagship Xiaomi với camera Leica', 'Xiaomi', '14 Pro', 'physical', 1, 0, 0),
+(7, 'Xiaomi Redmi Note 13', 'xiaomi-redmi-note-13', 'Điện thoại tầm trung chất lượng', 'Xiaomi', 'Redmi Note 13', 'physical', 1, 0, 0),
+
+-- Phụ kiện - Cáp sạc
+(9, 'Cáp USB-C 2m Apple', 'cap-usb-c-2m-apple', 'Cáp sạc chính hãng Apple', 'Apple', 'USB-C Cable 2m', 'physical', 1, 0, 0),
+(9, 'Cáp Lightning 1m', 'cap-lightning-1m', 'Cáp sạc Lightning cho iPhone', 'Apple', 'Lightning Cable 1m', 'physical', 1, 0, 0),
+
+-- Phụ kiện - Ốp lưng
+(10, 'Ốp lưng iPhone 16 Pro Max', 'op-lung-iphone-16-pro-max', 'Ốp lưng trong suốt cho iPhone 16 Pro Max', 'Spigen', 'Clear Case', 'physical', 1, 0, 0),
+(10, 'Ốp lưng Samsung S24 Ultra', 'op-lung-samsung-s24-ultra', 'Ốp lưng chống sốc', 'Caseology', 'Shockproof Case', 'physical', 1, 0, 0),
+
+-- Macbook
+(13, 'Macbook Pro 14 inch M3', 'macbook-pro-14-inch-m3', 'Macbook Pro với chip M3', 'Apple', 'Macbook Pro 14" M3', 'physical', 1, 1, 1),
+(13, 'Macbook Air 13 inch M2', 'macbook-air-13-inch-m2', 'Macbook Air siêu mỏng nhẹ', 'Apple', 'Macbook Air 13" M2', 'physical', 1, 0, 0),
+
+-- iPad
+(15, 'iPad Pro 12.9 inch M2', 'ipad-pro-12-9-inch-m2', 'iPad Pro với chip M2', 'Apple', 'iPad Pro 12.9" M2', 'physical', 1, 0, 1),
+(15, 'iPad Air 11 inch', 'ipad-air-11-inch', 'iPad Air thế hệ mới', 'Apple', 'iPad Air 11"', 'physical', 1, 0, 0),
+
+-- Dịch vụ sửa chữa (product_type = 'service')
+(18, 'Thay màn hình iPhone', 'thay-man-hinh-iphone', 'Dịch vụ thay màn hình iPhone chính hãng', 'Apple', 'iPhone Screen Replacement', 'service', 1, 0, 0),
+(19, 'Thay màn hình iPad', 'thay-man-hinh-ipad', 'Dịch vụ thay màn hình iPad', 'Apple', 'iPad Screen Replacement', 'service', 1, 0, 0),
+(20, 'Sửa chữa Macbook', 'sua-chua-macbook', 'Dịch vụ sửa chữa Macbook chuyên nghiệp', 'Apple', 'Macbook Repair', 'service', 1, 0, 0),
+(21, 'Thay màn hình LCD', 'thay-man-hinh-lcd', 'Thay màn hình LCD các loại', 'Generic', 'LCD Replacement', 'service', 1, 0, 0),
+(22, 'Thay pin iPhone', 'thay-pin-iphone', 'Thay pin chính hãng cho iPhone', 'Apple', 'iPhone Battery Replacement', 'service', 1, 0, 0),
+(23, 'Sửa mainboard iPhone', 'sua-mainboard-iphone', 'Sửa chữa mainboard iPhone', 'Apple', 'iPhone Mainboard Repair', 'service', 1, 0, 0),
+(24, 'Vệ sinh laptop', 've-sinh-laptop', 'Vệ sinh, bảo dưỡng laptop', 'Generic', 'Laptop Cleaning', 'service', 1, 0, 0);
+
+-- =============================================
+-- INSERT DỮ LIỆU MẪU CHO PRODUCT_VARIANTS
+-- =============================================
+INSERT INTO product_variants (product_id, sku, color, color_code, storage, ram, region_code, is_active) VALUES 
+-- iPhone 16 Pro Max 256GB variants
+(1, 'IP16PM256-DESERT', 'Titan Sa Mạc', '#D4B896', '256GB', '8GB', 'VN/A', 1),
+(1, 'IP16PM256-BLACK', 'Titan Đen', '#2D2D2D', '256GB', '8GB', 'VN/A', 1),
+(1, 'IP16PM256-WHITE', 'Titan Trắng', '#F5F5F5', '256GB', '8GB', 'VN/A', 1),
+(1, 'IP16PM256-NATURAL', 'Titan Tự Nhiên', '#E8E0D9', '256GB', '8GB', 'VN/A', 1),
+
+-- iPhone 16 Pro 128GB variants
+(2, 'IP16P128-DESERT', 'Titan Sa Mạc', '#D4B896', '128GB', '8GB', 'VN/A', 1),
+(2, 'IP16P128-BLACK', 'Titan Đen', '#2D2D2D', '128GB', '8GB', 'VN/A', 1),
+(2, 'IP16P128-WHITE', 'Titan Trắng', '#F5F5F5', '128GB', '8GB', 'VN/A', 1),
+
+-- iPhone 15 Pro Max 256GB variants
+(3, 'IP15PM256-BLACK', 'Titan Đen', '#2D2D2D', '256GB', '8GB', 'VN/A', 1),
+(3, 'IP15PM256-WHITE', 'Titan Trắng', '#F5F5F5', '256GB', '8GB', 'VN/A', 1),
+(3, 'IP15PM256-BLUE', 'Titan Xanh', '#5B8FB0', '256GB', '8GB', 'VN/A', 1),
+
+-- iPhone 14 128GB variants
+(4, 'IP14-128-MIDNIGHT', 'Midnight', '#1A1A1A', '128GB', '6GB', 'VN/A', 1),
+(4, 'IP14-128-STARLIGHT', 'Starlight', '#F5F5F0', '128GB', '6GB', 'VN/A', 1),
+(4, 'IP14-128-BLUE', 'Blue', '#3A6D8C', '128GB', '6GB', 'VN/A', 1),
+
+-- Samsung Galaxy S24 Ultra variants
+(5, 'SGS24U-512-BLACK', 'Đen Phantom', '#000000', '512GB', '12GB', 'VN/A', 1),
+(5, 'SGS24U-512-GRAY', 'Xám Titan', '#696969', '512GB', '12GB', 'VN/A', 1),
+(5, 'SGS24U-512-PURPLE', 'Tím Nhạt', '#9370DB', '512GB', '12GB', 'VN/A', 1),
+
+-- Samsung Galaxy Z Fold5 variants
+(6, 'SGZF5-512-BLACK', 'Đen', '#000000', '512GB', '12GB', 'VN/A', 1),
+(6, 'SGZF5-512-CREAM', 'Kem', '#F5F5DC', '512GB', '12GB', 'VN/A', 1),
+
+-- Xiaomi 14 Pro variants
+(7, 'XM14P-512-BLACK', 'Đen', '#000000', '512GB', '12GB', 'VN/A', 1),
+(7, 'XM14P-512-WHITE', 'Trắng', '#FFFFFF', '512GB', '12GB', 'VN/A', 1),
+
+-- Xiaomi Redmi Note 13 variants
+(8, 'XMRN13-256-BLACK', 'Đen', '#000000', '256GB', '8GB', 'VN/A', 1),
+(8, 'XMRN13-256-BLUE', 'Xanh', '#1E90FF', '256GB', '8GB', 'VN/A', 1),
+
+-- Cáp sạc variants
+(9, 'CAP-USBC-APPLE', 'Trắng', '#FFFFFF', '2m', NULL, NULL, 1),
+(10, 'CAP-LIGHTNING-APPLE', 'Trắng', '#FFFFFF', '1m', NULL, NULL, 1),
+
+-- Ốp lưng variants
+(11, 'CASE-IP16PM-CLEAR', 'Trong suốt', '#FFFFFF', 'Free', NULL, NULL, 1),
+(11, 'CASE-IP16PM-BLACK', 'Đen', '#000000', 'Free', NULL, NULL, 1),
+(12, 'CASE-S24U-BLACK', 'Đen', '#000000', 'Free', NULL, NULL, 1),
+(12, 'CASE-S24U-BLUE', 'Xanh', '#1E90FF', 'Free', NULL, NULL, 1),
+
+-- Macbook Pro variants
+(13, 'MBP14-M3-512', 'Xám không gian', '#8A8A8A', '512GB', '8GB', 'VN/A', 1),
+(13, 'MBP14-M3-1TB', 'Xám không gian', '#8A8A8A', '1TB', '16GB', 'VN/A', 1),
+(13, 'MBP14-M3-2TB', 'Xám không gian', '#8A8A8A', '2TB', '16GB', 'VN/A', 1),
+
+-- Macbook Air variants
+(14, 'MBA13-M2-256', 'Bạc', '#C0C0C0', '256GB', '8GB', 'VN/A', 1),
+(14, 'MBA13-M2-512', 'Bạc', '#C0C0C0', '512GB', '8GB', 'VN/A', 1),
+
+-- iPad Pro variants
+(15, 'IPADPRO12-128', 'Xám không gian', '#8A8A8A', '128GB', '8GB', 'VN/A', 1),
+(15, 'IPADPRO12-256', 'Xám không gian', '#8A8A8A', '256GB', '8GB', 'VN/A', 1),
+(15, 'IPADPRO12-512', 'Xám không gian', '#8A8A8A', '512GB', '8GB', 'VN/A', 1),
+
+-- iPad Air variants
+(16, 'IPADAIR11-64', 'Xám không gian', '#8A8A8A', '64GB', '8GB', 'VN/A', 1),
+(16, 'IPADAIR11-128', 'Xám không gian', '#8A8A8A', '128GB', '8GB', 'VN/A', 1);
+
+-- =============================================
+-- INSERT DỮ LIỆU MẪU CHO REPAIR_SERVICES
+-- =============================================
+INSERT INTO repair_services (product_id, service_category_id, base_price, estimated_time, warranty_days, service_description, requirements, is_active) VALUES 
+-- Dịch vụ sửa chữa iPhone
+(17, 18, 2500000, 60, 90, 'Thay màn hình chính hãng cho iPhone', 'Cần backup dữ liệu trước khi sửa chữa', 1),
+(18, 19, 3500000, 90, 90, 'Thay màn hình iPad chính hãng', 'Thời gian bảo hành 3 tháng', 1),
+(19, 20, 5000000, 120, 180, 'Sửa chữa mainboard Macbook', 'Kiểm tra kỹ trước khi sửa chữa', 1),
+(20, 21, 1500000, 45, 60, 'Thay màn hình LCD chất lượng cao', 'Bảo hành 2 tháng', 1),
+(21, 22, 1200000, 30, 180, 'Thay pin chính hãng Apple', 'Pin chính hãng, bảo hành 6 tháng', 1),
+(22, 23, 3000000, 180, 90, 'Sửa chữa mainboard chuyên sâu', 'Cần diagnostic kỹ trước khi sửa', 1),
+(23, 24, 300000, 30, 30, 'Vệ sinh toàn diện laptop', 'Làm sạch bụi, tra keo tản nhiệt', 1);
+
+-- =============================================
+-- INSERT DỮ LIỆU MẪU CHO PRODUCT_SPECS
+-- =============================================
+INSERT INTO product_specs (product_id, spec_group_id, spec_name, spec_value, spec_unit, display_order) VALUES 
+-- Thông số iPhone 16 Pro Max
+(1, 1, 'Kích thước màn hình', '6.9', 'inch', 1),
+(1, 1, 'Độ phân giải', '2796 x 1290', 'pixel', 2),
+(1, 1, 'Công nghệ màn hình', 'Super Retina XDR OLED', NULL, 3),
+(1, 2, 'Camera chính', '48', 'MP', 1),
+(1, 2, 'Camera tele', '12', 'MP', 2),
+(1, 2, 'Camera góc siêu rộng', '48', 'MP', 3),
+(1, 3, 'Chip', 'A18 Pro', NULL, 1),
+(1, 3, 'RAM', '8', 'GB', 2),
+(1, 4, 'Dung lượng pin', '4676', 'mAh', 1),
+(1, 4, 'Sạc nhanh', '20', 'W', 2),
+(1, 4, 'Sạc không dây', '15', 'W', 3),
+(1, 5, 'Kích thước', '160.9 x 76.6 x 8.3', 'mm', 1),
+(1, 5, 'Trọng lượng', '221', 'g', 2),
+(1, 6, '5G', 'Hỗ trợ', NULL, 1),
+(1, 6, 'WiFi', 'Wi-Fi 6E', NULL, 2),
+
+-- Thông số Samsung S24 Ultra
+(5, 1, 'Kích thước màn hình', '6.8', 'inch', 1),
+(5, 1, 'Độ phân giải', '3088 x 1440', 'pixel', 2),
+(5, 1, 'Công nghệ màn hình', 'Dynamic AMOLED 2X', NULL, 3),
+(5, 2, 'Camera chính', '200', 'MP', 1),
+(5, 2, 'Camera tele', '50', 'MP', 2),
+(5, 2, 'Camera góc siêu rộng', '12', 'MP', 3),
+(5, 3, 'Chip', 'Snapdragon 8 Gen 3', NULL, 1),
+(5, 3, 'RAM', '12', 'GB', 2),
+(5, 4, 'Dung lượng pin', '5000', 'mAh', 1),
+(5, 4, 'Sạc nhanh', '45', 'W', 2),
+
+-- Thông số Macbook Pro 14 M3
+(13, 1, 'Kích thước màn hình', '14.2', 'inch', 1),
+(13, 1, 'Độ phân giải', '3024 x 1964', 'pixel', 2),
+(13, 1, 'Công nghệ màn hình', 'Liquid Retina XDR', NULL, 3),
+(13, 3, 'Chip', 'Apple M3', NULL, 1),
+(13, 3, 'CPU', '8-core', NULL, 2),
+(13, 3, 'GPU', '10-core', NULL, 3),
+(13, 4, 'Pin', '70', 'Wh', 1),
+(13, 4, 'Thời gian sử dụng', '18', 'giờ', 2),
+(13, 5, 'Trọng lượng', '1.61', 'kg', 1),
+(13, 6, 'Cổng kết nối', 'Thunderbolt 4, HDMI, SDXC', NULL, 1);
+
+-- =============================================
+-- INSERT DỮ LIỆU MẪU CHO PRODUCT_TAG_MAP
+-- =============================================
+INSERT INTO product_tag_map (product_id, tag_id, start_date, end_date, is_active) VALUES 
+-- iPhone 16 Pro Max - HOT và FEATURED
+(1, 1, GETDATE(), DATEADD(month, 1, GETDATE()), 1), -- HOT
+(1, 3, GETDATE(), DATEADD(month, 1, GETDATE()), 1), -- FEATURED
+
+-- iPhone 16 Pro - NEW
+(2, 4, GETDATE(), DATEADD(month, 1, GETDATE()), 1), -- NEW
+
+-- iPhone 15 Pro Max - SALE
+(3, 2, GETDATE(), DATEADD(month, 1, GETDATE()), 1), -- SALE
+(3, 1, GETDATE(), DATEADD(month, 1, GETDATE()), 1), -- HOT
+
+-- Samsung S24 Ultra - HOT và FEATURED
+(5, 1, GETDATE(), DATEADD(month, 1, GETDATE()), 1), -- HOT
+(5, 3, GETDATE(), DATEADD(month, 1, GETDATE()), 1), -- FEATURED
+
+-- Macbook Pro M3 - NEW và FEATURED
+(13, 4, GETDATE(), DATEADD(month, 1, GETDATE()), 1), -- NEW
+(13, 3, GETDATE(), DATEADD(month, 1, GETDATE()), 1), -- FEATURED
+
+-- iPad Pro - SALE
+(15, 2, GETDATE(), DATEADD(month, 1, GETDATE()), 1); -- SALE
+
+-- =============================================
+-- INSERT DỮ LIỆU MẪU CHO PRODUCT_IMAGES
+-- =============================================
+INSERT INTO product_images (product_variant_id, image_url, image_type, display_order, is_primary, alt_text) VALUES 
+-- Hình ảnh cho iPhone 16 Pro Max Titan Sa Mạc
+(1, 'https://example.com/images/iphone-16-pro-max-desert-1.jpg', 'gallery', 1, 1, 'iPhone 16 Pro Max Titan Sa Mạc mặt trước'),
+(1, 'https://example.com/images/iphone-16-pro-max-desert-2.jpg', 'gallery', 2, 0, 'iPhone 16 Pro Max Titan Sa Mạc mặt sau'),
+(1, 'https://example.com/images/iphone-16-pro-max-desert-3.jpg', 'gallery', 3, 0, 'iPhone 16 Pro Max Titan Sa Mạc góc nghiêng'),
+
+-- Hình ảnh cho iPhone 16 Pro Max Titan Đen
+(2, 'https://example.com/images/iphone-16-pro-max-black-1.jpg', 'gallery', 1, 1, 'iPhone 16 Pro Max Titan Đen mặt trước'),
+(2, 'https://example.com/images/iphone-16-pro-max-black-2.jpg', 'gallery', 2, 0, 'iPhone 16 Pro Max Titan Đen mặt sau'),
+
+-- Hình ảnh cho Samsung S24 Ultra
+(15, 'https://example.com/images/samsung-s24-ultra-black-1.jpg', 'gallery', 1, 1, 'Samsung S24 Ultra Đen'),
+(15, 'https://example.com/images/samsung-s24-ultra-black-2.jpg', 'gallery', 2, 0, 'Samsung S24 Ultra mặt sau'),
+
+-- Hình ảnh cho Macbook Pro
+(28, 'https://example.com/images/macbook-pro-m3-1.jpg', 'gallery', 1, 1, 'Macbook Pro 14 inch M3'),
+(28, 'https://example.com/images/macbook-pro-m3-2.jpg', 'gallery', 2, 0, 'Macbook Pro bàn phím');
+
+-- =============================================
+-- KIỂM TRA DỮ LIỆU ĐÃ INSERT
+-- =============================================
+-- Kiểm tra categories
+SELECT 'Categories' as Table_Name, COUNT(*) as Record_Count FROM categories
+UNION ALL
+-- Kiểm tra products  
+SELECT 'Products', COUNT(*) FROM products
+UNION ALL
+-- Kiểm tra product_variants
+SELECT 'Product Variants', COUNT(*) FROM product_variants
+UNION ALL
+-- Kiểm tra repair_services
+SELECT 'Repair Services', COUNT(*) FROM repair_services
+UNION ALL
+-- Kiểm tra product_specs
+SELECT 'Product Specs', COUNT(*) FROM product_specs
+UNION ALL
+-- Kiểm tra product_tag_map
+SELECT 'Product Tag Map', COUNT(*) FROM product_tag_map
+UNION ALL
+-- Kiểm tra product_images
+SELECT 'Product Images', COUNT(*) FROM product_images;

@@ -9,7 +9,7 @@ const imgAlt = firstImage?.imgAlt || nameproduct;
 
     return (
         <div className="col-xl-20 col-lg-3 col-sm-4 col-6 col-fix">			
-            <div className="variants product-action" data-cart-form={product?.variantId} data-id={product.idkey}>
+            <div className="variants product-action" data-cart-form={product?.variantId} data-id={product.variantId}>
                 <div className="product-thumbnail">
                     <Link className="image_thumb scale_hover" to={`/detail/${product?.variantId}`}
                     title={`${nameproduct}`} key-id={idkey}>
@@ -23,7 +23,7 @@ const imgAlt = firstImage?.imgAlt || nameproduct;
                         />
                     </Link>
                     <div className="tag-km"></div>
-                        <input type="hidden" name="variantId" />
+                        <input type="hidden" name="variantId" value={product?.variantId} />
 
                         <div className="action">
                             <button className="btn-cart btn-views" title="Xem chi tiết" type="button" onClick={() => navigate("/detail/" + product.slug)} >
@@ -32,20 +32,20 @@ const imgAlt = firstImage?.imgAlt || nameproduct;
                         </div>
                 </div>{
                     product.discount && (
-                        <span className="smart">Giảm {product.discount} </span>
+                        <span className="smart">Giảm {product.discount !=null ? product.discount: ''}% </span>
                     )}
                 <div className="product-info">
                     <h3 className="product-name">
                         <Link  className="line-clamp line-clamp-2" to={`/detail/${product.variantId}`}  title={`${nameproduct} ${product.storage}`} >
-                        {nameproduct}+ {product.storage}
+                        {nameproduct}
                         </Link>
                     </h3>
-                    <div className="price-box">{price} </div>
+                    <div className="price-box">{price <=0 ? 'Liên hệ': price.toLocaleString("vi-VN") + "đ"} </div>
                     <div className="pro-promo"> 
                         {
-                            product.warranty && <p className="line-clamp line-clamp-2">Trả góp 0% lãi suất qua thẻ tín dụng</p>
+                            // product.warrantly && <p className="line-clamp line-clamp-2">Trả góp 0% lãi suất qua thẻ tín dụng</p>
                         }{
-                            product.warranty && <p className="line-clamp line-clamp-2">Bảo hành {product.warrantyPeriod}chính hãng Apple</p>
+                            product.warrantly && <p className="line-clamp line-clamp-2">Bảo hành {product.warrantly}chính hãng Apple</p>
                         }
                     </div>
                 </div>

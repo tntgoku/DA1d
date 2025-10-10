@@ -10,100 +10,104 @@ import 'swiper/css';
 import ImageSlider from "../components/client/ImagesSlides";
 import SlidesObject from "../components/client/SlidesObject";
 import { categories} from "../entity/Entity";
-import { getAlllistimgbyID, getDetailProductVariantById, getProductById,getProductStorageList, getStorageColorPriceMap } from "../service/productService";
+import { productService} from "../service/productService";
 import { ItemStorage } from "../components/ItemStorage";
+import { Variant } from "../entity/Object/Variant";
 const Detail = () => {
- const { id } = useParams();
-  
-  // Tìm sản phẩm hiện tại theo id
-    const [productvariant,setProductvariant]=useState();
-  // Giá hiển thị
-  const [finalPrice, setFinalPrice] = useState("Liên hệ");
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [listStoraget, setListStoraget] = useState([]);
-  const [listimg,setListimg]=useState([]);
-  const [selectedStorage, setSelectedStorage] = useState();
+    const { id } = useParams();
+    // Tìm sản phẩm hiện tại theo id
+      const [productvariant,setProductvariant]=useState();
+    // Giá hiển thị
+    const [finalPrice, setFinalPrice] = useState("Liên hệ");
+    const [activeIndex, setActiveIndex] = useState(0);
+    const [listStoraget, setListStoraget] = useState([]);
+    const [listimg,setListimg]=useState([]);
+    const [selectedStorage, setSelectedStorage] = useState();
     const [selectedRegion, setSelectedRegion] = useState();
     const [selectlistItems,setSelectItems]=useState([]); 
-const [product,setProduct]=useState();
+    const [product,setProduct]=useState();
+    const [cartItems, setCartItems] = useState([]);
+      // Tên danh mục
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          console.log("Fetching product variant with ID:", id);
+          const variant = await productService.getDetailProductVariantById(id);
+          if (variant) {
+            setProductvariant(variant);
+            console.log(productvariant,"no o day ne");
+            const id=variant.productId;
+            const prod = await productService.getProductById(id);
+            console.log("Product:" ,prod);
+            const colors = [...new Set(prod.variants.map(v => v.color))];
+            console.log(colors);
+            setSelectedStorage(variant.storage);
+            setSelectedRegion(variant.region);
+            setProduct(prod);
 
-  const [cartItems, setCartItems] = useState([]);
-  // Tên danh mục
-useEffect(() => {
-  const fetchData = async () => {
-    try {
-      console.log("Fetching product variant with ID:", id);
-      const variant = await getDetailProductVariantById(id);
-      if (variant) {
-        setProductvariant(variant);
-        setSelectedStorage(variant.storage);
-        setSelectedRegion(variant.region);
-        const prod = await getProductById(variant.productId);
-        setProduct(prod);
+            // const storageList = await productService.getStorageColorPriceMap(variant.productId);
+            // setListStoraget(storageList);
+            // console.log("Storage options:", storageList);
+            // const selectlistItems1=storageList[variant.storage]?.[variant.region] ;
+            // setSelectItems(selectlistItems1);
+            // const imgs = await productService.getAlllistimgbyID(variant.productId);
+            setListimg(prod.images);
+            // console.log("Product variant:", variant);
 
-        const storageList = await getStorageColorPriceMap(variant.productId);
-        setListStoraget(storageList);
-        console.log("Storage options:", storageList);
-        const selectlistItems1=storageList[variant.storage]?.[variant.region] ;
-        setSelectItems(selectlistItems1);
-        const imgs = await getAlllistimgbyID(variant.productId);
-        setListimg(imgs);
-        console.log("Product variant:", variant);
+            // console.log("Product details:", imgs);
+          }
+        } catch (err) {
+          console.error(err);
+          console.log("Error fetching product variant or product details", err);
+        }
+      };
 
-        console.log("Product details:", imgs);
-      }
-    } catch (err) {
-      console.error(err);
-      console.log("Error fetching product variant or product details", err);
+      if (id) fetchData(); // chỉ fetch khi id tồn tại
+    }, [id]); // ✅ thêm `id` vào dependency
+
+    // Hàm tính giá cuối cùng
+    const calculatePrice = (priceInput, discountInput) => {
+    // Nếu không có giá hoặc là "liên hệ"
+    if (priceInput === null || priceInput === undefined || priceInput === "liên hệ" || priceInput === "Liên hệ") {
+        return "Liên hệ";
     }
-  };
-
-  if (id) fetchData(); // chỉ fetch khi id tồn tại
-}, [id]); // ✅ thêm `id` vào dependency
-
-// Hàm tính giá cuối cùng
-const calculatePrice = (priceInput, discountInput) => {
-  // Nếu không có giá hoặc là "liên hệ"
-  if (priceInput === null || priceInput === undefined || priceInput === "liên hệ" || priceInput === "Liên hệ") {
-    return "Liên hệ";
-  }
-  // Chuyển priceInput sang số nếu nó là string
-  let price = typeof priceInput === "string" ? parseFloat(priceInput.replace(/\./g, "").replace(",", ".")) : priceInput;
-  // Nếu price không phải số hợp lệ hoặc <= 0
-  if (isNaN(price) || price <= 0) return "Liên hệ";
-  // Xử lý discount
-  let discount = discountInput ? Number(discountInput) : 0;
-  if (!isNaN(discount) && discount > 0) {
-    price = price - price * (discount / 100);
-  }
-  // Trả về giá theo định dạng Việt Nam
-  return price.toLocaleString("vi-VN") + "đ";
-};
+    // Chuyển priceInput sang số nếu nó là string
+    let price = typeof priceInput === "string" ? parseFloat(priceInput.replace(/\./g, "").replace(",", ".")) : priceInput;
+    // Nếu price không phải số hợp lệ hoặc <= 0
+    if (isNaN(price) || price <= 0) return "Liên hệ";
+    // Xử lý discount
+    let discount = discountInput ? Number(discountInput) : 0;
+    if (!isNaN(discount) && discount > 0) {
+        price = price - price * (discount / 100);
+    }
+    // Trả về giá theo định dạng Việt Nam
+    return price.toLocaleString("vi-VN") + "đ";
+    };
 
 
-useEffect(() => {
-  if (productvariant) {
-    setFinalPrice(calculatePrice(productvariant.price, productvariant.warrantyPeriod));
-  }
-  console.log("final: ",selectlistItems)
-}, [productvariant,selectlistItems]);
+    useEffect(() => {
+    if (productvariant) {
+        setFinalPrice(calculatePrice(productvariant.list_price, productvariant.discount));
+    }
+    console.log("final: ",selectlistItems)
+    }, [productvariant,selectlistItems]);
 
-  if (!product) {
-    return <div>Loading...</div>;
-  }
-  const namecate = product
-    ? categories.find((cate) => cate.id === product?.categoryId)
-    : null;
+    if (!product) {
+        return <div>Loading...</div>;
+    }
+    const namecate = product
+        ? categories.find((cate) => cate.id === product?.categoryId)
+        : null;
 
 
 
 
-  // Cập nhật giá khi click chọn color
-  const handleSelectColor = (index) => {
-    setActiveIndex(index);
-    const selectedImg = listimg[index];
-    setFinalPrice(calculatePrice(selectedImg.price, productvariant?.warrantyPeriod));
-  };
+    // Cập nhật giá khi click chọn color
+    const handleSelectColor = (index) => {
+        setActiveIndex(index);
+        const selectedImg = listimg[index];
+        setFinalPrice(calculatePrice(selectedImg.price, productvariant?.warrantly));
+    };
 
 const slidesData = [
     {
@@ -174,7 +178,7 @@ const slidesData = [
             <div className="container">
                 <div className="block-background" style={{backgroundColor:"#fff"}}>
                     <div className="row">
-                        <div className="col-12"><h1 className="title-product">{product?.productName}</h1></div>
+                        <div className="col-12"><h1 className="title-product">{product?.name}</h1></div>
                         <div className="product-detail-left product-images col-12 col-md-12 col-lg-6 col-xl-4">
                             <div className="product-image-block">
                                  <div className="image-container">
@@ -204,20 +208,20 @@ const slidesData = [
                                     </div>
                                     <div className="mb-break sku-product clearfix col-lg-6">
                                         <span className="stock-brand-title">Mã sản phẩm:</span>
-                                        <span className="variant-sku" itemProp={productvariant?.sku} content={productvariant?.variantId}><span className="a-sku">{product?.productId}</span></span>
+                                        <span className="variant-sku" itemProp={productvariant?.sku} content={productvariant?.variantId}><span className="a-sku">{productvariant?.variantId}</span></span>
                                         <br/>
                                     </div>      
                                 </div>
                                 <form action="/cart/add" className="add-to-cart-form" >
                                     <div className="price-box">
                                         {
-                                            (productvariant?.warrantyPeriod && finalPrice !=="Liên hệ") ? (
+                                            (productvariant?.warrantly && finalPrice !=="Liên hệ") ? (
                                                 <>
                                                     <div className="special-price">
                                                         <span className="price product-price">
                                                         {finalPrice}</span></div>
                                                     <div className="special-price" style={{ textDecoration: "line-through", color: "#6c757d", fontSize: "16px", marginLeft: "10px",}}>
-                                                        <span className="price product-price">{productvariant?.price.toLocaleString("vi-VN") + "đ"}</span>
+                                                        <span className="price product-price">{productvariant?.list_price.toLocaleString("vi-VN") + "đ"}</span>
                                                     </div>
                                                 </>
                                             ) : (
@@ -271,7 +275,7 @@ const slidesData = [
                                                             </div>
                                                             <div className="switch-0-color">
                                                                 <span className="title">{img.color}</span>
-                                                                <span className="price">  {calculatePrice(img.price, img?.warrantyPeriod)}</span>
+                                                                <span className="price">  {calculatePrice(img.price, img?.warrantly)}</span>
                                                             </div>
                                                             </label>
                                                         </div>
@@ -372,7 +376,7 @@ const slidesData = [
         <div className="product-mid ">
             <div className="container">
                 <div className="row">
-                                        <div className="col-lg-7">
+                    <div className="col-lg-7">
                         <div className="product-tab block-background" id="product-tab">
                             <ul className="tabs tabs-title">
                                 <li className="tab-link current" data-tab="tab-1">
@@ -399,7 +403,8 @@ const slidesData = [
                         </div>
                     </div>
                     <div className="col-lg-5">{
-                        product.category <=2 &&(                        <div className="product-infor-technical block-background">
+                        product.category <=2 &&(                        
+                        <div className="product-infor-technical block-background">
                             <h3 className="title">Thông số kỹ thuật</h3>
                             <div className="content">
                                 <table>

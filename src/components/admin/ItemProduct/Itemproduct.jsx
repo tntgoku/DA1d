@@ -1,16 +1,21 @@
+import { useState } from "react";
 import { formatPrice } from "../../../entity/Entity";
-
+import {  totalStockForProduct } from "../../../Util/ProductUtil";
 export const ItemProducts=({product,handleDelete,handleEdit,getCategoryName, isFeatured,onToggleFeatured , onManageDiscount})=>{
     let price = parseInt((product.price || "0").toString().replace(/\./g, ""), 10);
-
+    const[stock,setStock]=useState(totalStockForProduct(product))
     return (
                               <tr key={product.id}>
                         <td className="id">{product.id}</td>
-                        <td className="product-img "><img src={product?.images.at(product.featuredImageIndex-1).imgSrc}  width="64" height="64" className="img-thumbnail" alt={product.imgAlt} /></td>
+                        <td className="product-img ">
+                          <img   src={product?.images?.length > 0 ? product.images[0].imgSrc : null}  width="64" height="64" className="img-thumbnail" alt={product.imgAlt} /></td>
                         <td className="product-name ">{product.name}</td>
                         <td className="product-cate ">{getCategoryName(product.category)}</td>
                         <td className="text-left product-price ">{formatPrice(product.price)}</td>
-                        <td >{product.stock}</td>
+                        <td className={stock <= 3 ? "text-danger fw-bold" : ""}>
+                          {stock}
+                        </td>
+
                         <td className=" "><span className="badge bg-success text-center btn btn-success align-middle" style={{width: '80%',height:"100%",fontSize:13}}>{product.status}</span></td>
                         <td > <button 
                                 className={`btn btn-sm ${isFeatured ? 'btn-warning' : 'btn-outline-warning'}`}

@@ -231,8 +231,9 @@ body {
     transition: opacity 0.3s;
 }
 
-.btn-primary {
-    /* padding: 12px 20px; */
+.service-actions .btn-primary,
+.order-actions button.btn-primary {
+    padding: 12px 20px;
     border: none;
     border-radius: 5px;
     /* background: linear-gradient(to right, #3498db, #2c3e50); */

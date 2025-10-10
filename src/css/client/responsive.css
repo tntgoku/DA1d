@@ -141,6 +141,23 @@
         text-align: center !important;
         display: block !important;
     }
+    .variant-product {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    label.form-label {
+        font-weight: 600;
+        font-size: 9px;
+    }
+}
+
+label.form-label {
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.variant-product div label {
+    margin-bottom: 5px;
 }
 
 @media print {

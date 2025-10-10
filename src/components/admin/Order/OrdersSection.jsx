@@ -56,7 +56,7 @@ const OrdersSection = ({ orders: initialOrders, products }) => {
         payment: 'COD',
         status: 'Chờ xác nhận',
         notes: '',
-        items: [{ productId: '', productName: '', price: 0, quantity: 1 }],
+        items: [{ variantId: '', productName: '', price: 0, quantity: 1 }],
         shippingFee: 0,
         discount: 0
       });
@@ -75,11 +75,11 @@ const OrdersSection = ({ orders: initialOrders, products }) => {
   const handleItemChange = (index, field, value) => {
     const updatedItems = [...formData.items];
     
-    if (field === 'productId') {
-      const product = products.find(p => p.id == value);
+    if (field === 'variantId') {
+      const product = products.find(p => p.variantId == value);
       updatedItems[index] = {
         ...updatedItems[index],
-        productId: value,
+        variantId: value,
         productName: product ? product.name : '',
         price: product ? product.price : 0
       };
@@ -99,7 +99,7 @@ const OrdersSection = ({ orders: initialOrders, products }) => {
   const addItem = () => {
     setFormData({
       ...formData,
-      items: [...formData.items, { productId: '', productName: '', price: 0, quantity: 1 }]
+      items: [...formData.items, { variantId: '', productName: '', price: 0, quantity: 1 }]
     });
   };
 

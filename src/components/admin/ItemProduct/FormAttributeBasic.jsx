@@ -1,15 +1,128 @@
 
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-export const FormAttributeBasic= ({formData,handleImageUpload,handleInputChange, price})=>{
- 
-    const images = formData.images || [];
-    const featuredIndex = formData.featuredImageIndex || 0;
-const status = [
-  { id: 1, value: "Hot" },
-  { id: 2, value: "New" },   // nếu muốn thêm phần tử khác
-  { id: 3, value: "Sale" }
-];
+import CategorySelectGroup from '../CategoriSelect';
+import { ItemVariant } from './variant/ItemVariant';
+import { Variant } from '../../../entity/Object/Variant';
+import { ItemVariantStorage } from './variant/ItemVariantStorage';
+import { useEffect, useMemo, useState } from 'react';
+import { isFormEmpty } from '../../../Util/ProductUtil';
+import { ProductVariantGroup } from '../../../entity/Object/ProductVariantGroup';
+import { VariantColor } from '../../../entity/Object/VariantColor';
+import { useVariants } from '../../../hook/useVariant';
+export const FormAttributeBasic= ({editingProduct,formData,handleImageUpload,setFormData,handleInputChange})=>{
+  const [newColorInput, setNewColorInput] = useState("");
+  const images = formData.images || [];
+    const [variants, setVariants] = useState([]);
+console.log("Formdata",formData);
+  const {
+    addColor,
+    addStorage,
+    removeColor,
+    removeStorage,
+    updateVariantField
+  } = useVariants(formData,setFormData, handleInputChange);
+     const status = [
+    { id: 1, value: "Hot" },
+    { id: 2, value: "New" },   // nếu muốn thêm phần tử khác
+    { id: 3, value: "Sale" }
+  ];
+//   const handleAddColor= ()=>{
+//     if (!newColorInput.trim()) return; // Không thêm nếu input rỗng
+
+//       const currentVariants = formData.variants || [];
+
+//       // Tạo VariantColor mới từ input
+//       const newColor = new VariantColor({
+//         idColor: Math.floor(Math.random() * 1000000), // ID duy nhất
+//         color: newColorInput,          // lấy từ input
+//         variants: []                   // chưa có storage
+//       });
+
+//       // Cập nhật formData
+//       handleInputChange({
+//         target: { name: "variants", value: [...currentVariants, newColor] }
+//       });
+
+//       // Reset input
+//       setNewColorInput("");
+//   }  
+//   const handleAddStorage=(id)=>{
+//     console.log("Here",id);
+//      const newVariant = new Variant({
+//     variantId:Math.floor(Math.random() * 1000000), // ID tạm thời
+//     color: "", // có thể lấy từ VariantColor
+//     storage: "",
+//     price: 0,
+//     stock: 0
+//   });
+//    // Tìm đúng VariantColor trong formData.variants
+//   const updatedVariants = (formData.variants || []).map(vColor => {
+//     if (vColor.idColor === id) {
+//       // Thêm variant mới vào variantsStorage
+//       const updatedStorage = [...(vColor.variantsStorage || []), newVariant];
+//       return { ...vColor, variantsStorage: updatedStorage };
+//     }
+//     return vColor;
+//   });
+//     handleInputChange({
+//     target: { name: "variants", value: updatedVariants }
+//   });
+//     console.log(formData.variants);
+//   }
+// const  handleRemoveVariantColor=(idcolor)=>{
+//   console.log("Remove: color  ",idcolor);
+//   const updatedVariants = (formData.variants || []).filter(
+//     vColor => vColor.idColor !== idcolor
+//   );
+//   handleInputChange({
+//     target: { name: "variants", value: updatedVariants }
+//   });
+
+//  }
+// const handleRemoveVariantStorage = (idColor, variantId) => {
+//   // Duyệt tất cả VariantColor
+//   console.log("id color Remove: ",idColor,"dd",variantId)
+//   const updatedVariants = (formData.variants || []).map(vColor => {
+//     if (vColor.idColor === idColor) {
+//       // Lọc ra những variant không phải variantId cần xóa
+//       const updatedStorage = (vColor.variantsStorage || []).filter(
+//         v => v.variantId !== variantId
+//       );
+//       return { ...vColor, variantsStorage: updatedStorage };
+//     }
+//     return vColor;
+//   });
+
+//   // Cập nhật formData thông qua handleInputChange
+//   handleInputChange({
+//     target: { name: "variants", value: updatedVariants }
+//   });
+// };
+
+// const updateVariantField = (idColor, fieldName, newValue, variantId = null) => {
+//   const updatedVariants = (formData.variants || []).map(vColor => {
+//     if (vColor.idColor === idColor) {
+//       if (variantId !== null) {
+//         const updatedStorage = (vColor.variantsStorage || []).map(v => {
+//           if (v.variantId === variantId) {
+//                 const value = ['price', 'list_price', 'sale_price', 'discount', 'warrantly', 'stock'].includes(fieldName)
+//         ? Number(newValue)
+//         : newValue;
+//             return { ...v, [fieldName]: value }; // clone object nested
+//           }
+//           return v;
+//         });
+//         return { ...vColor, variantsStorage: updatedStorage }; // clone object cha
+//       } else {
+//         return { ...vColor, [fieldName]: newValue }; // clone object cha
+//       }
+//     }
+//     return vColor; // giữ nguyên các object khác
+//   });
+
+//   handleInputChange({ target: { name: "variants", value: updatedVariants } });
+// };
 
     return(
                 <div className={`row`}>
@@ -27,47 +140,27 @@ const status = [
                         />
                       </div>
                     </div>
-                    <div className="col-md-2">
-                      <div className="mb-3">
-                        <label className="form-label">Danh mục *</label>
-                        <select
-                          className="form-select"
-                          name="category"
-                          value={formData.category}
-                          onChange={handleInputChange}
-                          data-test={formData.category}
-                          required
-                        >
-                          <option value="">Chọn danh mục</option>
-                          <option value="1">Điện thoại</option>
-                          <option value="2">Tablet</option>
-                          <option value="3">Đồng hồ thông minh</option>
-                          <option value="4">Phụ kiện</option>
-                        </select>
-                      </div>
+                    <div className="col-md-5">
+                        <CategorySelectGroup isFormEmpty={isFormEmpty} formData={formData} handleInputChange={handleInputChange} />
                     </div>
                   </div>
                   <div className="row">
                     <div className="col-md-12">
                       <div className="mb-3">
                         <label className="form-label">Mô tả sản phẩm</label>
-                        <CKEditor
-                          editor={ClassicEditor}
-                          data={formData.description || ""}
-                          onChange={(event, editor) => {
-                            const data = editor.getData();
-                            handleInputChange({
-                              target: {
-                                name: "description",
-                                value: data
-                              }
-                            });
-                          }}
-                        />
+                          <CKEditor
+                            key={formData.id || "new"}   
+                            editor={ClassicEditor}
+                            data={formData.description || ""} 
+                            onChange={(event, editor) => {
+                              const data = editor.getData();
+                              handleInputChange({ target: { name: "description", value: data } });
+                            }}
+                          />
+
                       </div>
                     </div>
                   </div>
-
                   <div className="row">
                     <div className="col-md-8">
                       <div className="mb-3">
@@ -80,52 +173,6 @@ const status = [
                           onChange={handleInputChange}
                           required
                         />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="row">
-                    <div className="col-md-12">
-                      <div className="alert alert-info">
-                        <i className="fas fa-info-circle"></i> Ảnh chính hiển thị: 
-                        {images &&images.length <= 0  &&(
-                            <strong> Chưa có ảnh</strong>
-                        ) }
-                      </div>
-                    </div>
-                  </div>
-                  <div className="row">
-                    <div className="col-md-6">
-                      <div className="mb-3">
-                            <label className="form-label">Ảnh xem trước</label>
-                            <div style={{ minHeight: '100px', border: '1px dashed #ccc', padding: '10px' }}>
-                              {images && images.length > 0 ? (
-                                <div style={{ marginTop: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                  <img
-                                    src={images[featuredIndex]?.imgSrc || images[0].imgSrc} // nếu featuredIndex undefined, lấy ảnh đầu tiên
-                                    alt={images[featuredIndex]?.imgAlt || images[0].imgAlt || 'Ảnh xem trước'}
-                                    style={{ maxWidth: '100%', maxHeight: '150px', objectFit: 'contain' }}
-                                  />
-                                  <div>
-                                    {/* <strong>Ảnh số {featuredIndex + 1}</strong> */}
-                                  </div>
-                                </div>
-                              ) : (
-                                <strong>Chưa có ảnh</strong>
-                              )}
-                            </div>
-
-
-                      </div>
-                      <div className="mb-3">
-                        <label className="form-label">Hình ảnh sản phẩm *</label>
-                        <input
-                          type="file"
-                          className="form-control"
-                          accept="image/*"
-                          multiple // Cho phép chọn nhiều ảnh
-                          onChange={handleImageUpload}
-                        />
-                        <small className="text-muted">Có thể chọn nhiều ảnh cùng lúc</small>
                       </div>
                     </div>
                   </div>
@@ -169,33 +216,55 @@ const status = [
                       </div>
                   </div>
                   <div className="row">
-                    <div className="col-md-6">
-                      <div className="mb-3">
-                        <label className="form-label">Giá (VND) *</label>
-                        <input
-                          type="number"
-                          className="form-control"
-                          name="price"
-                          value={price}
-                          onChange={handleInputChange}
-                          required
-                          min="0"
-                        />
-                      </div>
-                    </div>
-                    <div className="col-md-6">
-                      <div className="mb-3">
-                        <label className="form-label">Tồn kho *</label>
-                        <input
-                          type="number"
-                          className="form-control"
-                          name="stock"
-                          value={formData.stock}
-                          onChange={handleInputChange}
-                          required
-                          min="0"
-                        />
-                      </div>
+                    <div className="body-variant">
+                        <div className="input-group mb-3 header-variant d-flex justify-content-between align-items-center">
+                          <label className="form-label fw-bold">
+                            Màu sắc cho sản phẩm:{" "}
+                            <span className="text-primary">
+                            </span>
+                          </label>
+                          <input
+                              type="text"
+                              className="form-control "
+                              value={newColorInput}
+                              onChange={e => setNewColorInput(e.target.value)}
+                              placeholder="Nhập màu mới..."
+                            />
+                            <button
+                              className="btn btn-success"
+                              type="button"
+                              onClick={(e)=>{
+                                addColor(newColorInput)
+                                setNewColorInput("");
+                              }}
+                            >
+                              <i className="fas fa-plus"></i> Thêm
+                            </button>
+                        </div>
+                        {(editingProduct && formData.variants?.length > 0) &&
+                          [...formData.variants].reverse().map((v, idx) => (
+                            <div key={v.idColor} className='body-variant border rounded p-3 mb-4 shadow-sm'>
+                              <ItemVariant
+                                variant={v}
+                                updateVariantField={updateVariantField}
+                                // onAddStorage={() => handleAddStorage(v.idColor)}
+                                onAddStorage={()=>addStorage(v.idColor,v.color)}
+                                // onRemoveVariant={handleRemoveVariantColor}
+                                onRemoveVariant={removeColor}
+                              />
+
+                              {(v.variantsStorage || []).length > 0 && [...v.variantsStorage].reverse().map(storage => (
+                                <ItemVariantStorage
+                                  idcolor={v.idColor}
+                                  key={storage.variantId}
+                                  variant={storage}
+                                  updateVariantField={updateVariantField}
+                                  handleRemoveVariantstorage={removeStorage}
+                                />
+                              ))}
+                            </div>
+                          ))
+                        }
                     </div>
                   </div>
                 </div>

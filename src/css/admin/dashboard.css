@@ -15,6 +15,14 @@ body {
     overflow-x: hidden;
 }
 
+.long-text-select {
+    width: 100% !important;
+    max-width: 100%;
+    text-overflow: clip;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
 .sidebar {
     /* background-color: var(--secondary);
     color: white;
@@ -263,6 +271,83 @@ button.btn.btn-sm.btn-warning i.fas.fa-star {
     z-index: 1000;
     position: fixed;
     opacity: 1;
+}
+
+.header-variant {
+    display: flex;
+    justify-content: space-between;
+}
+
+.input-group.mb-3 button#button-removeVariant {
+    border: none !important;
+    background-color: white;
+    color: var(--dark);
+}
+
+
+/* Form Image */
+
+.wrapper-images {
+    position: relative;
+    height: 300px;
+    width: 50%;
+    border-radius: 10px;
+    background-color: #fff;
+    border: 2px dashed #c2cdda;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.wrapper-images .image-upload {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.wrapper-images .image-upload img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+.wrapper-images .icon {
+    font-size: 100px;
+    margin-right: 105px;
+    color: #c2cdda;
+}
+
+.wrapper-images .icon i {
+    font-size: 100px;
+}
+
+.wrapper-images #cancel-btn {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    cursor: pointer;
+}
+
+.wrapper-images .text {
+    font-size: 20px;
+    font-weight: 500;
+    color: #5B5B5B;
+    cursor: pointer;
+}
+
+.wrapper-images .file-name {
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    text-align: center;
+    padding: 8px 0;
+    font-size: 18px;
+    color: #fff;
+    background: linear-gradient(135deg, #3a8ffe, 0%, #9658fe 100%);
 }
 
 @media (max-width: 768px) {

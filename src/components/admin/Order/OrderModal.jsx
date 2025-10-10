@@ -1,4 +1,10 @@
-export const OrderModal = ({ showModal, setShowModal, editingOrder, handleSubmit, formData, handleInputChange, handleItemChange, addItem, removeItem, products }) => {
+export const OrderModal = ({ showModal, setShowModal,
+   editingOrder, 
+   handleSubmit, 
+  formData, handleInputChange,
+   handleItemChange, addItem, 
+   removeItem, 
+   products }) => {
   if (!showModal) return null;
 // Hàm làm sạch chuỗi số tiền
 const parsePrice = (value) => {
@@ -19,7 +25,7 @@ const calculateOrderTotal = () => {
     return total + calculateItemTotal(item.price, item.quantity);
   }, 0);
 };
-
+console.log("Here",formData);
 
   return (
     <div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}>
