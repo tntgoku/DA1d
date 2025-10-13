@@ -5,7 +5,7 @@ import anh1 from '../assets/iphone-17-pro-max_1.webp';
 import { getProvinces, getDistricts} from "../service/getAPI";
 import { formatPrice, itemtest } from "../entity/Entity";
 import { ItemOrder } from "../components/ItemOrder";
-import { PostOrder } from "../service/OrderService";
+import { OrderService } from "../service/OrderService";
 const ViewPayment = () => {
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
@@ -38,7 +38,7 @@ const ViewPayment = () => {
         paymentMethod: "",
         voucher: "",
         totalPrice: 0,
-        listCart:[],
+        items:[],
   });
   // Lấy danh sách tỉnh/thành
   useEffect(() => {
@@ -69,18 +69,6 @@ const ViewPayment = () => {
     fetchDistricts();
   }, [selectedProvince]);
 
-//   useEffect(() => {
-//     const fetchCommunes = async () => {
-//       if (!selectedDistrict) return;
-//       try {
-//         const data = await getCommunes(selectedDistrict);
-//         setCommunes(data.data);
-//       } catch (err) {
-//         console.error(err);
-//       }
-//     };
-//     fetchCommunes();
-//   }, [selectedDistrict]);
   const handleChange = (e) => {
     const{name,value}=e.target;
     setFormData((prev) => ({
@@ -145,10 +133,10 @@ const postBE=async ()=>{
     district: selectedDistrict,
     voucher,
     totalPrice,
-    listCart
+    items:listCart
   };
     console.log("Data post",formDatas);
-  await PostOrder(formDatas);
+  await OrderService.PostOrder(formDatas);
 }
   return (
     <div>
@@ -223,23 +211,6 @@ const postBE=async ()=>{
                                     </select>
                                 </div>
                                 </div>
-                                {/* Communes 
-                                Sáp nhập tỉnh, thành Việt Nam 2025 bỏ commit nếu như dùng API cũ với 64 tỉnh thành
-                                */}
-                                {/* <div className="field">
-                                <div className="field__input-wrapper form-group">
-                                    <label htmlFor="commune" className="field__label" style={ {display :'none'}}>Xã/Phường</label>
-                                    <select id="select-communes" className="form-control form-control-sm">
-                                    <option value="">-- Chọn xã/phường --</option>
-                                    {communes.map((commune) => (
-                                        <option key={commune.id} value={commune.id}>
-                                        {commune.full_name}
-                                        </option>
-                                    ))}
-                                    </select>
-                                </div>
-                                </div> */}
-
                                 <div className="field">
                                     <div className="field__input-wrapper form-group">
                                         <label htmlFor="address" className="field__label" style={ {display :'none'}}>Địa chỉ</label>

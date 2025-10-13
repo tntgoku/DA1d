@@ -404,7 +404,7 @@ const categories=[
   description: "",
   brand: "",
   model: "",
-  specifications: null,
+  specifications: [],
   isActive: true,
   isFeatured: false,
   isHot: false,

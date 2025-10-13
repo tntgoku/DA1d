@@ -1,10 +1,10 @@
 // src/components/Variant/ItemVariant.jsx
 import { useState } from "react";
 import { useVariantImage } from "../../../../hook/useVariantImage";
-export const ItemVariant = ({ variant, onAddStorage, onRemoveVariant, updateVariantField }) => {
+export const ItemVariant = ({ variant, onAddStorage, onRemoveVariant, updateVariantField,index }) => {
   const { ListImgVariant, handleImageUpload } = useVariantImage();
   return (
-    <div className="mb-2">
+    <div className="mb-2" id-index={index}>
       {/* Header */}
       <div className="input-group mb-3 header-variant d-flex justify-content-between align-items-center"
        id-keyvariant={variant?.idColor}>

@@ -85,7 +85,7 @@ const ProductsSection = ({ Listproducts }) => {
                         handleDelete={handleDelete}
                         handleEdit={handleEditProduct}
                         getCategoryName={(id) => getCategoryName(categories, id)}
-                        isFeatured={featuredProducts.includes(product.id)}
+                        isFeatured={product.isFeatured}
                         onToggleFeatured={toggleFeaturedProduct}
                         onManageDiscount={() =>
                           handleOpenProductDiscountModal(product)

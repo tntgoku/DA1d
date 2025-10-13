@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import '../../css/client/AuthForms.css';
 import { SocialLogin } from '../FormSocialLogin';
 import { login as loginService } from '../../service/Authentication';
+import { useAuthen } from '../../hook/useLogin';
 // Component Form Đăng Nhập
 const LoginForm = ({ switchToRegister, onSocialLogin }) => {
   const [formData, setFormData] = useState({
@@ -16,27 +17,13 @@ const LoginForm = ({ switchToRegister, onSocialLogin }) => {
       [name]: value
     });
   };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // console.log('Đăng nhập với:', formData.email, formData.password);
-    // alert('Đăng nhập thành công!');
-    // Gọi API đăng nhập
-    loginService(formData.email, formData.password)
-      .then(data => {
-        console.log('Login successful:', data);
-        alert('Đăng nhập thành công!');
-      })
-      .catch(error => {
-        console.error('Login failed:', error);
-        alert('Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.');
-      });
-  };
+ const {handleSubmit}=useAuthen();
+  
 
   return (
     <div className="form-section">
       <h2 className="form-title">Đăng Nhập</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={(e)=>handleSubmit(e,formData)}>
         <div className="form-group">
           <label htmlFor="login-email">Email hoặc Số điện thoại</label>
           <input

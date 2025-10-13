@@ -4,7 +4,7 @@ export const login = async (email, password) => {
     console.log("Attempting login with email:", email);
     console.log("Attempting login with password:", password);
   try {
-    const response = await apiClient.post("/auth/login", { email, password });
+    const response = await apiClient.post("authz/login", { email, password });
     if (response.data.token) {
       localStorage.setItem("token", response.data.token); // lưu token để dùng cho các request khác
     }
@@ -17,7 +17,7 @@ export const login = async (email, password) => {
 
 export const register = async (name, phone, email, password,confirmPassword) => {
   try {
-    const response = await apiClient.post("auth/register", {
+    const response = await apiClient.post("authz/register", {
       name,
       phone,
       email,

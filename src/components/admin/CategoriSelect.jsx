@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useCategories } from "../../hook/useCategori";
-
 export default function CategorySelectGroup({ isFormEmpty,formData, handleInputChange }) {
   const { categories, loading, error } = useCategories();
   const [parentId, setParentId] = useState("");
   const [childOptions, setChildOptions] = useState([]);
   const [isNewProduct, setIsNewProduct] = useState(true);
-
   useEffect(() => {
         setIsNewProduct(isFormEmpty(formData));
   }, [formData]);
@@ -48,7 +46,6 @@ export default function CategorySelectGroup({ isFormEmpty,formData, handleInputC
       }
     }
   }, [categories, formData, parentId, isNewProduct]);
-
   if (loading) return <p>Đang tải danh mục...</p>;
   if (error) return <p>Lỗi khi tải danh mục!</p>;
 

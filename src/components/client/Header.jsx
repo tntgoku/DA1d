@@ -14,14 +14,7 @@ const Header = () => {
     const [quantity, setQuantity] = useState(1);
     const navigate=useNavigate();
     const handleToggleLogin = () => {
-    //      if (!isOpen) {
-    //   setIsOpen(true);      
-    //   setTimeout(() => setAnimate(true), 10); 
-    // } else {
-    //   setAnimate(false);     
-    //   setIsOpen(false);   
         navigate("/login");   
-    // }
     }
     const handleTogglenav=()=>{
         if(!isOpennav){
@@ -32,19 +25,6 @@ const Header = () => {
 
         }
     }
-    useEffect(() => {
-    // if (isOpen) {
-    //   document.body.style.overflow = "hidden";
-    // } else {
-    //   document.body.style.overflow = "auto";
-    // }
-    return () => {
-      document.body.style.overflow = "auto"; // cleanup
-    };
-  }, [isOpen]);
-  useEffect(()=>{
-
-  },[username])
     return (
         <header  className="header-top">
             <div className="container-lg">

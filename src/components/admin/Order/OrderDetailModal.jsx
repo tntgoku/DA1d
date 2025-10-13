@@ -1,19 +1,19 @@
 import React from "react";
 
-export const OrderDetailModal = ({ getStatusColor,showModal, setShowModal, order, formatCurrency }) => {
+export const OrderDetailModal = ({ getStatusColor,showModal, setShowModal, order, formatCurrency,getPaymentMethod }) => {
   if (!showModal || !order) return null;
 
   const calculateTotal = () => {
-    return order.items.reduce((total, item) => total + (item.price * item.quantity), 0);
+    return order.listiem.reduce((total, item) => total + (item.totalPrice * item.quantity), 0);
   };
 const [currentPage, setCurrentPage] = React.useState(1);
 const itemsPerPage = 10;
 
 // tính tổng trang
-const totalPages = Math.ceil(order.items.length / itemsPerPage);
+const totalPages = Math.ceil(order.listiem.length / itemsPerPage);
 
 // lấy items của trang hiện tại
-const currentItems = order.items.slice(
+const currentItems = order.listiem.slice(
   (currentPage - 1) * itemsPerPage,
   currentPage * itemsPerPage
 );
@@ -30,16 +30,16 @@ const currentItems = order.items.slice(
             <div className="row">
               <div className="col-md-6 content-infor-user">
                 <h6 className="title-infor">Thông tin khách hàng</h6>
-                <p className="name-user"><strong>Tên:</strong> {order.customer}</p>
-                <p className="phone-user"><strong>Điện thoại:</strong> {order.phone}</p>
-                <p className="email-user hide-print"><strong>Email:</strong> {order.email || 'N/A'}</p>
-                <p className="address-user"><strong>Địa chỉ:</strong> {order.address}</p>
+                <p className="name-user"><strong>Tên:</strong> {order.customerName}</p>
+                <p className="phone-user"><strong>Điện thoại:</strong> {order.customerPhone}</p>
+                <p className="email-user hide-print"><strong>Email:</strong> {order.customerEmail || 'N/A'}</p>
+                <p className="address-user"><strong>Địa chỉ:</strong> {order.customerAddress}</p>
               </div>
               <div className="col-md-6 ">
                 <h6>Thông tin đơn hàng</h6>
-                <p><strong>Ngày đặt:</strong> {new Date(order.date).toLocaleString('vi-VN')}</p>
-                <p className="order-payment hide-print"><strong>Phương thức:</strong> {order.payment}</p>
-                <p className="order-state hide-print"><strong>Trạng thái:</strong> <span className={`badge bg-${getStatusColor(order.status)}`}>{order.status}</span></p>
+                <p><strong>Ngày đặt:</strong> {new Date(order.createdAt).toLocaleString('vi-VN')}</p>
+                <p className="order-payment hide-print"><strong>Phương thức:</strong> {getPaymentMethod(order.paymentMethod).label}</p>
+                <p className="order-state hide-print"><strong>Trạng thái:</strong> <span className={`badge bg-${getStatusColor(order.orderStatus).color}`}>{getStatusColor(order.orderStatus).label}</span></p>
                 <p><strong>Ghi chú:</strong> {order.notes || 'Không có'}</p>
               </div>
             </div>
@@ -59,9 +59,9 @@ const currentItems = order.items.slice(
                   {currentItems.map((item, index) => (
                     <tr key={index}>
                       <td>{item.productName}</td>
-                      <td className="hide-print">{formatCurrency(item.price)}</td>
+                      <td className="hide-print">{formatCurrency(item.totalPrice)}</td>
                       <td>{item.quantity}</td>
-                      <td className="hide-print">{formatCurrency(item.price * item.quantity)}</td>
+                      <td className="hide-print">{formatCurrency(item.totalPrice * item.quantity)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -98,12 +98,12 @@ const currentItems = order.items.slice(
                 </div>
                 <div className="d-flex justify-content-between mb-2 hide-print">
                   <strong>Giảm giá:</strong>
-                  <span>-{formatCurrency(order.discount || 0)}</span>
+                  <span>-{formatCurrency(order.discountAmount || 0)}</span>
                 </div>
                 <hr />
                 <div className="d-flex justify-content-between mb-2 fs-5">
                   <strong className=" hide-print">Tổng cộng:</strong>
-                  <strong className="price-print">{formatCurrency(calculateTotal() + (order.shippingFee || 0) - (order.discount || 0))}</strong>
+                  <strong className="price-print">{formatCurrency(calculateTotal() + (order.shippingFee || 0) - (order.discountAmount || 0))}</strong>
                 </div>
               </div>
             </div>
@@ -147,7 +147,7 @@ const currentItems = order.items.slice(
               </tr>
             </thead>
             <tbody>
-              {order.items.map((item, index) => (
+              {order.listiem.map((item, index) => (
                 <tr key={index}>
                   <td>{item.productName}</td>
                   <td>{item.quantity}</td>

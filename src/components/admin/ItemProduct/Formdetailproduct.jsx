@@ -22,10 +22,11 @@ const FormDetailProduct = ({
         id: product.id,
         name: product.name,
         category: product.category,
+        brand:product.brand,
         price: product.price,
         stock: product.stock,
         status: product.status,
-        specifications:[],
+        specifications:product.specifications,
         description:product.description,
         images: product.images || [],
         featuredImageIndex: product?.images?.[0]?.imgSrc || 0,
@@ -34,6 +35,9 @@ const FormDetailProduct = ({
       });
     } else {
       setFormData({ ...defaultFormData });
+      if(formData.specifications ===null){
+
+      }
     }
   }, [product]);
 
@@ -45,10 +49,11 @@ const handleInputChange = ({ target }) => {
   setFormData(prev => {
     if (name === "variants") {
       return { ...prev, variants: value };
+    }else if(name==="specifications"){
+        return { ...prev, specifications: value };
     }
     return { ...prev, [name]: value };
   });
-  console.log(formData);
 };
 const handleImageUpload = (e) => {
   const files = Array.from(e.target.files);
@@ -162,6 +167,7 @@ const handleImageUpload = (e) => {
               {/* Specifications Tab */}
               {activeTab === 'specs' && (
                     <FormTechnine  handleInputChange={handleInputChange}
+                    setFormData={setFormData}
                     formData={formData}
                     />
               )}

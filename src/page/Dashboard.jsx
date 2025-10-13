@@ -16,12 +16,14 @@ import { ProductVariantGroup } from '../entity/Object/ProductVariantGroup';
 import { Variant } from '../entity/Object/Variant';
 import { Product } from '../entity/Object/Product';
 import { VariantColor } from '../entity/Object/VariantColor';
+import { OrderService } from '../service/OrderService';
 Product
 const Dashboard = () => {
   const [activeSection, setActiveSection] = useState('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [products, setProducts] = useState([]); // ✅ lưu sản phẩm thật vào state
   const [loading, setLoading] = useState(true);
+  const[orders,setOrders]=useState([]);
  const [products1, setProducts1] = useState([]);
   const location = useLocation();
 
@@ -40,6 +42,9 @@ const Dashboard = () => {
         });
         console.log("productsWithGroupedVariants",productsWithGroupedVariants);
         setProducts(productsWithGroupedVariants);
+        const dataorder= await OrderService.getall();
+        console.log(dataorder)
+        setOrders(dataorder);
       } catch (error) {
         console.error('❌ Lỗi khi lấy sản phẩm:', error);
       } finally {
@@ -61,13 +66,13 @@ const Dashboard = () => {
 
     switch (activeSection) {
       case 'dashboard':
-        return <DashboardSection users={users} products={products1} orders={testOrders} repairs={repairs} sidebarOpen={sidebarOpen} />;
+        return <DashboardSection users={users} products={products1} orders={orders} repairs={repairs} sidebarOpen={sidebarOpen} />;
       case 'users':
         return <UsersSection users={users} />;
       case 'products':
         return <ProductsSection Listproducts={products} />;
       case 'orders':
-        return <OrdersSection orders={testOrders} products={products} />;
+        return <OrdersSection orders={orders} products={products} />;
       case 'repairs':
         return <RepairsSection repairs={repairs} />;
       case 'discounts':
@@ -77,7 +82,7 @@ const Dashboard = () => {
       case 'settings':
         return <SettingsSection />;
       default:
-        return <DashboardSection users={users} products={products} orders={testOrders} repairs={repairs} sidebarOpen={sidebarOpen} />;
+        return <DashboardSection users={users} products={products} orders={orders} repairs={repairs} sidebarOpen={sidebarOpen} />;
     }
   };
 

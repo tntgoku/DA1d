@@ -8,7 +8,7 @@ const AuthForms = () => {
   const [isLogin, setIsLogin] = useState(true);
 
   const handleSocialLogin = (provider) => {
-    alert(`Đăng nhập bằng ${provider} được kích hoạt. Trong thực tế, đây sẽ là tích hợp ${provider} OAuth.`);
+    alert(`Đăng nhập bằng ${provider} được kích hoạt.`);
   };
 
   return (

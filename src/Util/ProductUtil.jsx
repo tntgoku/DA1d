@@ -93,6 +93,48 @@ export const totalStockForProduct = (product) => {
 
   return total;
 };
+export function groupVariantsByStorage(productsData) {
+  return productsData.map(product => {
+    // 1. Kiểm tra nếu không có variants, trả về sản phẩm gốc
+    if (!product.variants || product.variants.length === 0) {
+      return product;
+    }
+
+    // 2. Tạo một Map để nhóm các variants
+    const groupedVariants = new Map();
+
+    product.variants.forEach(variant => {
+      // Xác định khóa nhóm: ưu tiên 'storage', nếu null thì dùng 'color'
+      // Nếu cả hai đều null/undefined, dùng một khóa cố định (ví dụ: 'misc')
+      let key = variant.storage || variant.color || 'misc';
+
+      // Chuyển 'null' thành chuỗi 'null' nếu cần để đảm bảo key không bị mất
+      if (key === null) {
+          key = 'null_storage';
+      }
+
+      // Khởi tạo mảng nếu key chưa tồn tại
+      if (!groupedVariants.has(key)) {
+        groupedVariants.set(key, {
+          storage: variant.storage,
+          ram: variant.ram, // Giữ lại RAM để làm thông tin nhóm
+          variants: [], // Danh sách các biến thể trong nhóm này
+          // Thêm các thông tin chung khác của nhóm nếu cần thiết
+        });
+      }
+
+      // Thêm biến thể vào nhóm
+      groupedVariants.get(key).variants.push(variant);
+    });
+
+    // 3. Cập nhật mảng variants của sản phẩm thành mảng các nhóm
+    return {
+      ...product,
+      // Chuyển Map thành mảng các nhóm
+      variants: Array.from(groupedVariants.values())
+    };
+  });
+}
 
 // Util/ProductUtil.js
 // export const getVariantsGroupedByColor = (product) => {

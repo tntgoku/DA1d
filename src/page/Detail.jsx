@@ -9,10 +9,12 @@ import anh1 from '../assets/iphone-17-pro-max_1.webp';
 import 'swiper/css';
 import ImageSlider from "../components/client/ImagesSlides";
 import SlidesObject from "../components/client/SlidesObject";
-import { categories} from "../entity/Entity";
+// import { categories} from "../entity/Entity";
 import { productService} from "../service/productService";
 import { ItemStorage } from "../components/ItemStorage";
 import { Variant } from "../entity/Object/Variant";
+import Breadcrumb from "../components/Breadcrumb";
+import { useCategories } from "../hook/useCategori";
 const Detail = () => {
     const { id } = useParams();
     // Tìm sản phẩm hiện tại theo id
@@ -27,6 +29,7 @@ const Detail = () => {
     const [selectlistItems,setSelectItems]=useState([]); 
     const [product,setProduct]=useState();
     const [cartItems, setCartItems] = useState([]);
+    const {categories}=useCategories();
       // Tên danh mục
     useEffect(() => {
       const fetchData = async () => {
@@ -35,26 +38,22 @@ const Detail = () => {
           const variant = await productService.getDetailProductVariantById(id);
           if (variant) {
             setProductvariant(variant);
-            console.log(productvariant,"no o day ne");
+            console.log("no o day ne",productvariant);
             const id=variant.productId;
             const prod = await productService.getProductById(id);
+            
             console.log("Product:" ,prod);
+
             const colors = [...new Set(prod.variants.map(v => v.color))];
-            console.log(colors);
+            // const productsWithColors = prod.filter(product =>
+            //     product.variants.some(variant => colors.includes(variant.color))
+            // );
+            console.log("Color",colors);
+            console.log("prod",prod)
             setSelectedStorage(variant.storage);
             setSelectedRegion(variant.region);
             setProduct(prod);
-
-            // const storageList = await productService.getStorageColorPriceMap(variant.productId);
-            // setListStoraget(storageList);
-            // console.log("Storage options:", storageList);
-            // const selectlistItems1=storageList[variant.storage]?.[variant.region] ;
-            // setSelectItems(selectlistItems1);
-            // const imgs = await productService.getAlllistimgbyID(variant.productId);
             setListimg(prod.images);
-            // console.log("Product variant:", variant);
-
-            // console.log("Product details:", imgs);
           }
         } catch (err) {
           console.error(err);
@@ -166,12 +165,12 @@ const slidesData = [
     <div className="body-wrap" >
         <section className="bread-crumb">
             <div className="container">
-                <ul className="breadcrumb">
-                    <li className="home"> <Link to="/" className="changeurl">Home</Link><i className="fa-solid fa-chevron-right"></i> </li>
+                <Breadcrumb product={product} variant={productvariant} category={null} />
+                {/* <ul className="breadcrumb">
                     <li className="home"> <Link to="/" className="changeurl">Home</Link><i className="fa-solid fa-chevron-right"></i> </li>
                     <li className="home"> <Link to="/product" className="changeurl">Products</Link><i className="fa-solid fa-chevron-right"></i> </li>
-                    <li><strong><span>{`${product.productName} ${productvariant.storage}`}</span></strong> </li>
-                </ul>
+                    <li><strong><span>{`${product.name} ${productvariant.storage}`}</span></strong> </li>
+                </ul> */}
             </div>
         </section>
         <div className="product layout-product">

@@ -1,4 +1,4 @@
-export const OrderModal = ({ showModal, setShowModal,
+export const OrderModal = ({ showModal,getStatus, setShowModal,
    editingOrder, 
    handleSubmit, 
   formData, handleInputChange,
@@ -21,8 +21,8 @@ const calculateItemTotal = (price, quantity) => {
 };
 
 const calculateOrderTotal = () => {
-  return formData.items.reduce((total, item) => {
-    return total + calculateItemTotal(item.price, item.quantity);
+  return formData.listiem.reduce((total, item) => {
+    return total + calculateItemTotal(item.totalPrice, item.quantity);
   }, 0);
 };
 console.log("Here",formData);
@@ -48,7 +48,7 @@ console.log("Here",formData);
                       type="text"
                       className="form-control"
                       name="customer"
-                      value={formData.customer}
+                      value={formData.customerName}
                       onChange={handleInputChange}
                       required
                     />
@@ -59,7 +59,7 @@ console.log("Here",formData);
                       type="tel"
                       className="form-control"
                       name="phone"
-                      value={formData.phone}
+                      value={formData.customerPhone}
                       onChange={handleInputChange}
                       required
                     />
@@ -70,7 +70,7 @@ console.log("Here",formData);
                       type="email"
                       className="form-control"
                       name="email"
-                      value={formData.email}
+                      value={formData.customerEmail}
                       onChange={handleInputChange}
                     />
                   </div>
@@ -79,7 +79,7 @@ console.log("Here",formData);
                     <textarea
                       className="form-control"
                       name="address"
-                      value={formData.address}
+                      value={formData.shippingAddress}
                       onChange={handleInputChange}
                       rows="3"
                       required
@@ -95,7 +95,11 @@ console.log("Here",formData);
                       type="datetime-local"
                       className="form-control"
                       name="date"
-                      value={formData.date}
+                       value={
+                          formData.createdAt
+                            ? new Date(formData.createdAt).toISOString().slice(0, 16)
+                            : ""
+                        }
                       onChange={handleInputChange}
                       required
                     />
@@ -103,34 +107,38 @@ console.log("Here",formData);
                   <div className="mb-3">
                     <label className="form-label">Phương thức thanh toán *</label>
                     <select
-                      className="form-select"
-                      name="payment"
-                      value={formData.payment}
-                      onChange={handleInputChange}
-                      required
-                    >
-                      <option value="">Chọn phương thức</option>
-                      <option value="COD">COD</option>
-                      <option value="Chuyển khoản">Chuyển khoản</option>
-                      <option value="Thẻ tín dụng">Thẻ tín dụng</option>
-                      <option value="Ví điện tử">Ví điện tử</option>
-                    </select>
+                    className="form-select"
+                    name="paymentMethod"
+                    value={formData.paymentMethod}
+                    onChange={handleInputChange}
+                    required>
+                    <option value="">Chọn phương thức</option>
+                    <option value="cod">Thanh toán khi nhận hàng (COD)</option>
+                    <option value="bank_transfer">Chuyển khoản ngân hàng</option>
+                    <option value="credit_card">Thẻ tín dụng</option>
+                    <option value="momo">MOMO</option>
+                     <option value="vnpay">VNPAY</option>
+                  </select>
                   </div>
                   <div className="mb-3">
                     <label className="form-label">Trạng thái *</label>
                     <select
                       className="form-select"
-                      name="status"
-                      value={formData.status}
+                      name="orderStatus"
+                      value={formData.orderStatus}
                       onChange={handleInputChange}
                       required
                     >
-                      <option value="Chờ xác nhận">Chờ xác nhận</option>
-                      <option value="Đã xác nhận">Đã xác nhận</option>
-                      <option value="Đang giao">Đang giao</option>
-                      <option value="Đã giao">Đã giao</option>
-                      <option value="Đã hủy">Đã hủy</option>
+                      <option value="">Chọn trạng thái</option>
+                      <option value="pending">Chờ xác nhận</option>
+                      <option value="confirmed">Đã xác nhận</option>
+                      <option value="processing">Đang xử lý</option>
+                      <option value="shipped">Đang giao</option>
+                      <option value="delivered">Đã giao</option>
+                      <option value="cancelled">Đã hủy</option>
+                      <option value="returned">Hoàn hàng</option>
                     </select>
+
                   </div>
                   <div className="mb-3">
                     <label className="form-label">Ghi chú</label>
@@ -160,7 +168,7 @@ console.log("Here",formData);
                     </tr>
                   </thead>
                   <tbody>
-                    {formData.items.map((item, index) => (
+                    {formData.listiem.map((item, index) => (
                       <tr key={index}>
                         <td>
                           <select
@@ -198,14 +206,14 @@ console.log("Here",formData);
                           />
                         </td>
                         <td className="align-middle">
-                          {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(calculateItemTotal(item.price, item.quantity))}
+                          {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(calculateItemTotal(item.totalPrice, item.quantity))}
                         </td>
                         <td className="align-middle">
                           <button
                             type="button"
                             className="btn btn-sm btn-outline-danger"
                             onClick={() => removeItem(index)}
-                            disabled={formData.items.length === 1}
+                            disabled={formData.listiem.length <= 1}
                           >
                             <i className="fas fa-trash"></i>
                           </button>

@@ -1,4 +1,15 @@
 const SettingsSection = () => {
+const handleClearDatabase = async () => {
+  if (!window.confirm("Bạn có chắc muốn xóa toàn bộ dữ liệu?")) return;
+
+  try {
+    const response = await axios.delete("http://localhost:8080/api/clear-database");
+    alert(response.data);
+  } catch (error) {
+    console.error("Error clearing database:", error);
+    alert("Xảy ra lỗi khi xóa dữ liệu!");
+  }
+};
   return (
     <div>
       <div className="header">
@@ -70,6 +81,9 @@ const SettingsSection = () => {
                 </button>
                 <button className="btn btn-outline-secondary">
                   <i className="fas fa-upload me-2"></i> Khôi phục dữ liệu
+                </button>
+                 <button className="btn btn-outline-secondary" onClick={handleClearDatabase}>
+                  <i className="fas fa-upload me-2"></i>Xóa dữ liệu....
                 </button>
               </div>
             </div>

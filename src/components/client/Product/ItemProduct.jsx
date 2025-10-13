@@ -1,11 +1,11 @@
 import anh1 from '../../../assets/iphone-17-pro-max_1.webp'
 import { Link, useNavigate } from 'react-router-dom';
 const ItemProduct =({idkey,nameproduct,product,description,Listimg})=>{
-      const navigate = useNavigate();
-    let price=product.price;
+    const navigate = useNavigate();
+    let price = product.price ?? 0;
     const firstImage = Array.isArray(Listimg) && Listimg.length > 0 ? Listimg[0] : null;
-const imgSrc = firstImage?.imgSrc || '/default-image.webp'; // ảnh mặc định nếu không có
-const imgAlt = firstImage?.imgAlt || nameproduct;
+    const imgSrc = firstImage?.imgSrc || '/default-image.webp'; // ảnh mặc định nếu không có
+    const imgAlt = firstImage?.imgAlt || nameproduct;
 
     return (
         <div className="col-xl-20 col-lg-3 col-sm-4 col-6 col-fix">			
@@ -36,7 +36,8 @@ const imgAlt = firstImage?.imgAlt || nameproduct;
                     )}
                 <div className="product-info">
                     <h3 className="product-name">
-                        <Link  className="line-clamp line-clamp-2" to={`/detail/${product.variantId}`}  title={`${nameproduct} ${product.storage}`} >
+                        <Link  className="line-clamp line-clamp-2" to={`/detail/${product.variantId}`} 
+                         title={`${nameproduct} ${product.storage}`} >
                         {nameproduct}
                         </Link>
                     </h3>

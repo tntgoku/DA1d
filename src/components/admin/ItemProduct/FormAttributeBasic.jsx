@@ -18,7 +18,7 @@ console.log("Formdata",formData);
   const {
     addColor,
     addStorage,
-    removeColor,
+    removeVariantColor,
     removeStorage,
     updateVariantField
   } = useVariants(formData,setFormData, handleInputChange);
@@ -246,15 +246,17 @@ console.log("Formdata",formData);
                             <div key={v.idColor} className='body-variant border rounded p-3 mb-4 shadow-sm'>
                               <ItemVariant
                                 variant={v}
+                                index={idx}
                                 updateVariantField={updateVariantField}
                                 // onAddStorage={() => handleAddStorage(v.idColor)}
                                 onAddStorage={()=>addStorage(v.idColor,v.color)}
                                 // onRemoveVariant={handleRemoveVariantColor}
-                                onRemoveVariant={removeColor}
+                                onRemoveVariant={removeVariantColor}
                               />
 
-                              {(v.variantsStorage || []).length > 0 && [...v.variantsStorage].reverse().map(storage => (
+                              {(v.variantsStorage || []).length > 0 && [...v.variantsStorage].map((storage,index) => (
                                 <ItemVariantStorage
+                                  index={index}
                                   idcolor={v.idColor}
                                   key={storage.variantId}
                                   variant={storage}

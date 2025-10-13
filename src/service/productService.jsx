@@ -21,7 +21,7 @@ export const productService = {
     try {
         const response = await apiClient.get("product/featured");
         if(response.status === 200){
-          alert('Fetch featured products successful', response);
+          // alert('Fetch featured products successful', response);
           return response.data.data.map(p => new Product(p));
         }else{
           return [];
@@ -34,7 +34,7 @@ export const productService = {
   async getProductById  (id)  {
     try {
       const response = await apiClient.get(`product/${id}`);
-      alert(response.data.data);
+      // alert(response.data.data);
       console.log("Fetched product by ID:", response.data.data);
       return  new Product( response.data.data);
     } catch (error) {
@@ -52,6 +52,21 @@ export const productService = {
       const uniqueStorageList = [...new Set(storageList)];
       console.log("Storage list:", uniqueStorageList);
       return uniqueStorageList;
+    } catch (error) {
+      console.error(`Error fetching product with ID ${id}:`, error);
+      throw error;
+    }
+  },
+  async getProductsByCategory(id){
+  try {
+      const response = await apiClient.get(`product/category/${id}`);
+      const product = response.data;
+      console.log("Fetched product:", product.data);
+      const storageList = product.variants?.map(variant => variant.storage) || [];
+      // Nếu muốn loại bỏ trùng lặp
+      const uniqueStorageList = [...new Set(storageList)];
+      console.log("Storage list:", uniqueStorageList);
+      return product.data;
     } catch (error) {
       console.error(`Error fetching product with ID ${id}:`, error);
       throw error;
@@ -103,7 +118,8 @@ export const productService = {
           console.error("Error fetching product images:", error);
           throw error;
       }
-  }, async getAllProductVariant ()  {
+  }, 
+  async getAllProductVariant ()  {
       try {
           const response = await apiClient.get("product/variant");
           return response.data;
@@ -137,6 +153,9 @@ export const productService = {
     try {
       console.log("Data khi push:",productData);
       const response = await apiClient.post('product', productData);
+      if(response.data.status===200){
+        alert(`Thêm thành công Product với ID: ${response.data.data.id}`);
+      }
       return response.data;
     } catch (error) {
       console.error('Error creating product:', error);

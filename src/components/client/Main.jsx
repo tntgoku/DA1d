@@ -4,7 +4,6 @@ import{ useState,useEffect } from 'react';
 import ItemProduct from './Product/ItemProduct';
 import { productsvariant1 } from '../../entity/Entity';
 import { productService } from '../../service/productService';
-import { getall } from '../../service/OrderService';
 import { groupProductsByVariant } from '../../entity/Object/Product';
 const Main = () => {
     const products1 =productsvariant1;
@@ -101,8 +100,10 @@ const Main = () => {
                                             <div className="row row-fix">
                                                 {productAPI && productAPI.map((product,index) => (
                                                         <ItemProduct idkey={index}
-                                                                     nameproduct={`${product.name} ${product?.variants?.at(0).storage} ${product?.variants?.at(0).regionCode!=null ?product?.variants?.at(0).regionCode:'' }`}
-                                                                     product={product?.variants.at(0)}
+                                                                     nameproduct={`${product.name} 
+                                                                     ${product?.variants?.at(0).storage==null? "":product?.variants?.at(0).storage } 
+                                                                     ${product?.variants?.at(0).regionCode!=null ?product?.variants?.at(0).regionCode:'' }`}
+                                                                     product={product?.variants.at(0).length<=0? product:product?.variants.at(0)}
                                                                      description={product?.description}
                                                                      Listimg={product?.images} />
                                                 ))}

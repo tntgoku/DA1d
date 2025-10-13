@@ -43,7 +43,7 @@ export const useProductsSection = (Listproducts = []) => {
 const { filteredProducts, filters, setFilters } = useProductFilters(products); // ✅ thêm dòng này
   
 
-  // 🧱 CRUD Sản phẩm
+  //  CRUD Sản phẩm
 const handleFormSubmit = async (formData) => {  
   try {
     if (editingProduct) {
@@ -55,6 +55,15 @@ const handleFormSubmit = async (formData) => {
       // 🟢 Gọi API cập nhật và chờ phản hồi
       const res = await productService.updateProduct(formData.id, formData);
       console.log("Server trả về khi UPDATE:", res.data);
+      const data = await productService.getAllProduct();
+              const productsWithGroupedVariants = data.map(p => {
+                const groupedVariants = p.getVariantsGroupedByColor();
+                return new ProductVariantGroup({
+                  ...p,            // giữ nguyên tất cả thông tin
+                  variants: groupedVariants, // gán variants đã group
+                });
+              });
+      setProducts(productsWithGroupedVariants);
     } else {
       const newProduct = {
         ...formData,
@@ -67,6 +76,15 @@ const handleFormSubmit = async (formData) => {
       console.log("Create gửi lên:", newProduct);
       // 🟢 Gọi API thêm mới và chờ phản hồi
       const res = await productService.createProduct(newProduct);
+        const data = await productService.getAllProduct();
+              const productsWithGroupedVariants = data.map(p => {
+                const groupedVariants = p.getVariantsGroupedByColor();
+                return new ProductVariantGroup({
+                  ...p,            // giữ nguyên tất cả thông tin
+                  variants: groupedVariants, // gán variants đã group
+                });
+              });
+      setProducts(productsWithGroupedVariants);
       console.log("Server trả về khi CREATE:", res.data);
     }
     setShowFormDetail(false);
@@ -75,8 +93,6 @@ const handleFormSubmit = async (formData) => {
     console.error("❌ Lỗi khi gửi API:", error);
   }
 };
-
-
 const handleDelete =  async (id) => {
     if (window.confirm(`Bạn có chắc chắn muốn xóa sản phẩm này ${id} ?`)) {
       const reponse= await productService.deleteProduct(id);
@@ -86,14 +102,44 @@ const handleDelete =  async (id) => {
       }
     }
 };
-  // ⭐ Sản phẩm nổi bật
-  const toggleFeaturedProduct = (productId) => {
-    setFeaturedProducts((prev) =>
-      prev.includes(productId)
-        ? prev.filter((id) => id !== productId)
-        : [...prev, productId]
+const toggleFeaturedProduct = async (productId, isFeatured) => {
+    const newFeaturedState = !isFeatured; 
+    // console.log("Trạng thái cũ:", isFeatured);
+    // console.log("Trạng thái mới:", newFeaturedState);
+    
+    const updatedProducts = products.map((p) =>
+        p.id === productId 
+            ? { 
+                ...p, 
+                isFeatured: newFeaturedState //  cập nhật trạng thái mới
+              } 
+            : p
     );
-  };
+    
+    const productToSend = updatedProducts.find(product => product.id === productId);
+
+    if (!productToSend) {
+        console.error(`Lỗi: Không tìm thấy sản phẩm có ID ${productId} sau khi cập nhật.`);
+        alert("Lỗi: Không tìm thấy sản phẩm để gửi.");
+        return;
+    }
+    
+    console.log("Sản phẩm gửi lên server:", productToSend);
+
+    const reponse = await productService.updateProduct(productId, productToSend);
+    
+    if (reponse.status === 200) {
+        if(reponse.data?.isFeatured===true){
+          alert(`Bạn đã set Sản phẩm ${reponse.data?.name || 'này'} lên nổi bật.`);
+        }
+        setProducts(updatedProducts);
+        console.log("Phản hồi thành công:", reponse.data);
+    } else {
+        console.error("Lỗi khi cập nhật sản phẩm:", reponse); 
+        const errorMessage = reponse.data?.message || `Lỗi: ${reponse.status} - Không thể cập nhật trạng thái nổi bật.`;
+        alert(`Có lỗi xảy ra: ${errorMessage}`);
+    }
+};
   const handleEditProduct = (product) => {
   setEditingProduct(product);
   setShowFormDetail(true);

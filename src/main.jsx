@@ -9,6 +9,7 @@ import Cart from './page/Cart.jsx';
 import AuthForms from './page/AuthForms.jsx';
 import Account from './page/Account.jsx';
 import Dashboard from './page/Dashboard.jsx';
+import { CategoryPage } from './page/CategoryPage.jsx';
 createRoot(document.getElementById('root')).render(
     <BrowserRouter>
       <Routes>
@@ -17,11 +18,14 @@ createRoot(document.getElementById('root')).render(
         <Route path="/detail" element={<Detail />} />
         <Route path="/detail/:id" element={<Detail />} />
         <Route path='/cart' element={<Cart/>}/>
+        <Route path="/:parentSlug/:childSlug?" element={<CategoryPage />} />
         <Route path="*" element={<div>Not Found</div>} />
         <Route path="/admin/*" element={<Dashboard />} />
         <Route path='/payment' element={<ViewPayment />} />
         <Route path='/login' element={<AuthForms/>}/>
         <Route path='/account' element ={<Account/>}/>
+        <Route path="/:parentSlug/:childSlug?/:productSlug/:variantId" element={<Detail />} />
+
       </Routes>
     </BrowserRouter>
 ,

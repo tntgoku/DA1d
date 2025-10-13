@@ -19,7 +19,7 @@ export const ItemProducts=({product,handleDelete,handleEdit,getCategoryName, isF
                         <td className=" "><span className="badge bg-success text-center btn btn-success align-middle" style={{width: '80%',height:"100%",fontSize:13}}>{product.status}</span></td>
                         <td > <button 
                                 className={`btn btn-sm ${isFeatured ? 'btn-warning' : 'btn-outline-warning'}`}
-                                onClick={() => onToggleFeatured(product.id)}
+                                onClick={() => onToggleFeatured(product.id,isFeatured)}
                                 title={isFeatured ? 'Bỏ đánh dấu nổi bật' : 'Đánh dấu nổi bật'}
                               >
                                 <i className={`fas ${isFeatured ? 'fa-star' : 'fa-star'}`}></i>

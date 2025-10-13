@@ -29,7 +29,6 @@ export const useProductFilters = (products) => {
           : stockFilter === 'instock'
           ? totalstock > 0
           : totalstock === 0;
-      console.log(matchesStock);
       return matchesSearch && matchesPrice && matchesStock;
     });
   }, [products, filters]);

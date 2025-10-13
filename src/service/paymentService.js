@@ -1,12 +1,5 @@
 import axios from 'axios';
 import { apiClient } from './getAPI';
-// const apiClient = axios.create({
-//     baseURL: 'https://api.example.com', // Replace with your API base URL
-//     timeout: 10000, // Request timeout
-//     headers: {
-//         'Content-Type': 'application/json',
-//     },
-// });
 
 // Create a payment
 export const createPayment = async(paymentData) => {

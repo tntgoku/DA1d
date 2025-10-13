@@ -29,7 +29,7 @@ export const useVariants = (formData, setFormData,handleInputChange) => {
   // 👉 Thêm storage mới
   const addStorage = useCallback((idColor,colorinput) => {
   const newVariant = new Variant({
-      variantId: Math.floor(Math.random() * 1000000),
+      variantId: null,
       color:colorinput,
       storage: "",
       price: 0,
@@ -61,14 +61,19 @@ export const useVariants = (formData, setFormData,handleInputChange) => {
   }, [formData,handleInputChange]);
     // 👉 Xóa variantStorage theo ID
   const removeStorage = useCallback((idColor, variantId) => {
-    const updatedVariants = (formData.variants || []).map(vColor => {
-      if (vColor.idColor === idColor) {
-        const updatedStorage = (vColor.variantsStorage || []).filter(
-          v => v.variantId !== variantId
-        );
-        return { ...vColor, variantsStorage: updatedStorage };
-      }
-      return vColor;
+    const idnew=formData.variants.length-variantId;
+    const updatedVariants = [...(formData.variants || [])].map(vColor => {
+  if (vColor.idColor === idColor) {
+    // const updatedStorage = (vColor.variantsStorage || []).filter(
+    //   v => v.variantId !== variantId
+    // );
+    const updatedStorageByIndex = (vColor.variantsStorage || []).filter(
+    (v, index) => index !== variantId
+);
+    return { ...vColor, variantsStorage: updatedStorageByIndex };
+  }
+  return vColor;
+
     });
 
     handleInputChange({
@@ -76,13 +81,19 @@ export const useVariants = (formData, setFormData,handleInputChange) => {
     });
   }, [formData, handleInputChange]);
 
+
   // 👉 Cập nhật variant (ví dụ: sửa giá, dung lượng, màu…)
-  const updateVariantField = useCallback((idColor, fieldName, newValue, variantId = null) => {
+  const updateVariantField = useCallback((idColor, fieldName, newValue, variantId = null,index=null) => {
+      console.log("Gia tri duoc update Idcolor la :",idColor);
+            console.log("Gia tri duoc update fieldName la :",fieldName);
+                  console.log("Gia tri duoc update newValue la :",newValue);
+                        console.log("Gia tri duoc update index la :",index);
+                          console.log("Gia tri duoc update variantId la :",variantId);
     const updatedVariants = (formData.variants || []).map(vColor => {
       if (vColor.idColor === idColor) {
-        if (variantId !== null) {
-          const updatedStorage = (vColor.variantsStorage || []).map(v => {
-            if (v.variantId === variantId) {
+        if (index !== null) {
+          const updatedStorage = (vColor.variantsStorage || []).map((v,indexhere) => {
+            if (indexhere === index) {
               const value = ['price', 'list_price', 'sale_price', 'discount', 'warrantly', 'stock']
                 .includes(fieldName)
                 ? Number(newValue)

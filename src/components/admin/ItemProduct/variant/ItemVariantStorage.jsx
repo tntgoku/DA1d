@@ -1,7 +1,7 @@
 // src/components/Variant/ItemVariantStorage.jsx
 import { useState } from "react";
 import { formatPrice } from "../../../../entity/Entity";
-export const ItemVariantStorage = ({idcolor,key, variant, handleRemoveVariantstorage,updateVariantField }) => {
+export const ItemVariantStorage = ({idcolor,key, variant, handleRemoveVariantstorage,updateVariantField,index }) => {
 const [color,setcolor]=useState(variant.storage);
 
   return (
@@ -22,7 +22,7 @@ const [color,setcolor]=useState(variant.storage);
           onChange={(e)=>{
             console.log("Here",e.target.value);
             setcolor(e.target.value);
-            updateVariantField(idcolor,"storage",e.target.value,variant.variantId)}}
+            updateVariantField(idcolor,"storage",e.target.value,index)}}
         />
       </div>
 
@@ -34,7 +34,7 @@ const [color,setcolor]=useState(variant.storage);
           name="price"
           className="form-control"
           value={variant.list_price|| 0}
-          onChange={(e)=>{updateVariantField(idcolor,"list_price",e.target.value,variant.variantId)}}
+          onChange={(e)=>{updateVariantField(idcolor,"list_price",e.target.value,index)}}
         />
       </div>
 
@@ -48,7 +48,7 @@ const [color,setcolor]=useState(variant.storage);
           value={variant.price}
           onChange={(e)=>{
             console.log(e.target.value);
-            updateVariantField(idcolor,"price",e.target.value,variant.variantId)}}
+            updateVariantField(idcolor,"price",e.target.value,index)}}
         />
       </div>
 
@@ -62,12 +62,12 @@ const [color,setcolor]=useState(variant.storage);
             name="inventory"
             placeholder="Số lượng tồn kho"
             value={variant.stock || 0}
-            onChange={(e)=>{updateVariantField(idcolor,"stock",e.target.value,variant.variantId)}}
+            onChange={(e)=>{updateVariantField(idcolor,"stock",e.target.value,key,index)}}
           />
           <button
             className="btn btn-outline-danger"
             type="button"
-            onClick={() => handleRemoveVariantstorage(idcolor,variant.variantId)}
+            onClick={() => handleRemoveVariantstorage(idcolor,index)}
           >
             <i className="fas fa-trash"></i>
           </button>

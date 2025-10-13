@@ -4,17 +4,6 @@ import { OrderDetailModal } from './OrderDetailModal';
 import { OrderModal } from './OrderModal';
 
 
-const getStatusColor = (status) => {
-  switch (status) {
-    case 'Đã giao': return 'success';
-    case 'Đang giao': return 'info';
-    case 'Đã xác nhận': return 'primary';
-    case 'Chờ xác nhận': return 'warning';
-    case 'Đã hủy': return 'danger';
-    default: return 'success';
-  }
-};
-
 const formatCurrency = (amount) => {
   return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
 };
@@ -40,6 +29,27 @@ const OrdersSection = ({ orders: initialOrders, products }) => {
     shippingFee: 0,
     discount: 0
   });
+const ORDER_STATUS = {
+  pending: { label: 'Chờ xác nhận', color: 'warning' },
+  confirmed: { label: 'Đã xác nhận', color: 'primary' },
+  processing: { label: 'Đang xử lý', color: 'info' },
+  shipped: { label: 'Đang giao', color: 'secondary' },
+  delivered: { label: 'Đã giao', color: 'success' },
+  cancelled: { label: 'Đã hủy', color: 'danger' },
+  returned: { label: 'Hoàn hàng', color: 'gray' }
+};
+const PAYMENT_METHODS = {
+  cod: { label: 'Thanh toán khi nhận hàng', color: 'secondary' },
+  vnpay: { label: 'VNPAY', color: 'primary' },
+  momo: { label: 'MoMo', color: 'danger' },
+  bank_transfer: { label: 'Chuyển khoản ngân hàng', color: 'info' },
+  credit_card: { label: 'Thẻ tín dụng / Ghi nợ', color: 'warning' }
+};
+
+const getPaymentMethod = (method) => PAYMENT_METHODS[method] || { label: method, color: 'secondary' };
+
+const getStatus = (status) => ORDER_STATUS[status] || { label: status, color: 'secondary' };
+
 
   useEffect(() => {
     setOrders(initialOrders);
@@ -73,7 +83,7 @@ const OrdersSection = ({ orders: initialOrders, products }) => {
   };
 
   const handleItemChange = (index, field, value) => {
-    const updatedItems = [...formData.items];
+    const updatedItems = [...formData.listiem];
     
     if (field === 'variantId') {
       const product = products.find(p => p.variantId == value);
@@ -92,23 +102,23 @@ const OrdersSection = ({ orders: initialOrders, products }) => {
     
     setFormData({
       ...formData,
-      items: updatedItems
+      listiem: updatedItems
     });
   };
 
   const addItem = () => {
     setFormData({
       ...formData,
-      items: [...formData.items, { variantId: '', productName: '', price: 0, quantity: 1 }]
+      listiem: [...formData.listiem, { variantId: '', productName: '', totalPrice: 0, quantity: 1 }]
     });
   };
 
   const removeItem = (index) => {
-    if (formData.items.length > 1) {
-      const updatedItems = formData.items.filter((_, i) => i !== index);
+    if (formData.listiem.length > 1) {
+      const updatedItems = formData.listiem.filter((_, i) => i !== index);
       setFormData({
         ...formData,
-        items: updatedItems
+        listiem: updatedItems
       });
     }
   };
@@ -116,7 +126,7 @@ const OrdersSection = ({ orders: initialOrders, products }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    const total = formData.items.reduce((sum, item) => sum + (item.price * item.quantity), 0) +
+    const total = formData.listiem.reduce((sum, item) => sum + (item.totalPrice * item.quantity), 0) +
                   (parseFloat(formData.shippingFee) || 0) - (parseFloat(formData.discount) || 0);
 
     if (editingOrder) {
@@ -142,7 +152,6 @@ const OrdersSection = ({ orders: initialOrders, products }) => {
     setEditingOrder(order);
     setFormData({
       ...order,
-      date: order.date.includes('T') ? order.date : `${order.date}T00:00`
     });
     setShowModal(true);
   };
@@ -152,15 +161,15 @@ const OrdersSection = ({ orders: initialOrders, products }) => {
     setShowDetailModal(true);
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = (orderCode) => {
     if (window.confirm('Bạn có chắc chắn muốn xóa đơn hàng này?')) {
-      setOrders(orders.filter(order => order.id !== id));
+      setOrders(orders.filter(order => order.orderCode !== orderCode));
     }
   };
 
   const filteredOrders = orders.filter(order => {
-    const matchesSearch = order.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         order.id.toString().includes(searchTerm);
+    const matchesSearch = order.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         order.orderCode.toString().includes(searchTerm);
     const matchesStatus = statusFilter === 'all' || order.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
@@ -224,15 +233,19 @@ const OrdersSection = ({ orders: initialOrders, products }) => {
               <tbody className=' table table-responsive'>
                 {filteredOrders.map(order => (
                   <tr key={order.id}>
-                    <td className='text-center align-middle'>#{order.id}</td>
-                    <td className='text-center align-middle'>{order.customer}</td>
-                    <td className='text-center align-middle'>{new Date(order.date).toLocaleDateString('vi-VN')}</td>
-                    <td className='text-center align-middle'>{formatCurrency(order.total)}</td>
-                    <td className='text-center align-middle'>{order.payment}</td>
+                    <td className='text-center align-middle'>#{order.orderCode}</td>
+                    <td className='text-center align-middle'>{order.customerName}</td>
+                    <td className='text-center align-middle'>{new Date(order.createdAt).toLocaleDateString('vi-VN')}</td>
+                    <td className='text-center align-middle'>{formatCurrency(order.subtotalAmount)}</td>
+                    <td className='text-center align-middle'>{getPaymentMethod(order.paymentMethod).label}</td>
                     <td className='text-center align-middle'>
-                      <span className={`badge bg-${getStatusColor(order.status)}`} style={{width: '80%',height:"100%",fontSize:13}}>
-                        {order.status}
-                      </span>
+                      <span
+                          className={`badge bg-${getStatus(order.orderStatus).color}`}
+                          style={{ width: '80%', height: '100%', fontSize: 13 }}
+                        >
+                          {getStatus(order.orderStatus).label}
+                        </span>
+
                     </td >
                     <td className='handle-btn text-center align-middle' style={{
                       display: 'flex',
@@ -275,6 +288,7 @@ const OrdersSection = ({ orders: initialOrders, products }) => {
       {/* Modal Thêm/Sửa đơn hàng */}
       <OrderModal
         showModal={showModal}
+        getStatus={getStatus}
         setShowModal={setShowModal}
         editingOrder={editingOrder}
         handleSubmit={handleSubmit}
@@ -288,7 +302,8 @@ const OrdersSection = ({ orders: initialOrders, products }) => {
 
       {/* Modal Xem chi tiết đơn hàng */}
       <OrderDetailModal
-      getStatusColor={getStatusColor}
+      getStatusColor={getStatus}
+      getPaymentMethod={getPaymentMethod}
         showModal={showDetailModal}
         setShowModal={setShowDetailModal}
         order={selectedOrder}
