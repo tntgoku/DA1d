@@ -14,6 +14,7 @@ export const FormAttributeBasic= ({editingProduct,formData,handleImageUpload,set
   const [newColorInput, setNewColorInput] = useState("");
   const images = formData.images || [];
     const [variants, setVariants] = useState([]);
+  console.log(formData.variants.length)
 console.log("Formdata",formData);
   const {
     addColor,
@@ -27,103 +28,6 @@ console.log("Formdata",formData);
     { id: 2, value: "New" },   // nếu muốn thêm phần tử khác
     { id: 3, value: "Sale" }
   ];
-//   const handleAddColor= ()=>{
-//     if (!newColorInput.trim()) return; // Không thêm nếu input rỗng
-
-//       const currentVariants = formData.variants || [];
-
-//       // Tạo VariantColor mới từ input
-//       const newColor = new VariantColor({
-//         idColor: Math.floor(Math.random() * 1000000), // ID duy nhất
-//         color: newColorInput,          // lấy từ input
-//         variants: []                   // chưa có storage
-//       });
-
-//       // Cập nhật formData
-//       handleInputChange({
-//         target: { name: "variants", value: [...currentVariants, newColor] }
-//       });
-
-//       // Reset input
-//       setNewColorInput("");
-//   }  
-//   const handleAddStorage=(id)=>{
-//     console.log("Here",id);
-//      const newVariant = new Variant({
-//     variantId:Math.floor(Math.random() * 1000000), // ID tạm thời
-//     color: "", // có thể lấy từ VariantColor
-//     storage: "",
-//     price: 0,
-//     stock: 0
-//   });
-//    // Tìm đúng VariantColor trong formData.variants
-//   const updatedVariants = (formData.variants || []).map(vColor => {
-//     if (vColor.idColor === id) {
-//       // Thêm variant mới vào variantsStorage
-//       const updatedStorage = [...(vColor.variantsStorage || []), newVariant];
-//       return { ...vColor, variantsStorage: updatedStorage };
-//     }
-//     return vColor;
-//   });
-//     handleInputChange({
-//     target: { name: "variants", value: updatedVariants }
-//   });
-//     console.log(formData.variants);
-//   }
-// const  handleRemoveVariantColor=(idcolor)=>{
-//   console.log("Remove: color  ",idcolor);
-//   const updatedVariants = (formData.variants || []).filter(
-//     vColor => vColor.idColor !== idcolor
-//   );
-//   handleInputChange({
-//     target: { name: "variants", value: updatedVariants }
-//   });
-
-//  }
-// const handleRemoveVariantStorage = (idColor, variantId) => {
-//   // Duyệt tất cả VariantColor
-//   console.log("id color Remove: ",idColor,"dd",variantId)
-//   const updatedVariants = (formData.variants || []).map(vColor => {
-//     if (vColor.idColor === idColor) {
-//       // Lọc ra những variant không phải variantId cần xóa
-//       const updatedStorage = (vColor.variantsStorage || []).filter(
-//         v => v.variantId !== variantId
-//       );
-//       return { ...vColor, variantsStorage: updatedStorage };
-//     }
-//     return vColor;
-//   });
-
-//   // Cập nhật formData thông qua handleInputChange
-//   handleInputChange({
-//     target: { name: "variants", value: updatedVariants }
-//   });
-// };
-
-// const updateVariantField = (idColor, fieldName, newValue, variantId = null) => {
-//   const updatedVariants = (formData.variants || []).map(vColor => {
-//     if (vColor.idColor === idColor) {
-//       if (variantId !== null) {
-//         const updatedStorage = (vColor.variantsStorage || []).map(v => {
-//           if (v.variantId === variantId) {
-//                 const value = ['price', 'list_price', 'sale_price', 'discount', 'warrantly', 'stock'].includes(fieldName)
-//         ? Number(newValue)
-//         : newValue;
-//             return { ...v, [fieldName]: value }; // clone object nested
-//           }
-//           return v;
-//         });
-//         return { ...vColor, variantsStorage: updatedStorage }; // clone object cha
-//       } else {
-//         return { ...vColor, [fieldName]: newValue }; // clone object cha
-//       }
-//     }
-//     return vColor; // giữ nguyên các object khác
-//   });
-
-//   handleInputChange({ target: { name: "variants", value: updatedVariants } });
-// };
-
     return(
                 <div className={`row`}>
                   <div className="row">
@@ -145,6 +49,10 @@ console.log("Formdata",formData);
                     </div>
                   </div>
                   <div className="row">
+                    <label className="form-label" data-id={formData.id} data-idpro={formData.id}>Số màu sắc: {formData.variants.length} </label>
+                       
+                  </div>
+                  <div className="row">
                     <div className="col-md-12">
                       <div className="mb-3">
                         <label className="form-label">Mô tả sản phẩm</label>
@@ -164,12 +72,12 @@ console.log("Formdata",formData);
                   <div className="row">
                     <div className="col-md-8">
                       <div className="mb-3">
-                        <label className="form-label" data-id={formData.id} data-idpro={formData.href}>URL sản phẩm(tự động tạo theo tên sản phẩm)*</label>
+                        <label className="form-label" data-id={formData.id} data-idpro={formData.slug}>URL sản phẩm(tự động tạo theo tên sản phẩm)*</label>
                         <input
                           type="text"
                           className="form-control"
-                          name="href"
-                          value={formData.href}
+                          name="slug"
+                          value={formData?.slug}
                           onChange={handleInputChange}
                           required
                         />
@@ -248,12 +156,9 @@ console.log("Formdata",formData);
                                 variant={v}
                                 index={idx}
                                 updateVariantField={updateVariantField}
-                                // onAddStorage={() => handleAddStorage(v.idColor)}
                                 onAddStorage={()=>addStorage(v.idColor,v.color)}
-                                // onRemoveVariant={handleRemoveVariantColor}
                                 onRemoveVariant={removeVariantColor}
                               />
-
                               {(v.variantsStorage || []).length > 0 && [...v.variantsStorage].map((storage,index) => (
                                 <ItemVariantStorage
                                   index={index}

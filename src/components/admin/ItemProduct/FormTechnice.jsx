@@ -1,76 +1,69 @@
 import React, { useState } from "react";
-import { useUnits } from "../../../hook/useUnit";
+// Đảm bảo các hook và util này hoạt động như mong đợi
+import { useUnits } from "../../../hook/useUnit"; 
 import { useSpecifications } from "../../../hook/useSpec";
 import {
-  parseSpecValue,
   isTextSpec,
   mergeSpecsWithDefaults,
   mapSpecsToObject,
-} from "../../../Util/SpecUtil";
+} from "../../../Util/SpecUtil"; // Đã bỏ parseSpecValue vì không dùng ở đây
 
-export const FormTechnine = ({ handleInputChange, formData,setFormData }) => {
-  const { units } = useUnits();
-  const {unitName,setUnitName}=useState();
-  const { specs: dbSpecs,updateSpecification } = useSpecifications(formData.category,handleInputChange,formData,setFormData,units);
+export const FormTechnine = ({ handleInputChange, formData, setFormData }) => {
+  // Lỗi 3 đã được loại bỏ: unitName không cần thiết.
+  const { units } = useUnits(); 
+  
+  // dbSpecs chứa danh sách thông số kỹ thuật từ database (nếu có)
+  const { dbSpecs, updateSpecification } = useSpecifications(
+    formData.category,
+    handleInputChange,
+    formData,
+    setFormData,
+    units
+  );
+
+  // Default Specs: Đã chuẩn hóa lại tên trường 'units' và 'defaultUnit'
   const defaultSpecs = [
-    { label: "RAM", name: "RAM", type: "number", unit: "GB" },
-    { label: "Màn hình", name: "screen", type: "number", unit: "inch" },
-    { label: "Tần số quét", name: "refreshRate", type: "number", unit: "Hz" },
-    { label: "Camera trước", name: "camera", type: "number", unit: "MP" },
-    { label: "Camera sau", name: "camerabehind", type: "number", unit: "MP" },
+    { label: "RAM", name: "RAM", type: "number", units: ["MB", "GB", "TB"], defaultUnit: "GB" },
+    { label: "Màn hình", name: "screen", type: "number", units: ["inch", "cm"], defaultUnit: "inch" },
+    { label: "Tần số quét", name: "refreshRate", type: "number", units: ["Hz", "kHz"], defaultUnit: "Hz" },
+    { label: "Camera trước", name: "camera", type: "number", units: ["MP"], defaultUnit: "MP" },
+    { label: "Camera sau", name: "camerabehind", type: "number", units: ["MP"], defaultUnit: "MP" },
     { label: "Chip xử lý", name: "chip", type: "text" },
-    { label: "Dung lượng pin", name: "battery", type: "number", unit: "mAh" },
-    { label: "Trọng lượng", name: "weight", type: "number", unit: "g" },
+    { label: "Dung lượng pin", name: "battery", type: "number", units: ["mAh", "Wh"], defaultUnit: "mAh" },
+    { label: "Trọng lượng", name: "weight", type: "number", units: ["g", "kg", "lbs"], defaultUnit: "g" },
     { label: "Hệ điều hành", name: "operation", type: "text" },
     { label: "Kết nối", name: "connectivity", type: "text" },
     { label: "Tính năng đặc biệt", name: "features", type: "text" },
   ];
 
-// const handleSpecChange = (name, value, type) => {
-//   const parsedValue = parseSpecValue(value, type);
-//   console.log(formData.id);
-//   // Đảm bảo specifications luôn là array
-//   const specs = Array.isArray(formData.specifications)
-//     ? [...formData.specifications]
-//     : [];
+  // Chuẩn hóa dữ liệu specs hiện tại trong form
+  const normalizedSpecs = Array.isArray(formData.specifications)
+    ? mapSpecsToObject(formData.specifications)
+    : formData.specifications || {};
 
-//   // Kiểm tra xem spec này đã tồn tại trong mảng chưa
-//   const index = specs.findIndex((s) => s.value === name);
-
-//   if (index !== -1) {
-//     // Cập nhật spec đã có
-//     specs[index] = {
-//       ...specs[index],
-//       label: parsedValue,
-//     };
-//   } else {
-//     // Thêm mới spec
-//     specs.push({
-//       id: null,
-//       productId: formData.id || null,
-//       specId: null,
-//       value: name,
-//       label: parsedValue,
-//       unitName: null,
-//     });
-//   }
-
-//   // Cập nhật formData.specifications trong FormDetailProduct
-//   handleInputChange({
-//     target: {
-//       name: "specifications",
-//       value: specs,
-//     },
-//   });
-// };
-
+  // Gộp specs từ DB (nếu có) và specs mặc định
+  // Giả định: mergeSpecsWithDefaults trả về danh sách cuối cùng cần render.
+  const mergedSpecs = mergeSpecsWithDefaults(dbSpecs, defaultSpecs);
 
   const renderInput = (spec) => {
-    const isText = isTextSpec(spec);
+    const isText = normalizedSpecs.fillter;
+    
+    // Sửa Lỗi 4: Truy cập trực tiếp vào normalizedSpecs bằng spec.name
     const existingSpec = Object.values(normalizedSpecs).find(
-      (s) => s?.value === spec.name
-    );
+            // Dùng spec.name từ defaultSpecs để so sánh với existing spec's value
+            (s) => s?.value === spec.name
+        );
+    console.log("exitspec",existingSpec);
+    // currentUnitName là đơn vị được chọn hoặc đơn vị mặc định của spec
+    // existingSpec?.unitName: Đơn vị đã được lưu (từ DB hoặc form)
+    // spec.defaultUnit: Đơn vị mặc định từ defaultSpecs
+    const currentUnitName = existingSpec?.unitName || spec.defaultUnit || "";
+
+    // currentValue là giá trị (label) đã được lưu hoặc chuỗi rỗng
     const currentValue = existingSpec?.label || "";
+
+    // Lấy danh sách đơn vị hợp lệ từ defaultSpecs.units. Nếu không có (text spec), dùng mảng rỗng.
+    const availableUnits = spec.units || [];
 
     return (
       <div className="mb-3" key={spec.name}>
@@ -87,30 +80,30 @@ export const FormTechnine = ({ handleInputChange, formData,setFormData }) => {
             placeholder={spec.placeholder || ""}
           />
 
-          {!isText && (
+           {!isText && (
             <select
               className="form-select"
-              value={existingSpec?.unitName || spec.unit || ""}
+              value={currentUnitName} 
               onChange={(e) =>
                 updateSpecification(spec.name, e.target.value, "unit")
               }
+              style={{ width: '120px' }} 
             >
-              <option value="">--Chọn đơn vị--</option>
-              {units.map((u) => (
-                <option key={u.key} value={u.value}>
-                  {u.value}
-                </option>
-              ))}
+              <option value="">--Đơn vị--</option>
+              {
+                availableUnits.map((unitName) => (
+                  <option key={unitName} value={unitName}>
+                    {unitName}
+                  </option>
+                ))
+              }
             </select>
           )}
+
         </div>
       </div>
     );
   };
-  const normalizedSpecs = Array.isArray(formData.specifications)
-    ? mapSpecsToObject(formData.specifications)
-    : formData.specifications || {};
-      const mergedSpecs = mergeSpecsWithDefaults(dbSpecs, defaultSpecs);
 
   return <div className="d-grid">{mergedSpecs.map(renderInput)}</div>;
 };

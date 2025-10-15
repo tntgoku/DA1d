@@ -11,6 +11,8 @@ export const normalizeProducts = (products) => {
     variants: product.variants || [],
   }));
 };
+
+
 export const useProductsSection = (Listproducts = []) => {
   const [products, setProducts] = useState(Listproducts);
   const [categories, setCategories] = useState([]);
@@ -20,7 +22,7 @@ export const useProductsSection = (Listproducts = []) => {
   const [showProductDiscountModal, setShowProductDiscountModal] = useState(false);
   const [selectedProductForDiscount, setSelectedProductForDiscount] = useState(null);
   const [productDiscounts, setProductDiscounts] = useState([]);
-    const itemsPerPage = 10;
+  const itemsPerPage = 10;
   const [productDiscountFormData, setProductDiscountFormData] = useState({
     percentage_value: 0,
     product_id: "",
@@ -51,9 +53,9 @@ const handleFormSubmit = async (formData) => {
         p.id === editingProduct.id ? { ...p, ...formData } : p
       );
       setProducts(updated);
-      console.log("Update gửi lên:", formData);
       // 🟢 Gọi API cập nhật và chờ phản hồi
       const res = await productService.updateProduct(formData.id, formData);
+      console.log("Update gửi lên:", formData);
       console.log("Server trả về khi UPDATE:", res.data);
       const data = await productService.getAllProduct();
               const productsWithGroupedVariants = data.map(p => {

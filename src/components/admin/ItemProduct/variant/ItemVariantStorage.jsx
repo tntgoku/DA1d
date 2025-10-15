@@ -22,7 +22,7 @@ const [color,setcolor]=useState(variant.storage);
           onChange={(e)=>{
             console.log("Here",e.target.value);
             setcolor(e.target.value);
-            updateVariantField(idcolor,"storage",e.target.value,index)}}
+            updateVariantField(idcolor,"storage",e.target.value,key,index)}}
         />
       </div>
 
@@ -34,7 +34,7 @@ const [color,setcolor]=useState(variant.storage);
           name="price"
           className="form-control"
           value={variant.list_price|| 0}
-          onChange={(e)=>{updateVariantField(idcolor,"list_price",e.target.value,index)}}
+          onChange={(e)=>{updateVariantField(idcolor,"list_price",e.target.value,key,index)}}
         />
       </div>
 
@@ -48,7 +48,7 @@ const [color,setcolor]=useState(variant.storage);
           value={variant.price}
           onChange={(e)=>{
             console.log(e.target.value);
-            updateVariantField(idcolor,"price",e.target.value,index)}}
+            updateVariantField(idcolor,"price",e.target.value,key,index)}}
         />
       </div>
 

@@ -41,5 +41,18 @@ export const useCategories = () => {
     }
 
   }
-  return { categories, products, fetchProducts ,getCateById};
+
+  const findCategoryById = (categories, id) => {
+    for (let cat of categories) {
+      if (cat.id === id) {
+        return cat
+      }; // tìm category cha
+      if (cat.parents && cat.parents.length > 0) {
+        const found = findCategoryById(cat.parents, id); // tìm category con
+        if (found) return found;
+      }
+    }
+    return null;
+  };
+  return { categories, products, fetchProducts ,getCateById,findCategoryById};
 };

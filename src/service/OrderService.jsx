@@ -17,21 +17,25 @@ export const OrderService={
 },
 async PostOrder  (formData){
 try {
-    const response = await apiClient.post(`order`,
+    const response = await apiClient.post("checkout",
         formData
     );
-    if (response.data.status === "200") {
-    if (formData.paymentMethod === "vnpay") {
-        // Điều hướng đến URL thanh toán mà backend trả về
-        const url= response.data.data.paymentUrl;
-        alert(url);
-        window.location.href = url;
-    } else {
-        // Xử lý COD hoặc phương thức khác
-        console.log("Thanh toán COD thành công!");
+    if (response.data.status === 200) {
+      if (formData.paymentMethod === "vnpay") {
+          // Điều hướng đến URL thanh toán mà backend trả về
+          const url= response.data.data.paymentUrl;
+          alert(url);
+          window.location.href = url;
+      } else {
+          // Xử lý COD hoặc phương thức khác
+          console.log(response.data);
+          console.log("Thanh toán COD thành công!");
+      }
+    }else if(response.data.status === 400){
+      alert(response.data.message);
+    }else if(response.data.status === 500){
+      alert(response.data.message);
     }
-    }
-    console.log(response.data)
     return response.data;
   } catch (error) {
     console.error(`Error deleting product with ID $:`, error);

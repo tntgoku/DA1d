@@ -93,7 +93,9 @@ export const useVariants = (formData, setFormData,handleInputChange) => {
       if (vColor.idColor === idColor) {
         if (index !== null) {
           const updatedStorage = (vColor.variantsStorage || []).map((v,indexhere) => {
+            console.log("indexhere",indexhere);
             if (indexhere === index) {
+              console.log("Dung gia tri roi");
               const value = ['price', 'list_price', 'sale_price', 'discount', 'warrantly', 'stock']
                 .includes(fieldName)
                 ? Number(newValue)

@@ -1,327 +1,89 @@
-import { useState,useEffect } from "react";
-
+import { AppliedProductsModal } from "./modals/AppliedProductsModal";
+import { AdvancedRulesModal } from "./modals/AdvancedRulesModal";
+import { useDiscountManagement } from "../../hook/useDiscountManagement";
+// import { PeroidModalEdit } from "./modals/PeriodModalEdit";
+import { DiscountModalEdit } from "./modals/DiscountModalEdit";
+import {  PeriodModalFrom } from "./modals/PeriodModal";
+import { EmbeddedPeriodForm } from "./modals/EmbeddedPeriodForm";
 export const DiscountsSection = ({ discounts, discountPeriods, products }) => {
-  const [activeTab, setActiveTab] = useState('discounts');
-  const [showModal, setShowModal] = useState(false);
-  const [showPeriodModal, setShowPeriodModal] = useState(false);
-  const [showProductDiscountModal, setShowProductDiscountModal] = useState(false);
-  const [editingDiscount, setEditingDiscount] = useState(null);
-  const [editingPeriod, setEditingPeriod] = useState(null);
-  const [selectedPeriod, setSelectedPeriod] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  
-  // Form data for discount
-  const [formData, setFormData] = useState({
-    discount_code: '',
-    discount_name: '',
-    type: 0,
-    category: 1,
-    value: 0,
-    max_value: null,
-    discount_condition: null,
-    quantity: 1,
-    enable: true,
-    start_time: '',
-    end_time: '',
-    status: 1
-  });
+  const {
+    activeTab,
+    showModal,
+    showPeriodModal,
+    showProductDiscountModal,
+    showAdvancedRulesModal,
+    embedPeriodView,
+    embedAppliedView,
+    appliedProducts,
+    loadingApplied,
+    errorApplied,
+    editingDiscount,
+    editingPeriod,
+    selectedPeriod,
+    rulesEditingPeriod,
+    searchTerm,
+    formData,
+    periodFormData,
+    filteredDiscounts,
+    filteredPeriods,
+    setActiveTab,
+    setShowModal,
+    setShowPeriodModal,
+    setShowProductDiscountModal,
+    setSearchTerm,
+    handleOpenAddModal,
+    handleEdit,
+    handleDelete,
+    handleSubmit,
+    handleInputChange,
+    handleOpenAddPeriodModal,
+    handleEditPeriod,
+    handleDeletePeriod,
+    handleClosePeriodEmbedded,
+    handlePeriodSubmit,
+    handlePeriodInputChange,
+    handleManageProductDiscount,
+    handleChangeAppliedRows,
+    handleSaveAppliedRows,
+    handleCloseAppliedEmbedded,
+    handleOpenAdvancedRules,
+    handleSaveAdvancedRules,
+    handleCloseAdvancedRules,
+    getDiscountTypeText,
+    getStatusBadge,
+    isDiscountActive,
+  } = useDiscountManagement(discounts, discountPeriods, products);
 
-  // Form data for discount period
-  const [periodFormData, setPeriodFormData] = useState({
-    discount_period_code: '',
-    discount_period_name: '',
-    min_percentage_value: null,
-    max_percentage_value: null,
-    start_time: '',
-    end_time: '',
-    status: 1
-  });
+  // Render embedded view only (like ProductsSection toggles)
+  if (embedAppliedView) {
+    return (
+      <div>
+        <AppliedProductsModal 
+          embedded
+          period={selectedPeriod}
+          rows={appliedProducts}
+          loading={loadingApplied}
+          error={errorApplied}
+          onClose={handleCloseAppliedEmbedded}
+          onChangeRows={handleChangeAppliedRows}
+          onSave={handleSaveAppliedRows}
+        />
+      </div>
+    );
+  }
 
-  // Form data for product discount
-  const [productDiscountFormData, setProductDiscountFormData] = useState({
-    percentage_value: 0,
-    product_id: '',
-    discount_period_id: ''
-  });
-
-  // Reset form khi đóng modal
-  useEffect(() => {
-    if (!showModal) {
-      setFormData({
-        discount_code: '',
-        discount_name: '',
-        type: 0,
-        category: 1,
-        value: 0,
-        max_value: null,
-        discount_condition: null,
-        quantity: 1,
-        enable: true,
-        start_time: '',
-        end_time: '',
-        status: 1
-      });
-      setEditingDiscount(null);
-    }
-  }, [showModal]);
-
-  useEffect(() => {
-    if (!showPeriodModal) {
-      setPeriodFormData({
-        discount_period_code: '',
-        discount_period_name: '',
-        min_percentage_value: null,
-        max_percentage_value: null,
-        start_time: '',
-        end_time: '',
-        status: 1
-      });
-      setEditingPeriod(null);
-    }
-  }, [showPeriodModal]);
-
-  useEffect(() => {
-    if (!showProductDiscountModal) {
-      setProductDiscountFormData({
-        percentage_value: 0,
-        product_id: '',
-        discount_period_id: ''
-      });
-      setSelectedPeriod(null);
-    }
-  }, [showProductDiscountModal]);
-
-  // Filter data based on search
-  const filteredDiscounts = discounts.filter(discount => 
-    discount.discount_code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    discount.discount_name?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const filteredPeriods = discountPeriods.filter(period =>
-    period.discount_period_code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    period.discount_period_name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  // Discount functions
-  const handleOpenAddModal = () => {
-    setEditingDiscount(null);
-    setFormData({
-      discount_code: '',
-      discount_name: '',
-      type: 0,
-      category: 1,
-      value: 0,
-      max_value: null,
-      discount_condition: null,
-      quantity: 1,
-      enable: true,
-      start_time: '',
-      end_time: '',
-      status: 1
-    });
-    setShowModal(true);
-  };
-
-  const handleEdit = (discount) => {
-    setEditingDiscount(discount);
-    setFormData({
-      ...discount,
-      start_time: discount.start_time ? discount.start_time.slice(0, 16) : '',
-      end_time: discount.end_time ? discount.end_time.slice(0, 16) : ''
-    });
-    setShowModal(true);
-  };
-
-  const handleDelete = async (id) => {
-    if (window.confirm('Bạn có chắc muốn xóa mã giảm giá này?')) {
-      try {
-        const response = await fetch(`/api/discounts/${id}`, {
-          method: 'DELETE',
-        });
-        if (response.ok) {
-          window.location.reload();
-        }
-      } catch (error) {
-        console.error('Error deleting discount:', error);
-      }
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const url = editingDiscount 
-        ? `/api/discounts/${editingDiscount.id}`
-        : '/api/discounts';
-      
-      const method = editingDiscount ? 'PUT' : 'POST';
-      
-      const response = await fetch(url, {
-        method: method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        setShowModal(false);
-        window.location.reload();
-      }
-    } catch (error) {
-      console.error('Error saving discount:', error);
-    }
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : 
-              type === 'number' ? parseFloat(value) : 
-              type === 'select-one' ? parseInt(value) : value
-    }));
-  };
-
-  // Discount Period functions
-  const handleOpenAddPeriodModal = () => {
-    setEditingPeriod(null);
-    setPeriodFormData({
-      discount_period_code: '',
-      discount_period_name: '',
-      min_percentage_value: null,
-      max_percentage_value: null,
-      start_time: '',
-      end_time: '',
-      status: 1
-    });
-    setShowPeriodModal(true);
-  };
-
-  const handleEditPeriod = (period) => {
-    setEditingPeriod(period);
-    setPeriodFormData({
-      ...period,
-      start_time: period.start_time ? period.start_time.slice(0, 16) : '',
-      end_time: period.end_time ? period.end_time.slice(0, 16) : ''
-    });
-    setShowPeriodModal(true);
-  };
-
-  const handleDeletePeriod = async (id) => {
-    if (window.confirm('Bạn có chắc muốn xóa đợt giảm giá này?')) {
-      try {
-        const response = await fetch(`/api/discount-periods/${id}`, {
-          method: 'DELETE',
-        });
-        if (response.ok) {
-          window.location.reload();
-        }
-      } catch (error) {
-        console.error('Error deleting discount period:', error);
-      }
-    }
-  };
-
-  const handlePeriodSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const url = editingPeriod 
-        ? `/api/discount-periods/${editingPeriod.id}`
-        : '/api/discount-periods';
-      
-      const method = editingPeriod ? 'PUT' : 'POST';
-      
-      const response = await fetch(url, {
-        method: method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(periodFormData),
-      });
-
-      if (response.ok) {
-        setShowPeriodModal(false);
-        window.location.reload();
-      }
-    } catch (error) {
-      console.error('Error saving discount period:', error);
-    }
-  };
-
-  const handlePeriodInputChange = (e) => {
-    const { name, value, type } = e.target;
-    setPeriodFormData(prev => ({
-      ...prev,
-      [name]: type === 'number' ? parseFloat(value) : 
-              type === 'select-one' ? parseInt(value) : value
-    }));
-  };
-
-  // Product Discount functions
-  const handleManageProductDiscount = (period) => {
-    setSelectedPeriod(period);
-    setProductDiscountFormData({
-      percentage_value: 0,
-      product_id: '',
-      discount_period_id: period.id
-    });
-    setShowProductDiscountModal(true);
-  };
-
-  const handleProductDiscountSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetch('/api/product-discount-periods', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(productDiscountFormData),
-      });
-
-      if (response.ok) {
-        setShowProductDiscountModal(false);
-        window.location.reload();
-      }
-    } catch (error) {
-      console.error('Error saving product discount:', error);
-    }
-  };
-
-  const handleProductDiscountInputChange = (e) => {
-    const { name, value, type } = e.target;
-    setProductDiscountFormData(prev => ({
-      ...prev,
-      [name]: type === 'number' ? parseFloat(value) : value
-    }));
-  };
-
-  // Helper functions
-  const getDiscountTypeText = (type, category) => {
-    const typeText = type === 0 ? 'Phần trăm' : 'Tiền mặt';
-    const categoryText = category === 1 ? 'Sản phẩm' : 'Vận chuyển';
-    return `${typeText} (${categoryText})`;
-  };
-
-  const getStatusBadge = (status, enable) => {
-    if (!enable) return <span className="badge bg-secondary">Vô hiệu</span>;
-    return status === 1 ? 
-      <span className="badge bg-success">Kích hoạt</span> : 
-      <span className="badge bg-warning">Chờ kích hoạt</span>;
-  };
-
-  const isDiscountActive = (discount) => {
-    const now = new Date();
-    const start = new Date(discount.start_time);
-    const end = new Date(discount.end_time);
-    return discount.enable && discount.status === 1 && now >= start && now <= end;
-  };
-
-  const getProductDiscounts = (periodId) => {
-    // Giả sử bạn có API để lấy danh sách product_discount_period
-    return []; // Trả về danh sách product discount periods
-  };
+  // Show Embedded Period Form view (no popup)
+  if (embedPeriodView) {
+    return (
+    <EmbeddedPeriodForm
+      editingPeriod={editingPeriod}
+      periodFormData={periodFormData}
+      handlePeriodInputChange={handlePeriodInputChange}
+      handlePeriodSubmit={handlePeriodSubmit}
+      handleClosePeriodEmbedded={handleClosePeriodEmbedded}
+    />
+    );
+  }
 
   return (
     <div>
@@ -335,9 +97,9 @@ export const DiscountsSection = ({ discounts, discountPeriods, products }) => {
             <i className="fas fa-plus"></i> Thêm mã giảm giá
           </button>
         </div>
-      </div>
+        </div>
 
-      <div className="row">
+        <div className="row">
         <div className="col-md-12">
           <div className="card">
             <div className="card-header" style={{display: 'flex', gap: 25, alignItems: 'center'}}>
@@ -509,6 +271,13 @@ export const DiscountsSection = ({ discounts, discountPeriods, products }) => {
                                 >
                                   <i className="fas fa-box"></i>
                                 </button>
+                                {/* <button 
+                                  className="btn btn-sm btn-outline-success me-1"
+                                  onClick={() => handleOpenAdvancedRules(period)}
+                                  title="Quy tắc nâng cao"
+                                >
+                                  <i className="fas fa-cogs"></i>
+                                </button> */}
                                 <button 
                                   className="btn btn-sm btn-outline-danger"
                                   onClick={() => handleDeletePeriod(period.id)}
@@ -531,345 +300,51 @@ export const DiscountsSection = ({ discounts, discountPeriods, products }) => {
       </div>
 
       {/* Modal Thêm/Sửa mã giảm giá */}
-      {showModal && (
-        <div className="modal fade show" style={{display: 'block'}}>
-          <div className="modal-dialog modal-lg">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">
-                  {editingDiscount ? 'Sửa mã giảm giá' : 'Thêm mã giảm giá'}
-                </h5>
-                <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
-              </div>
-              <form onSubmit={handleSubmit}>
-                <div className="modal-body">
-                  <div className="row">
-                    <div className="col-md-6">
-                      <div className="mb-3">
-                        <label className="form-label">Mã giảm giá *</label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          name="discount_code"
-                          value={formData.discount_code}
-                          onChange={handleInputChange}
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div className="col-md-6">
-                      <div className="mb-3">
-                        <label className="form-label">Tên giảm giá</label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          name="discount_name"
-                          value={formData.discount_name}
-                          onChange={handleInputChange}
-                        />
-                      </div>
-                    </div>
-                  </div>
+      {showModal && (<DiscountModalEdit 
+        editingDiscount={editingDiscount}
+        formData={formData} handleInputChange={handleInputChange} 
+        handleSubmit={handleSubmit}
+        onClose={() => setShowModal(false)}
+        />
 
-                  <div className="row">
-                    <div className="col-md-6">
-                      <div className="mb-3">
-                        <label className="form-label">Loại giảm giá *</label>
-                        <select
-                          className="form-select"
-                          name="type"
-                          value={formData.type}
-                          onChange={handleInputChange}
-                        >
-                          <option value={0}>Phần trăm (%)</option>
-                          <option value={1}>Tiền mặt (đ)</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div className="col-md-6">
-                      <div className="mb-3">
-                        <label className="form-label">Danh mục *</label>
-                        <select
-                          className="form-select"
-                          name="category"
-                          value={formData.category}
-                          onChange={handleInputChange}
-                        >
-                          <option value={1}>Sản phẩm</option>
-                          <option value={2}>Vận chuyển</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="row">
-                    <div className="col-md-6">
-                      <div className="mb-3">
-                        <label className="form-label">Giá trị *</label>
-                        <input
-                          type="number"
-                          className="form-control"
-                          name="value"
-                          value={formData.value}
-                          onChange={handleInputChange}
-                          step="0.01"
-                          min="0"
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div className="col-md-6">
-                      <div className="mb-3">
-                        <label className="form-label">Giá trị tối đa</label>
-                        <input
-                          type="number"
-                          className="form-control"
-                          name="max_value"
-                          value={formData.max_value || ''}
-                          onChange={handleInputChange}
-                          step="0.01"
-                          min="0"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="row">
-                    <div className="col-md-6">
-                      <div className="mb-3">
-                        <label className="form-label">Điều kiện áp dụng</label>
-                        <input
-                          type="number"
-                          className="form-control"
-                          name="discount_condition"
-                          placeholder="Đơn hàng tối thiểu"
-                          value={formData.discount_condition || ''}
-                          onChange={handleInputChange}
-                          step="0.01"
-                          min="0"
-                        />
-                      </div>
-                    </div>
-                    <div className="col-md-6">
-                      <div className="mb-3">
-                        <label className="form-label">Số lượng *</label>
-                        <input
-                          type="number"
-                          className="form-control"
-                          name="quantity"
-                          value={formData.quantity}
-                          onChange={handleInputChange}
-                          min="1"
-                          required
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="row">
-                    <div className="col-md-6">
-                      <div className="mb-3">
-                        <label className="form-label">Thời gian bắt đầu *</label>
-                        <input
-                          type="datetime-local"
-                          className="form-control"
-                          name="start_time"
-                          value={formData.start_time}
-                          onChange={handleInputChange}
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div className="col-md-6">
-                      <div className="mb-3">
-                        <label className="form-label">Thời gian kết thúc *</label>
-                        <input
-                          type="datetime-local"
-                          className="form-control"
-                          name="end_time"
-                          value={formData.end_time}
-                          onChange={handleInputChange}
-                          required
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="row">
-                    <div className="col-md-6">
-                      <div className="mb-3">
-                        <label className="form-label">Trạng thái</label>
-                        <select
-                          className="form-select"
-                          name="status"
-                          value={formData.status}
-                          onChange={handleInputChange}
-                        >
-                          <option value={1}>Kích hoạt</option>
-                          <option value={0}>Vô hiệu</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div className="col-md-6">
-                      <div className="mb-3 form-check" style={{ marginTop: '2rem' }}>
-                        <input
-                          type="checkbox"
-                          className="form-check-input"
-                          name="enable"
-                          checked={formData.enable}
-                          onChange={handleInputChange}
-                        />
-                        <label className="form-check-label">Có hiệu lực</label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="modal-footer">
-                  <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>
-                    Hủy
-                  </button>
-                  <button type="submit" className="btn btn-primary">
-                    {editingDiscount ? 'Cập nhật' : 'Thêm'}
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
       )}
 
+      {/* // setShowPeriodModal={setShowPeriodModal}
+      //  periodFormData={periodFormData} 
+      // handlePeriodInputChange={handlePeriodInputChange}
+      // editingPeriod={editingPeriod} */}
       {/* Modal Thêm/Sửa đợt giảm giá */}
-      {showPeriodModal && (
-        <div className="modal fade show" style={{display: 'block'}}>
-          <div className="modal-dialog modal-lg">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">
-                  {editingPeriod ? 'Sửa đợt giảm giá' : 'Thêm đợt giảm giá'}
-                </h5>
-                <button type="button" className="btn-close" onClick={() => setShowPeriodModal(false)}></button>
-              </div>
-              <form onSubmit={handlePeriodSubmit}>
-                <div className="modal-body">
-                  <div className="row">
-                    <div className="col-md-6">
-                      <div className="mb-3">
-                        <label className="form-label">Mã đợt giảm giá *</label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          name="discount_period_code"
-                          value={periodFormData.discount_period_code}
-                          onChange={handlePeriodInputChange}
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div className="col-md-6">
-                      <div className="mb-3">
-                        <label className="form-label">Tên đợt giảm giá *</label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          name="discount_period_name"
-                          value={periodFormData.discount_period_name}
-                          onChange={handlePeriodInputChange}
-                          required
-                        />
-                      </div>
-                    </div>
-                  </div>
+      {showPeriodModal && ( <PeriodModalFrom
+      periodFormData={periodFormData}
+      
+      editingPeriod={editingPeriod} onChange={handlePeriodInputChange}
+      onClose={ () => setShowPeriodModal(false)} 
+      onSubmit={handlePeriodSubmit}
+      />
 
-                  <div className="row">
-                    <div className="col-md-6">
-                      <div className="mb-3">
-                        <label className="form-label">Giá trị % tối thiểu</label>
-                        <input
-                          type="number"
-                          className="form-control"
-                          name="min_percentage_value"
-                          value={periodFormData.min_percentage_value || ''}
-                          onChange={handlePeriodInputChange}
-                          min="0"
-                          max="100"
-                        />
-                      </div>
-                    </div>
-                    <div className="col-md-6">
-                      <div className="mb-3">
-                        <label className="form-label">Giá trị % tối đa</label>
-                        <input
-                          type="number"
-                          className="form-control"
-                          name="max_percentage_value"
-                          value={periodFormData.max_percentage_value || ''}
-                          onChange={handlePeriodInputChange}
-                          min="0"
-                          max="100"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="row">
-                    <div className="col-md-6">
-                      <div className="mb-3">
-                        <label className="form-label">Thời gian bắt đầu *</label>
-                        <input
-                          type="datetime-local"
-                          className="form-control"
-                          name="start_time"
-                          value={periodFormData.start_time}
-                          onChange={handlePeriodInputChange}
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div className="col-md-6">
-                      <div className="mb-3">
-                        <label className="form-label">Thời gian kết thúc *</label>
-                        <input
-                          type="datetime-local"
-                          className="form-control"
-                          name="end_time"
-                          value={periodFormData.end_time}
-                          onChange={handlePeriodInputChange}
-                          required
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="row">
-                    <div className="col-md-6">
-                      <div className="mb-3">
-                        <label className="form-label">Trạng thái</label>
-                        <select
-                          className="form-select"
-                          name="status"
-                          value={periodFormData.status}
-                          onChange={handlePeriodInputChange}
-                        >
-                          <option value={1}>Kích hoạt</option>
-                          <option value={0}>Vô hiệu</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="modal-footer">
-                  <button type="button" className="btn btn-secondary" onClick={() => setShowPeriodModal(false)}>
-                    Hủy
-                  </button>
-                  <button type="submit" className="btn btn-primary">
-                    {editingPeriod ? 'Cập nhật' : 'Thêm'}
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
       )}
+
+      {/* Modal Xem sản phẩm áp dụng đợt giảm giá */}
+      {showProductDiscountModal && (
+        <AppliedProductsModal 
+          period={selectedPeriod}
+          rows={appliedProducts}
+          loading={loadingApplied}
+          error={errorApplied}
+          onClose={() => setShowProductDiscountModal(false)}
+          onChangeRows={handleChangeAppliedRows}
+          onSave={handleSaveAppliedRows}
+        />
+      )}
+
+      {/* Modal Quy tắc nâng cao */}
+      {/* {showAdvancedRulesModal && (
+        <AdvancedRulesModal 
+          period={rulesEditingPeriod}
+          onClose={handleCloseAdvancedRules}
+          onSave={handleSaveAdvancedRules}
+        />
+      )} */}
 
     </div>
   );

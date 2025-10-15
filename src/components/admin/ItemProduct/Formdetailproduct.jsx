@@ -22,6 +22,7 @@ const FormDetailProduct = ({
         id: product.id,
         name: product.name,
         category: product.category,
+        slug:product.slug,
         brand:product.brand,
         price: product.price,
         stock: product.stock,

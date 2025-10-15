@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { apiClient } from "../service/getAPI";
 import { parseSpecValue } from "../Util/SpecUtil"; // ✅ import thêm
+import { useCategories } from "./useCategori";
 export const useSpecifications = (categoryId, handleInputChange, formData,setFormData,units) => {
   const [specs, setSpecs] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -11,7 +12,6 @@ export const useSpecifications = (categoryId, handleInputChange, formData,setFor
       setSpecs([]);
       return;
     }
-
     setLoading(true);
     apiClient
       .get(`specification/category/${categoryId}`)
@@ -19,7 +19,6 @@ export const useSpecifications = (categoryId, handleInputChange, formData,setFor
       .catch((err) => setError(err))
       .finally(() => setLoading(false));
   }, [categoryId]);
-  console.log(units);
   // ✅ Hàm cập nhật/thêm mới specification
 const updateSpecification = useCallback(
   (nameSpec, value, type) => {
@@ -35,6 +34,8 @@ const updateSpecification = useCallback(
       // ✅ Lấy đơn vị mặc định theo spec name
       let defaultUnit = null;
       const defaultSpec = specs.find((s) => s.name === nameSpec);
+      console.log(" NameSpec",nameSpec);
+      console.log(" defaultSpec",defaultSpec);
       if (defaultSpec && Array.isArray(units)) {
         const unitObj = units.find((u) => u.id === defaultSpec.unit);
         defaultUnit = unitObj ? unitObj.value : null;
@@ -48,7 +49,6 @@ const updateSpecification = useCallback(
           };
         } else {
           specsitem.push({
-            id: null,
             productId: prevFormData?.id || null,
             specId: null,
             value: nameSpec,
@@ -64,9 +64,8 @@ const updateSpecification = useCallback(
             unitName: specsitem[index].unitName || defaultUnit,
           };
         } else {
-          console.log(specs);
+          // console.log(specs);
           specsitem.push({
-            id: null,
             productId: prevFormData?.id || null,
             specId: null,
             value: nameSpec,

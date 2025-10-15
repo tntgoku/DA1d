@@ -58,7 +58,7 @@ const Dashboard = () => {
   // 🔄 Đồng bộ activeSection theo URL
   useEffect(() => {
     const path = location.pathname.split("/").pop();
-    
+      console.log("/path",path);
     if (path) setActiveSection(path);
   }, [location]);
   const renderSection = () => {
@@ -69,7 +69,7 @@ const Dashboard = () => {
         return <DashboardSection users={users} products={products1} orders={orders} repairs={repairs} sidebarOpen={sidebarOpen} />;
       case 'users':
         return <UsersSection users={users} />;
-      case 'products':
+      case 'product':
         return <ProductsSection Listproducts={products} />;
       case 'orders':
         return <OrdersSection orders={orders} products={products} />;
@@ -112,7 +112,7 @@ const Dashboard = () => {
           {[
             ['dashboard', 'fa-tachometer-alt', 'Dashboard'],
             ['users', 'fa-users', 'Người dùng'],
-            ['products', 'fa-mobile-alt', 'Sản phẩm'],
+            ['product', 'fa-mobile-alt', 'Sản phẩm'],
             ['orders', 'fa-shopping-cart', 'Đơn hàng'],
             ['repairs', 'fa-tools', 'Sửa chữa'],
             ['discounts', 'fa-tag', 'Khuyến mãi'],

@@ -147,7 +147,9 @@
     padding-top: 0;
     padding-bottom: 0;
 }
-
+/* .product__description{
+    padding-right: 45px;
+} */
 .product__description__property {
     font-size: .85em;
     color: #969696;
@@ -164,8 +166,10 @@
 }
 
 .product__price {
+    padding-top: 25px;
     font-size: 1em;
-    color: #333;
+    text-align: right;
+    color: #d70018;;
     font-weight: 600;
 }
 

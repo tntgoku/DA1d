@@ -2,22 +2,8 @@ import { useMemo } from "react";
 import { useCategories } from "./useCategori";
 
 export const useBreadcrumb = ({ product, variant, category }) => {
-  const { categories } = useCategories();
-const findCategoryById = (categories, id) => {
-  for (let cat of categories) {
+  const { categories,findCategoryById } = useCategories();
 
-    if (cat.id === id) {
-      console.log("Find 1 , ",cat)
-      return cat
-    }; // tìm category cha
-    if (cat.parents && cat.parents.length > 0) {
-      const found = findCategoryById(cat.parents, id); // tìm category con
-       console.log("Find 1 , ",found)
-      if (found) return found;
-    }
-  }
-  return null;
-};
   return useMemo(() => {
     const items = [{ name: "Trang chủ", link: "/" }];
 

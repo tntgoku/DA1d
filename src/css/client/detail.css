@@ -1,4 +1,9 @@
-    .title-product {
+.body-wrap{
+    position: relative;
+}
+
+
+.title-product {
         font-size: 24px;
         font-weight: 700;
         margin: 0px 0px 15px;

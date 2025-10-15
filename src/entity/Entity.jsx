@@ -8,11 +8,9 @@ function formatPrice(price) {
   if (typeof price === "number") {
     return price.toLocaleString("vi-VN") + " đ";
   }
-
   if (price === null || price === undefined) {
     return "Liên hệ";
   }
-
   // Chuyển chuỗi sang số, loại bỏ ký tự không phải số
   const numericPrice = Number(price.toString().replace(/\D/g, ""));
   return numericPrice > 0 ? numericPrice.toLocaleString("vi-VN") + " đ" : "Liên hệ";
@@ -313,10 +311,10 @@ const categories=[
 ]
  const itemtest=
      [ {
-      productId: 101,
+      id: 65,
       productName: "iPhone 13 Pro Max Cu",
       slug: "iphone-13-pro-max-cu",
-      categoryId: 1,
+      category: 1,
       productType: "used",
       model: "iPhone13ProMax",
       description: "iPhone 13 Pro Max 128GB dã qua s? d?ng, còn m?i 95%",
@@ -324,11 +322,11 @@ const categories=[
       isFeatured: true,
       featuredImageIndex:1,
       variants:[ { 
-        variantId : 4, 
+        variantId : 93, 
         productId : 101, 
         sku : "IP13PM-128-SILVER", 
         price : 18500000, 
-        stock : 5, 
+        stock : 2, 
         color : "B?c", 
         storage : "128GB", 
         costPrice : 16000000, 
@@ -354,10 +352,10 @@ const categories=[
 
   },
   {
-      productId: 9,
+    id: 64,
       productName: "iPhone 13 Pro Max Cu",
       slug: "iphone-13-pro-max-cu",
-      categoryId: 1,
+      category: 1,
       productType: "used",
       model: "iPhone13ProMax",
       description: "iPhone 13 Pro Max 128GB dã qua s? d?ng, còn m?i 95%",
@@ -365,7 +363,7 @@ const categories=[
       isFeatured: true,
       featuredImageIndex:1,
       variants:[ { 
-        variantId : 5, 
+        variantId : 97, 
         productId : 9, 
         sku : "IP13PM-128-SILVER", 
         price : 18500000, 

@@ -134,10 +134,9 @@ body {
     color: var(--primary);
 }
 
-.modal.fade.show {
+.modal.fade.show{
     display: block;
 }
-
 .handle-btn button i {
     color: #121617;
 }

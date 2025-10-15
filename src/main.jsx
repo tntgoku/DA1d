@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import './index.css'
 import App from './App.jsx'
 import Detail from './page/Detail.jsx';
-import ViewPayment from './page/gotopayment.jsx';
+import ViewPayment from './page/ViewPayment.jsx';
 import Cart from './page/Cart.jsx';
 import AuthForms from './page/AuthForms.jsx';
 import Account from './page/Account.jsx';
@@ -21,7 +21,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/:parentSlug/:childSlug?" element={<CategoryPage />} />
         <Route path="*" element={<div>Not Found</div>} />
         <Route path="/admin/*" element={<Dashboard />} />
-        <Route path='/payment' element={<ViewPayment />} />
+        <Route path='/checkout' element={<ViewPayment />} />
         <Route path='/login' element={<AuthForms/>}/>
         <Route path='/account' element ={<Account/>}/>
         <Route path="/:parentSlug/:childSlug?/:productSlug/:variantId" element={<Detail />} />

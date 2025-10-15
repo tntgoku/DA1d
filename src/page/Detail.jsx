@@ -5,7 +5,6 @@ import{Route, Routes,Link,useParams} from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { useState,useEffect, use } from "react";
 import anh from '../assets/anh1.webp';
-import anh1 from '../assets/iphone-17-pro-max_1.webp';
 import 'swiper/css';
 import ImageSlider from "../components/client/ImagesSlides";
 import SlidesObject from "../components/client/SlidesObject";
@@ -15,150 +14,98 @@ import { ItemStorage } from "../components/ItemStorage";
 import { Variant } from "../entity/Object/Variant";
 import Breadcrumb from "../components/Breadcrumb";
 import { useCategories } from "../hook/useCategori";
+import { useProductDetail } from "../hook/useProductDetail";
+import CartPopup from "../components/CartPop";
 const Detail = () => {
     const { id } = useParams();
-    // Tìm sản phẩm hiện tại theo id
-      const [productvariant,setProductvariant]=useState();
-    // Giá hiển thị
-    const [finalPrice, setFinalPrice] = useState("Liên hệ");
-    const [activeIndex, setActiveIndex] = useState(0);
-    const [listStoraget, setListStoraget] = useState([]);
-    const [listimg,setListimg]=useState([]);
-    const [selectedStorage, setSelectedStorage] = useState();
-    const [selectedRegion, setSelectedRegion] = useState();
-    const [selectlistItems,setSelectItems]=useState([]); 
-    const [product,setProduct]=useState();
-    const [cartItems, setCartItems] = useState([]);
-    const {categories}=useCategories();
-      // Tên danh mục
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          console.log("Fetching product variant with ID:", id);
-          const variant = await productService.getDetailProductVariantById(id);
-          if (variant) {
-            setProductvariant(variant);
-            console.log("no o day ne",productvariant);
-            const id=variant.productId;
-            const prod = await productService.getProductById(id);
-            
-            console.log("Product:" ,prod);
+    const{categories}=useCategories();
 
-            const colors = [...new Set(prod.variants.map(v => v.color))];
-            // const productsWithColors = prod.filter(product =>
-            //     product.variants.some(variant => colors.includes(variant.color))
-            // );
-            console.log("Color",colors);
-            console.log("prod",prod)
-            setSelectedStorage(variant.storage);
-            setSelectedRegion(variant.region);
-            setProduct(prod);
-            setListimg(prod.images);
-          }
-        } catch (err) {
-          console.error(err);
-          console.log("Error fetching product variant or product details", err);
-        }
-      };
+    const {
+        isPopupOpen,
+        lastAddedProduct,
+        product,
+        productvariant,
+        finalPrice,
+        activeIndex,
+        listimg,
+        selectedStorage,
+        selectedRegion,
+        namecate,
+        isLoading,
+        error,
+        slidesData,
+        listStoraget,
+        listColor,
+        currentVariantInStorageList,
+        handleSelectColor,
+        setSelectedStorage,
+        setSelectedRegion,
+        logdata,
+        closePopup,
+        handleAddToCart,
+        calculatePrice,totalItems
+    } = useProductDetail(id, categories);
 
-      if (id) fetchData(); // chỉ fetch khi id tồn tại
-    }, [id]); // ✅ thêm `id` vào dependency
 
-    // Hàm tính giá cuối cùng
-    const calculatePrice = (priceInput, discountInput) => {
-    // Nếu không có giá hoặc là "liên hệ"
-    if (priceInput === null || priceInput === undefined || priceInput === "liên hệ" || priceInput === "Liên hệ") {
-        return "Liên hệ";
+
+    if (isLoading) {
+        return (
+            <>
+                <Header />
+                <div className="body-wrap">
+                    <div className="container">
+                        <div className="text-center py-5">
+                            <div className="spinner-border" role="status">
+                                <span className="sr-only">Loading...</span>
+                            </div>
+                            <p className="mt-3">Đang tải sản phẩm...</p>
+                        </div>
+                    </div>
+                </div>
+                <Footer />
+            </>
+        );
     }
-    // Chuyển priceInput sang số nếu nó là string
-    let price = typeof priceInput === "string" ? parseFloat(priceInput.replace(/\./g, "").replace(",", ".")) : priceInput;
-    // Nếu price không phải số hợp lệ hoặc <= 0
-    if (isNaN(price) || price <= 0) return "Liên hệ";
-    // Xử lý discount
-    let discount = discountInput ? Number(discountInput) : 0;
-    if (!isNaN(discount) && discount > 0) {
-        price = price - price * (discount / 100);
+
+    if (error) {
+        return (
+            <>
+                <Header />
+                <div className="body-wrap">
+                    <div className="container">
+                        <div className="text-center py-5">
+                            <div className="alert alert-danger" role="alert">
+                                <h4 className="alert-heading">Lỗi!</h4>
+                                <p>{error}</p>
+                                <hr />
+                                <p className="mb-0">Vui lòng thử lại sau.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <Footer />
+            </>
+        );
     }
-    // Trả về giá theo định dạng Việt Nam
-    return price.toLocaleString("vi-VN") + "đ";
-    };
 
-
-    useEffect(() => {
-    if (productvariant) {
-        setFinalPrice(calculatePrice(productvariant.list_price, productvariant.discount));
+    if (!product || !productvariant) {
+        return (
+            <>
+                <Header />
+                <div className="body-wrap">
+                    <div className="container">
+                        <div className="text-center py-5">
+                            <div className="alert alert-warning" role="alert">
+                                <h4 className="alert-heading">Không tìm thấy sản phẩm!</h4>
+                                <p>Sản phẩm bạn tìm kiếm không tồn tại hoặc đã bị xóa.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <Footer />
+            </>
+        );
     }
-    console.log("final: ",selectlistItems)
-    }, [productvariant,selectlistItems]);
-
-    if (!product) {
-        return <div>Loading...</div>;
-    }
-    const namecate = product
-        ? categories.find((cate) => cate.id === product?.categoryId)
-        : null;
-
-
-
-
-    // Cập nhật giá khi click chọn color
-    const handleSelectColor = (index) => {
-        setActiveIndex(index);
-        const selectedImg = listimg[index];
-        setFinalPrice(calculatePrice(selectedImg.price, productvariant?.warrantly));
-    };
-
-const slidesData = [
-    {
-        id: 1,
-        href: "/iphone-17-pro-max-256gb-ll-a-1",
-        title: "iPhone 17 Pro Max 256GB",
-        imgSrc: anh1,
-        imgAlt: "iPhone 17 Pro Max 256GB",
-        price: "Liên hệ",
-        promo: "Bảo hành 12 tháng chính hãng Apple",
-        discount: "Giảm 14%",
-    },
-    {
-        id: 2,
-        href: "/iphone-17-pro-max-512gb-ll-a-1",
-        title: "iPhone 17 Pro Max 512GB",
-        imgSrc: anh1,
-        imgAlt: "iPhone 17 Pro Max 512GB",
-        price: "Liên hệ",
-        promo: "Bảo hành 12 tháng chính hãng Apple",
-        discount: "Giảm 14%",
-    },
-];
-  // Thêm sản phẩm vào giỏ hàng
-  const addToCart = (product) => {
-    const existingItem = cartItems.find(item => item.id === product.id);
-    if (existingItem) {
-      setCartItems(cartItems.map(item =>
-        item.id === product.id 
-          ? { ...item, quantity: item.quantity + 1 } 
-          : item
-      ));
-    } else {
-      setCartItems([...cartItems, { ...product, quantity: 1 }]);
-    }
-  };
-
-  // Xóa sản phẩm khỏi giỏ hàng
-  const removeFromCart = (productId) => {
-    setCartItems(cartItems.filter(item => item.id !== productId));
-  };
-
-  // Cập nhật số lượng sản phẩm trong giỏ
-  const updateQuantity = (productId, newQuantity) => {
-    if (newQuantity < 1) return;
-    
-    setCartItems(cartItems.map(item =>
-      item.id === productId 
-        ? { ...item, quantity: newQuantity } 
-        : item
-    ));
-  };
 
   return <>
     <Header></Header>
@@ -166,11 +113,6 @@ const slidesData = [
         <section className="bread-crumb">
             <div className="container">
                 <Breadcrumb product={product} variant={productvariant} category={null} />
-                {/* <ul className="breadcrumb">
-                    <li className="home"> <Link to="/" className="changeurl">Home</Link><i className="fa-solid fa-chevron-right"></i> </li>
-                    <li className="home"> <Link to="/product" className="changeurl">Products</Link><i className="fa-solid fa-chevron-right"></i> </li>
-                    <li><strong><span>{`${product.name} ${productvariant.storage}`}</span></strong> </li>
-                </ul> */}
             </div>
         </section>
         <div className="product layout-product">
@@ -193,7 +135,7 @@ const slidesData = [
                                         namecate &&(
                                                 <div className="mb-break type col-lg-6">
                                                     <span className="stock-brand-title">Loại:</span>
-                                                    <span className="a-vendor" data-cate={namecate.id}>{namecate.name}</span>
+                                                    <span className="a-vendor" data-cate={namecate}>{namecate}</span>
                                                 </div>
                                         )
                                     }
@@ -214,7 +156,7 @@ const slidesData = [
                                 <form action="/cart/add" className="add-to-cart-form" >
                                     <div className="price-box">
                                         {
-                                            (productvariant?.warrantly && finalPrice !=="Liên hệ") ? (
+                                            (finalPrice !=="Liên hệ") ? (
                                                 <>
                                                     <div className="special-price">
                                                         <span className="price product-price">
@@ -231,8 +173,7 @@ const slidesData = [
                                         }
                                     </div>
                                     <div className="form-product" >
-                                       {product?.categoryId <= 2 && (
-                                            <div className="version-product header">
+                                            {selectedStorage!=null &&(<div className="version-product header">
                                                 <div className="header-version">
                                                 <span style={{ marginBottom: "10px", fontWeight: 600 }}>
                                                     Chọn phiên bản
@@ -252,9 +193,8 @@ const slidesData = [
                                                                 ))}
                                                     </div>
                                                     }
-                                            </div>
-                                        )}
-                                        {   selectlistItems &&(
+                                            </div>)}
+                                        {listColor && Object.keys(listColor).length > 0 && (
                                             <div className="color-product header">
                                                 <div className="color-header-version">
                                                 <span style={{ marginBottom: "10px", fontWeight: 600 }}>
@@ -262,27 +202,29 @@ const slidesData = [
                                                 </span>
                                                 </div>
                                                 <div className="option-version row">
-                                                    {selectlistItems.map((img, index) => (
-                                                        <div className="col-lg-4 col-md-3 col-4" key={index}>
-                                                            <label
-                                                            className={`color-item ${activeIndex === index ? "active" : ""}`}
-                                                            onClick={() => handleSelectColor(index)
-                                                            }
-                                                            >
-                                                            <div className="thumb-images">
-                                                                <img src={listimg.at(index)?.imgSrc} alt={`Màu ${index}`} />
+                                                    {Object.entries(listColor).map(([colorKey, colorData], index) => {
+                                                        const variant = colorData[selectedStorage];
+                                                        if (!variant) return null;
+                                                        return (
+                                                            <div className="col-lg-4 col-md-3 col-4" key={colorKey}>
+                                                                <label
+                                                                className={`color-item ${activeIndex === index ? "active" : ""}`}
+                                                                onClick={() => handleSelectColor(colorKey)}
+                                                                >
+                                                                <div className="thumb-images">
+                                                                    <img src={listimg[index]?.imgSrc || listimg[0]?.imgSrc} alt={`Màu ${colorKey}`} />
+                                                                </div>
+                                                                <div className="switch-0-color">
+                                                                    <span className="title">{colorKey}</span>
+                                                                    <span className="price">{calculatePrice(variant.list_price, variant.discount)}</span>
+                                                                </div>
+                                                                </label>
                                                             </div>
-                                                            <div className="switch-0-color">
-                                                                <span className="title">{img.color}</span>
-                                                                <span className="price">  {calculatePrice(img.price, img?.warrantly)}</span>
-                                                            </div>
-                                                            </label>
-                                                        </div>
-                                                        ))}
+                                                        );
+                                                    })}
                                                 </div>
                                             </div>
-                                        )
-                                        }
+                                        )}
                                         {finalPrice !== "Liên hệ" && (
                                             <>
                                                 <div className="custom-btn-number">
@@ -294,11 +236,11 @@ const slidesData = [
                                                 </div>
                                                 <div className="btn-mua button_actions clearfix">
                                                 <button type="button" title="Thêm vào giỏ" className="btn btn-dark btn_base normal_button btn_add_cart add_to_cart btn-cart"
-                                                 onClick={()=>{ logdata()
-                                                }}>
+                                                 onClick={()=>handleAddToCart(productvariant)}>
                                                     <span className="txt-main text_1">Thêm vào giỏ</span>
                                                     <span className="text_2">Giao hàng tận nơi miễn phí</span>
                                                 </button>
+                                                
                                                 </div>
                                                 <div className="group-button">
                                                 <a href="" title="Mua ngay" className="btn-buyNow btn btn-dark">
@@ -402,7 +344,7 @@ const slidesData = [
                         </div>
                     </div>
                     <div className="col-lg-5">{
-                        product.category <=2 &&(                        
+                        product.categoryId <=2 &&(                        
                         <div className="product-infor-technical block-background">
                             <h3 className="title">Thông số kỹ thuật</h3>
                             <div className="content">
@@ -441,8 +383,16 @@ const slidesData = [
                 </div>
             </div>
         </div>
+        <CartPopup
+                isOpen={isPopupOpen}
+                onClose={closePopup}
+                product={lastAddedProduct}
+                cartItemCount={totalItems()} // Lấy tổng số lượng từ useCart
+            />
     </div>
+    
     <Footer></Footer>
-  </>;
+    
+  </>
 }
 export default Detail;
