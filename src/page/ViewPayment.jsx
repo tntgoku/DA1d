@@ -3,8 +3,8 @@ import React from "react";
 import anh from '../assets/logo_store.jpg';
 import { formatPrice } from "../entity/Entity";
 import { ItemOrder } from "../components/ItemOrder";
-import { usePayment } from "../hook/usePayment";
-import { useLogin } from "../hook/useLogin";
+import { usePayment } from "../hooks/usePayment";
+import { useLogin } from "../hooks/useLogin";
 const ViewPayment = () => {
   const {
     provinces,
@@ -201,8 +201,9 @@ const ViewPayment = () => {
                                 <tbody>
                                     {
                                        listCart &&(
-                                            listCart.map((product) => 
+                                            listCart.map((product, index) => 
                                                         <ItemOrder 
+                                                            key={product.id || index}
                                                             item={product}
                                                             idproduct={product.id}
                                                             Listimg={product?.images}
@@ -277,7 +278,7 @@ const ViewPayment = () => {
                                 {voucherApplied && (
                                     <div className="discount-have-voucher">
                                         <span className="total-line-name">
-                                        Áp dụng mã giảm giá ({voucher}%) cho hóa đơn
+                                        Áp dụng mã giảm giá ({voucher.value}%) cho hóa đơn
                                         </span>
                                         <span className="total-line-price total-line-discount">
                                         <span

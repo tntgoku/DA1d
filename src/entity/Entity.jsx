@@ -177,7 +177,7 @@ const testOrders = [
     discount_period_code: 'PERIOD_SUMMER24',
     discount_period_name: 'Đợt giảm giá mùa hè 2024',
     min_percentage_value: 10,
-    max_percentage_value: 30,
+    max_percentage_value:null,
     start_time: '2024-06-01T00:00:00',
     end_time: '2024-08-31T23:59:59',
     status: 1,

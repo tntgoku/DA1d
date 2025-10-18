@@ -9,12 +9,12 @@ import 'swiper/css';
 import ImageSlider from "../components/client/ImagesSlides";
 import SlidesObject from "../components/client/SlidesObject";
 // import { categories} from "../entity/Entity";
-import { productService} from "../service/productService";
+import { productService} from "../services/productService";
 import { ItemStorage } from "../components/ItemStorage";
 import { Variant } from "../entity/Object/Variant";
 import Breadcrumb from "../components/Breadcrumb";
-import { useCategories } from "../hook/useCategori";
-import { useProductDetail } from "../hook/useProductDetail";
+import { useCategories } from "../hooks/useCategori";
+import { useProductDetail } from "../hooks/useProductDetail";
 import CartPopup from "../components/CartPop";
 const Detail = () => {
     const { id } = useParams();

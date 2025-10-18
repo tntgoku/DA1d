@@ -8,22 +8,70 @@ import Wishlist from '../components/client/WishList';
 import Header from '../components/client/Header';
 import Footer from '../components/client/Footer';
 import { testOrders } from '../entity/Entity';
+import { getProfile } from '../services/Authentication';
+import { useAuth } from '../hooks/AuthContext';
 const Account = () => {
   const [activeTab, setActiveTab] = useState('profile');
   const [isEditing, setIsEditing] = useState(false);
+  const { isAuthenticated, user } = useAuth();
 
   const [userData, setUserData] = useState({
-    name: 'Nguyễn Văn A',
-    email: 'nguyenvana@example.com',
-    phone: '0123456789',
-    address: '123 Đường ABC, Quận 1, TP.HCM',
+    name: '',
+    email: '',
+    phone: '',
+    address: '',
     avatar: 'https://via.placeholder.com/150'
   });
 
-  const [orders,setOrders] = useState([]);
-useEffect(() => {
-  setOrders(testOrders); // nạp dữ liệu testOrders khi component mount
-}, []);
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    // Redirect to login if not authenticated
+    if (!isAuthenticated) {
+      window.location.href = "/auth";
+      return;
+    }
+
+    const fetchUserProfile = async () => {
+      try {
+        setLoading(true);
+        const response = await getProfile();
+        
+        if (response && response.data) {
+          const profileData = response.data;
+          setUserData({
+            name: profileData.fullName || '',
+            email: profileData.email || '',
+            phone: profileData.phone || '',
+            address: profileData.address || '',
+            avatar: profileData.avatar || 'https://via.placeholder.com/150'
+          });
+          
+          // Lấy danh sách đơn hàng từ profile
+          if (profileData.listorder) {
+            setOrders(profileData.listorder);
+          } else {
+            setOrders(testOrders); // fallback to test data
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+        setError('Không thể tải thông tin người dùng');
+        
+        // Nếu lỗi 401, chuyển hướng đến trang đăng nhập
+        if (error.response?.status === 401) {
+          localStorage.removeItem("token");
+          window.location.href = "/auth";
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
   const [services] = useState([
     {
       id: 'DV001',
@@ -42,6 +90,37 @@ useEffect(() => {
       cost: '750.000đ'
     }
   ]);
+
+  if (loading) {
+    return (
+      <>
+        <Header/>
+        <div className="account-container">
+          <div className="loading-container">
+            <div className="loading-spinner"></div>
+            <p>Đang tải thông tin...</p>
+          </div>
+        </div>
+        <Footer/>
+      </>
+    );
+  }
+
+  if (error) {
+    return (
+      <>
+        <Header/>
+        <div className="account-container">
+          <div className="error-container">
+            <h2>Lỗi</h2>
+            <p>{error}</p>
+            <button onClick={() => window.location.reload()}>Thử lại</button>
+          </div>
+        </div>
+        <Footer/>
+      </>
+    );
+  }
 
   return (
     <>

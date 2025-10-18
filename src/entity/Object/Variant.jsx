@@ -39,7 +39,7 @@ export const groupVariantsByColor = (variants) => {
 
     if (!acc[colorKey]) {
       acc[colorKey] = {
-        idColor :Math.floor(Math.random() * 10000),
+        idColor :variant.colorCode ||Math.floor(Math.random() * 10000000),
         color: variant.color || "Không xác định",
         variants: [],
       };

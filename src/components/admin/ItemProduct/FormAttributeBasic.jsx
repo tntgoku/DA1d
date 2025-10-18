@@ -9,7 +9,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { isFormEmpty } from '../../../Util/ProductUtil';
 import { ProductVariantGroup } from '../../../entity/Object/ProductVariantGroup';
 import { VariantColor } from '../../../entity/Object/VariantColor';
-import { useVariants } from '../../../hook/useVariant';
+import { useVariants } from '../../../hooks/useVariant/useVariant';
 export const FormAttributeBasic= ({editingProduct,formData,handleImageUpload,setFormData,handleInputChange})=>{
   const [newColorInput, setNewColorInput] = useState("");
   const images = formData.images || [];
@@ -21,7 +21,8 @@ console.log("Formdata",formData);
     addStorage,
     removeVariantColor,
     removeStorage,
-    updateVariantField
+    updateVariantField,
+    handleImageUploadVariant
   } = useVariants(formData,setFormData, handleInputChange);
      const status = [
     { id: 1, value: "Hot" },
@@ -155,6 +156,7 @@ console.log("Formdata",formData);
                               <ItemVariant
                                 variant={v}
                                 index={idx}
+                                handleImageUploadVariant={handleImageUploadVariant}
                                 updateVariantField={updateVariantField}
                                 onAddStorage={()=>addStorage(v.idColor,v.color)}
                                 onRemoveVariant={removeVariantColor}

@@ -1,114 +1,176 @@
-import { AppliedProductsModal } from "./modals/AppliedProductsModal";
-import { AdvancedRulesModal } from "./modals/AdvancedRulesModal";
-import { useDiscountManagement } from "../../hook/useDiscountManagement";
-// import { PeroidModalEdit } from "./modals/PeriodModalEdit";
+import { DiscountService } from "../../services/DiscountService";
+import { useState, useEffect } from "react";
+import { useDiscountCampaign } from "../../hooks/useDiscount/useDiscountCampaign";
+import { CampaignEditModal } from "./CampaignEditModal";
 import { DiscountModalEdit } from "./modals/DiscountModalEdit";
-import {  PeriodModalFrom } from "./modals/PeriodModal";
-import { EmbeddedPeriodForm } from "./modals/EmbeddedPeriodForm";
-export const DiscountsSection = ({ discounts, discountPeriods, products }) => {
-  const {
-    activeTab,
-    showModal,
-    showPeriodModal,
-    showProductDiscountModal,
-    showAdvancedRulesModal,
-    embedPeriodView,
-    embedAppliedView,
-    appliedProducts,
-    loadingApplied,
-    errorApplied,
-    editingDiscount,
-    editingPeriod,
-    selectedPeriod,
-    rulesEditingPeriod,
-    searchTerm,
-    formData,
-    periodFormData,
-    filteredDiscounts,
-    filteredPeriods,
-    setActiveTab,
-    setShowModal,
-    setShowPeriodModal,
-    setShowProductDiscountModal,
-    setSearchTerm,
-    handleOpenAddModal,
-    handleEdit,
-    handleDelete,
-    handleSubmit,
-    handleInputChange,
-    handleOpenAddPeriodModal,
-    handleEditPeriod,
-    handleDeletePeriod,
-    handleClosePeriodEmbedded,
-    handlePeriodSubmit,
-    handlePeriodInputChange,
-    handleManageProductDiscount,
-    handleChangeAppliedRows,
-    handleSaveAppliedRows,
-    handleCloseAppliedEmbedded,
-    handleOpenAdvancedRules,
-    handleSaveAdvancedRules,
-    handleCloseAdvancedRules,
-    getDiscountTypeText,
-    getStatusBadge,
-    isDiscountActive,
-  } = useDiscountManagement(discounts, discountPeriods, products);
+import { 
+  getDiscountTypeText, 
+  getStatusBadge, 
+  formatValue, 
+  formatDate, 
+  filterCampaigns, 
+  filterVouchers 
+} from "../../utils/discountUtils";
+import { useDiscountManagement } from "../../hooks/useDiscount/useDiscountManagement";
 
-  // Render embedded view only (like ProductsSection toggles)
-  if (embedAppliedView) {
+export const DiscountsSection = () => {
+  const [activeTab, setActiveTab] = useState('discounts');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showFormDetail, setShowFormDetail] = useState(false);
+  
+  // Use discount campaign hook
+  const {
+    editingCampaign,
+    loading: modalLoading,
+    error: modalError,
+    products,
+    categories,
+    variants,
+    selectedProducts,
+    selectedCategories,
+    selectedVariants,
+    formData,
+    handleEditCampaign,
+    handleCloseModal,
+    handleCloseFormDetail,
+    handleSaveCampaign,
+    handleInputChange,
+    handleProductToggle,
+    handleCategoryToggle,
+    handleVariantToggle,
+    handleSelectAllProducts,
+    handleSelectAllCategories,
+    handleSelectAllVariants,
+    setError: setModalError
+  } = useDiscountCampaign();
+
+const {
+  showEditModal,
+  discounts,
+  vouchers,
+  loading,
+  error,
+  setDiscounts,
+  setVouchers,
+  setError,
+  setLoading,
+  handleEditVoucher,
+  setShowEditModal,
+  editingVoucher,
+  formDataVoucher,
+  defaultFormDataVoucher,
+  setFormDataVoucher,
+  handleInputChangeVoucher,
+  handleSaveVoucherWithRefresh
+} = useDiscountManagement();
+  // Filter data based on search term using utils
+  const filteredDiscounts = filterCampaigns(discounts, searchTerm);
+  const filteredVouchers = filterVouchers(vouchers, searchTerm);
+
+  // Enhanced save handler with refresh
+  const handleSaveCampaignWithRefresh = async () => {
+    const success = await handleSaveCampaign();
+    if (success) {
+      // Refresh data after successful save
+      const [campaignsData, vouchersData] = await Promise.all([
+        DiscountService.getAllDiscountCampaigns(),
+        DiscountService.getAllVouchers()
+      ]);
+      setDiscounts(Array.isArray(campaignsData) ? campaignsData : []);
+      setVouchers(Array.isArray(vouchersData) ? vouchersData : []);
+      // Close form detail
+      setShowFormDetail(false);
+      handleCloseFormDetail();
+    }
+  };
+
+
+  // Show loading state
+  if (loading) {
     return (
-      <div>
-        <AppliedProductsModal 
-          embedded
-          period={selectedPeriod}
-          rows={appliedProducts}
-          loading={loadingApplied}
-          error={errorApplied}
-          onClose={handleCloseAppliedEmbedded}
-          onChangeRows={handleChangeAppliedRows}
-          onSave={handleSaveAppliedRows}
-        />
+      <div className="d-flex justify-content-center align-items-center" style={{ height: '400px' }}>
+        <div className="text-center">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+          <p className="mt-2">Đang tải dữ liệu khuyến mãi...</p>
+        </div>
       </div>
     );
   }
 
-  // Show Embedded Period Form view (no popup)
-  if (embedPeriodView) {
+  // Show error state
+  if (error) {
     return (
-    <EmbeddedPeriodForm
-      editingPeriod={editingPeriod}
-      periodFormData={periodFormData}
-      handlePeriodInputChange={handlePeriodInputChange}
-      handlePeriodSubmit={handlePeriodSubmit}
-      handleClosePeriodEmbedded={handleClosePeriodEmbedded}
-    />
+      <div className="alert alert-danger" role="alert">
+        <h4 className="alert-heading">Lỗi tải dữ liệu!</h4>
+        <p>{error}</p>
+        <hr />
+        <p className="mb-0">
+          <button 
+            className="btn btn-outline-danger" 
+            onClick={() => window.location.reload()}
+          >
+            Thử lại
+          </button>
+        </p>
+      </div>
     );
   }
 
   return (
     <div>
-      <div className="header d-flex justify-content-between align-items-center">
-        <h4>Quản lý Khuyến mãi</h4>
-        <div>
-          <button className="btn btn-primary me-2 btn-primary-2" onClick={handleOpenAddPeriodModal}>
-            <i className="fas fa-calendar-alt"></i> Đợt giảm giá
-          </button>
-          <button className="btn btn-primary-2 btn-success" onClick={handleOpenAddModal}>
-            <i className="fas fa-plus"></i> Thêm mã giảm giá
-          </button>
-        </div>
-        </div>
+      {showFormDetail ? (
+        <CampaignEditModal
+          show={true}
+          onClose={() => {
+            setShowFormDetail(false);
+            handleCloseFormDetail();
+          }}
+          onSave={handleSaveCampaignWithRefresh}
+          campaign={editingCampaign}
+          products={products}
+          categories={categories}
+          variants={variants}
+          selectedProducts={selectedProducts}
+          selectedCategories={selectedCategories}
+          selectedVariants={selectedVariants}
+          formData={formData}
+          onInputChange={handleInputChange}
+          onProductToggle={handleProductToggle}
+          onCategoryToggle={handleCategoryToggle}
+          onVariantToggle={handleVariantToggle}
+          onSelectAllProducts={handleSelectAllProducts}
+          onSelectAllCategories={handleSelectAllCategories}
+          onSelectAllVariants={handleSelectAllVariants}
+          loading={modalLoading}
+          error={modalError}
+        />
+      ) : (
+        <>
+          <div className="header d-flex justify-content-between align-items-center">
+            <h4>Quản lý Chiến dịch & Voucher</h4>
+            <button
+              className="btn btn-success"
+              onClick={() => {
+                handleEditCampaign(null);
+                setShowFormDetail(true);
+              }}
+            >
+              <i className="fas fa-plus"></i> Thêm chiến dịch
+            </button>
+          </div>
 
         <div className="row">
         <div className="col-md-12">
           <div className="card">
-            <div className="card-header" style={{display: 'flex', gap: 25, alignItems: 'center'}}>
-              <span>Danh sách Khuyến mãi</span>
+            <div className="card-header" style={{display: 'flex', gap: 25, alignItems: 'center', justifyContent: 'space-between'}}>
+              <span>Danh sách Chiến dịch giảm giá & Voucher</span>
               <div className="search-match">
                 <form className="input-groups1">
                   <input 
                     className="input-group-field auto-search search-auto form-control" 
-                    placeholder="Tìm kiếm mã hoặc tên khuyến mãi..." 
+                    placeholder="Tìm kiếm chiến dịch hoặc voucher..." 
                     autoComplete="off" 
                     type="text" 
                     value={searchTerm}
@@ -118,6 +180,7 @@ export const DiscountsSection = ({ discounts, discountPeriods, products }) => {
                     <i className="fa-solid fa-magnifying-glass"></i>
                   </button>
                 </form>
+                </div>
               </div>
             </div>
             <div className="card-body">
@@ -127,22 +190,97 @@ export const DiscountsSection = ({ discounts, discountPeriods, products }) => {
                     className={`nav-link ${activeTab === 'discounts' ? 'active' : ''}`}
                     onClick={() => setActiveTab('discounts')}
                   >
-                    Mã giảm giá
+                    Chiến dịch giảm giá
                   </button>
                 </li>
                 <li className="nav-item">
                   <button 
-                    className={`nav-link ${activeTab === 'periods' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('periods')}
+                    className={`nav-link ${activeTab === 'vouchers' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('vouchers')}
                   >
-                    Đợt giảm giá
+                    Voucher
                   </button>
                 </li>
               </ul>
 
               <div className="tab-content mt-3" style={{display:"block "}}>
-                {/* Discounts Tab */}
+                {/* Campaigns Tab */}
                 {activeTab === 'discounts' && (
+                  <div className="tab-pane fade show active">
+                    <div className="table-responsive">
+                      <table className="table table-hover">
+                        <thead>
+                          <tr>
+                            <th>ID</th>
+                            <th>Tên chiến dịch</th>
+                            <th>Loại</th>
+                            <th>Giá trị</th>
+                            <th>Target</th>
+                            <th>Thời gian</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                          </tr>
+                        </thead>
+                        <tbody className='table table-responsive  text-center align-middle'>
+                          {filteredDiscounts.map(campaign => (
+                            <tr key={campaign.campaignId}>
+                              <td>
+                                <strong>{campaign.campaignId || '---'}</strong>
+                              </td>
+                              <td>{campaign.campaignName || '---'}</td>
+                              <td>{campaign.campaignType || '---'}</td>
+                              <td>
+                                {campaign.value ? 
+                                  (campaign.discountType === 'PERCENTAGE' || campaign.discountType === 'percentage' ? 
+                                    `${campaign.value}%` : 
+                                    `${campaign.value.toLocaleString()}đ`
+                                  ) : '---'}
+                                {campaign.maxDiscount && (
+                                  <div>
+                                    <small className="text-muted">
+                                      Tối đa: {campaign.maxDiscount.toLocaleString()}đ
+                                    </small>
+                                  </div>
+                                )}
+                              </td>
+                              <td>{campaign.targetType || '---'}</td>
+                              <td>
+                                <small>
+                                  <div>Từ: {formatDate(campaign.startDate)}</div>
+                                  <div>Đến: {formatDate(campaign.endDate)}</div>
+                                </small>
+                              </td>
+                              <td className="handle-btn text-center align-middle">
+                                {getStatusBadge(campaign.isActive, campaign.isActive)}
+                              </td>
+                              <td className="handle-btn text-center align-middle">
+                                 <div className="d-flex justify-content-center align-items-center gap-2" style={{color:'black'}}>
+                                <button 
+                                  className="btn btn-sm btn-outline-primary me-1"
+                                  onClick={() => {
+                                    handleEditCampaign(campaign);
+                                    setShowFormDetail(true);
+                                  }}
+                                >
+                                  <i className="fas fa-edit"></i>
+                                </button>
+                                <button 
+                                  className="btn btn-sm btn-outline-danger"
+                                >
+                                  <i className="fas fa-trash"></i>
+                                </button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {/* Vouchers Tab */}
+                {activeTab === 'vouchers' && (
                   <div className="tab-pane fade show active">
                     <div className="table-responsive">
                       <table className="table table-hover">
@@ -158,51 +296,51 @@ export const DiscountsSection = ({ discounts, discountPeriods, products }) => {
                             <th>Thao tác</th>
                           </tr>
                         </thead>
-                        <tbody className='table table-responsive  text-center align-middle'>
-                          {filteredDiscounts.map(discount => (
-                            <tr key={discount.id}>
+                        <tbody className='table table-responsive text-center align-middle'>
+                          {filteredVouchers.map(voucher => (
+                            <tr key={voucher.id}>
                               <td>
-                                <strong>{discount.discount_code}</strong>
-                                {isDiscountActive(discount) && (
-                                  <span className="badge bg-success ms-1">Đang chạy</span>
-                                )}
+                                <strong>{voucher.code || voucher.discount_code || '---'}</strong>
                               </td>
-                              <td>{discount.discount_name || '---'}</td>
-                              <td>{getDiscountTypeText(discount.type, discount.category)}</td>
+                              <td>{voucher.name || voucher.discount_name || '---'}</td>
+                              <td>{getDiscountTypeText(voucher.type)}</td>
                               <td>
-                                {discount.type === 0 ? 
-                                  `${discount.value}%` : 
-                                  `${discount.value.toLocaleString()}đ`
-                                }
-                                {discount.max_value && (
+                                {voucher.value ? 
+                                  (voucher.type === 0 || voucher.type === 'percentage' || voucher.discountType === 'PERCENTAGE' ? 
+                                    `${voucher.value}%` : 
+                                    `${voucher.value.toLocaleString()}đ`
+                                  ) : '---'}
+                                {voucher.maxDiscount && (
                                   <div>
                                     <small className="text-muted">
-                                      Tối đa: {discount.max_value.toLocaleString()}đ
+                                      Tối đa: {voucher.maxDiscount.toLocaleString()}đ
                                     </small>
                                   </div>
                                 )}
                               </td>
-                              <td>{discount.quantity}</td>
+                              <td>{voucher.quantity || 0}</td>
                               <td>
                                 <small>
-                                  <div>Từ: {new Date(discount.start_time).toLocaleString('vi-VN')}</div>
-                                  <div>Đến: {new Date(discount.end_time).toLocaleString('vi-VN')}</div>
+                                  <div>Từ: {formatDate(voucher.startDate || voucher.start_time)}</div>
+                                  <div>Đến: {formatDate(voucher.endDate || voucher.end_time)}</div>
                                 </small>
                               </td>
-                              <td className=" handle-btn text-center align-middle">
-                                {getStatusBadge(discount.status, discount.enable)}
+                              <td className="handle-btn text-center align-middle">
+                                {getStatusBadge(voucher.status, voucher.isActive)}
                               </td>
                               <td className="handle-btn text-center align-middle">
                                  <div className="d-flex justify-content-center align-items-center gap-2" style={{color:'black'}}>
                                 <button 
                                   className="btn btn-sm btn-outline-primary me-1"
-                                  onClick={() => handleEdit(discount)}
+                                  onClick={() => {
+                                    handleEditVoucher(voucher.id);
+                                    setShowEditModal(true);
+                                  }}
                                 >
                                   <i className="fas fa-edit"></i>
                                 </button>
                                 <button 
                                   className="btn btn-sm btn-outline-danger"
-                                  onClick={() => handleDelete(discount.id)}
                                 >
                                   <i className="fas fa-trash"></i>
                                 </button>
@@ -216,136 +354,26 @@ export const DiscountsSection = ({ discounts, discountPeriods, products }) => {
                   </div>
                 )}
 
-                {/* Discount Periods Tab */}
-                {activeTab === 'periods' && (
-                  <div className="tab-pane fade show active">
-                    <div className="table-responsive">
-                      <table className="table table-hover text-center align-middle ">
-                        <thead>
-                          <tr>
-                            <th>Mã đợt</th>
-                            <th>Tên đợt</th>
-                            <th>Giá trị %</th>
-                            <th>Thời gian</th>
-                            <th>Trạng thái</th>
-                            <th>Thao tác</th>
-                          </tr>
-                        </thead>
-                        <tbody className=''>
-                          {filteredPeriods.map(period => (
-                            <tr key={period.id}>
-                              <td>
-                                <strong>{period.discount_period_code}</strong>
-                              </td>
-                              <td>{period.discount_period_name}</td>
-                              <td>
-                                {period.min_percentage_value && period.max_percentage_value ? 
-                                  `${period.min_percentage_value}% - ${period.max_percentage_value}%` :
-                                  'Tùy chỉnh'
-                                }
-                              </td>
-                              <td>
-                                <small>
-                                  <div>Từ: {new Date(period.start_time).toLocaleString('vi-VN')}</div>
-                                  <div>Đến: {new Date(period.end_time).toLocaleString('vi-VN')}</div>
-                                </small>
-                              </td>
-                              <td className=" handle-btn text-center align-middle">
-                                {period.status === 1 ? 
-                                  <span className="badge bg-success">Kích hoạt</span> : 
-                                  <span className="badge bg-secondary">Vô hiệu</span>
-                                }
-                              </td>
-                              <td className="handle-btn text-center align-middle">
-                                  <div className="d-flex justify-content-center align-items-center gap-2" style={{color:'black'}}>
-                                <button 
-                                  className="btn btn-sm btn-outline-primary me-1"
-                                  onClick={() => handleEditPeriod(period)}
-                                >
-                                  <i className="fas fa-edit"></i>
-                                </button>
-                                <button 
-                                  className="btn btn-sm btn-outline-info me-1"
-                                  onClick={() => handleManageProductDiscount(period)}
-                                  title="Quản lý sản phẩm"
-                                >
-                                  <i className="fas fa-box"></i>
-                                </button>
-                                {/* <button 
-                                  className="btn btn-sm btn-outline-success me-1"
-                                  onClick={() => handleOpenAdvancedRules(period)}
-                                  title="Quy tắc nâng cao"
-                                >
-                                  <i className="fas fa-cogs"></i>
-                                </button> */}
-                                <button 
-                                  className="btn btn-sm btn-outline-danger"
-                                  onClick={() => handleDeletePeriod(period.id)}
-                                >
-                                  <i className="fas fa-trash"></i>
-                                </button>
-                                </div>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Modal Thêm/Sửa mã giảm giá */}
-      {showModal && (<DiscountModalEdit 
-        editingDiscount={editingDiscount}
-        formData={formData} handleInputChange={handleInputChange} 
-        handleSubmit={handleSubmit}
-        onClose={() => setShowModal(false)}
-        />
-
+        </>
+        
       )}
-
-      {/* // setShowPeriodModal={setShowPeriodModal}
-      //  periodFormData={periodFormData} 
-      // handlePeriodInputChange={handlePeriodInputChange}
-      // editingPeriod={editingPeriod} */}
-      {/* Modal Thêm/Sửa đợt giảm giá */}
-      {showPeriodModal && ( <PeriodModalFrom
-      periodFormData={periodFormData}
-      
-      editingPeriod={editingPeriod} onChange={handlePeriodInputChange}
-      onClose={ () => setShowPeriodModal(false)} 
-      onSubmit={handlePeriodSubmit}
-      />
-
-      )}
-
-      {/* Modal Xem sản phẩm áp dụng đợt giảm giá */}
-      {showProductDiscountModal && (
-        <AppliedProductsModal 
-          period={selectedPeriod}
-          rows={appliedProducts}
-          loading={loadingApplied}
-          error={errorApplied}
-          onClose={() => setShowProductDiscountModal(false)}
-          onChangeRows={handleChangeAppliedRows}
-          onSave={handleSaveAppliedRows}
+      {showEditModal && (
+        <DiscountModalEdit
+          show={true}
+          onClose={() => {
+            setShowEditModal(false);
+          }}
+          formData={formDataVoucher}
+          handleInputChange={handleInputChangeVoucher}
+          editingDiscount={editingVoucher}
+          handleSubmit={handleSaveVoucherWithRefresh}
+          // onSave={handleSaveVoucherWithRefresh}
         />
       )}
-
-      {/* Modal Quy tắc nâng cao */}
-      {/* {showAdvancedRulesModal && (
-        <AdvancedRulesModal 
-          period={rulesEditingPeriod}
-          onClose={handleCloseAdvancedRules}
-          onSave={handleSaveAdvancedRules}
-        />
-      )} */}
-
     </div>
   );
 };

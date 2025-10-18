@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useCategories } from "../../hook/useCategori";
+import { useCategories } from "../../hooks/useCategori";
 export default function CategorySelectGroup({ isFormEmpty,formData, handleInputChange }) {
   const { categories, loading, error } = useCategories();
   const [parentId, setParentId] = useState("");

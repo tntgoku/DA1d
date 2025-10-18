@@ -4,11 +4,21 @@ import {  totalStockForProduct } from "../../../Util/ProductUtil";
 export const ItemProducts=({product,handleDelete,handleEdit,getCategoryName, isFeatured,onToggleFeatured , onManageDiscount})=>{
     let price = parseInt((product.price || "0").toString().replace(/\./g, ""), 10);
     const[stock,setStock]=useState(totalStockForProduct(product))
+    const [image,setImage]=useState(product?.images?.length > 0 ? product.images[0].imgSrc : null)
+    let imageUrl=product?.images?.length > 0 ? product.images[0].imgSrc : null;
+    if(imageUrl!=null && imageUrl!=""){
+    if(imageUrl.includes("uploads")){
+      // imageUrl=imageUrl.replace("uploads/","");
+      imageUrl="http://localhost:8080/api/upload/"+product.id;
+    }
+    console.log("imageUrl",imageUrl);
+  }
     return (
                               <tr key={product.id}>
                         <td className="id">{product.id}</td>
                         <td className="product-img ">
-                          <img   src={product?.images?.length > 0 ? product.images[0].imgSrc : null}  width="64" height="64" className="img-thumbnail" alt={product.imgAlt} /></td>
+                          <img   src={imageUrl?imageUrl:null}  width="64" height="64" className="img-thumbnail" alt={product.imgAlt} /></td>
+                       
                         <td className="product-name ">{product.name}</td>
                         <td className="product-cate ">{getCategoryName(product.category)}</td>
                         <td className="text-left product-price ">{formatPrice(product.price)}</td>

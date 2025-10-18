@@ -1,0 +1,148 @@
+import { useCallback } from "react";
+import { Variant } from "../../entity/Object/Variant";
+import{ImageProduct} from "../../entity/Object/ImageProduct";
+import { VariantColor } from "../../entity/Object/VariantColor";
+export const useVariants = (formData, setFormData,handleInputChange) => {
+  const variants = formData.variants?.map(v => new VariantColor(v)) || [];
+  const addColor = useCallback((newColorInput) => {
+
+    if(newColorInput ===null){
+      alert("Bạn chưa nhập Màu vào");
+      return ;
+    }
+   const newColor = new VariantColor({
+      idColor: Math.floor(Math.random() * 1000000),
+      color: newColorInput,
+      variants: []
+    });
+ const currentVariants = formData.variants || [];
+    setFormData(prev => ({
+      ...prev,
+      variants: [...(prev.variants || []), newColor],
+    }));
+    handleInputChange({
+      target: { name: "variants", value: [...currentVariants, newColor] }
+    });
+  }, [setFormData,handleInputChange]);
+
+  // 👉 Thêm storage mới
+  const addStorage = useCallback((idColor,colorinput) => {
+  const newVariant = new Variant({
+      variantId: null,
+      color:colorinput,
+      colorCode:idColor,
+      storage: "",
+      price: 0,
+      list_price:0,
+      stock: 0,
+      isActive: true,
+    });
+  const updatedVariants = (formData.variants || []).map(vColor => {
+      if (vColor.idColor === idColor) {
+        const updatedStorage = [...(vColor.variantsStorage || []), newVariant];
+        return { ...vColor, variantsStorage: updatedStorage };
+      }
+      return vColor;
+    });
+
+    handleInputChange({
+      target: { name: "variants", value: updatedVariants }
+    });
+  }, [setFormData,handleInputChange]);
+
+  // 👉 Xóa variantColor theo ID
+  const removeVariantColor = useCallback((idColor) => {
+    const updatedVariants = (formData.variants || []).filter(
+      vColor => vColor.idColor !== idColor
+    );
+    handleInputChange({
+      target: { name: "variants", value: updatedVariants }
+    });
+  }, [formData,handleInputChange]);
+  const removeStorage = useCallback((idColor, variantId) => {
+    const idnew=formData.variants.length-variantId;
+    const updatedVariants = [...(formData.variants || [])].map(vColor => {
+  if (vColor.idColor === idColor) {
+    const updatedStorageByIndex = (vColor.variantsStorage || []).filter(
+    (v, index) => index !== variantId
+);
+    return { ...vColor, variantsStorage: updatedStorageByIndex };
+  }
+  return vColor;
+
+    });
+
+    handleInputChange({
+      target: { name: "variants", value: updatedVariants }
+    });
+  }, [formData, handleInputChange]);
+
+
+  const updateVariantField = useCallback((idColor, fieldName, newValue, variantId = null,index=null) => {
+      console.log("Gia tri duoc update Idcolor la :",idColor);
+      console.log("Gia tri duoc update fieldName la :",fieldName);
+      console.log("Gia tri duoc update newValue la :",newValue);
+      console.log("Gia tri duoc update index la :",index);
+      console.log("Gia tri duoc update variantId la :",variantId);
+    const updatedVariants = (formData.variants || []).map(vColor => {
+      if (vColor.idColor === idColor) {
+        if (index !== null) {
+          const updatedStorage = (vColor.variantsStorage || []).map((v,indexhere) => {
+            console.log("indexhere",indexhere);
+            if (indexhere === index) {
+              console.log("Dung gia tri roi");
+              const value = ['price', 'list_price', 'sale_price', 'discount', 'warrantly', 'stock']
+                .includes(fieldName)
+                ? Number(newValue)
+                : newValue;
+              return { ...v,colorCode:idColor, [fieldName]: value };
+            }
+            return v;
+          });
+          return { ...vColor, variantsStorage: updatedStorage };
+        } else {
+          return { ...vColor, [fieldName]: newValue };
+        }
+      }
+      return vColor;
+    });
+
+    handleInputChange({ target: { name: "variants", value: updatedVariants } });
+  }, [formData, handleInputChange]);
+
+  const handleImageUploadVariant = useCallback((colorId, files,e) => {
+    const selectedFiles = Array.from(files);
+    const preview = selectedFiles.map((file) => ({
+        imgSrc: URL.createObjectURL(file),
+        originalFile:file,
+        imgAlt: file.name,
+        variantId: colorId,
+        isPrimary: false,
+        displayOrder: formData.images.length + 1,
+    }));
+    const listImgVariant = formData.variants.find(v => v.idColor === colorId).images || [];
+    const newImages = [...listImgVariant, ...preview];
+    const listupdateVariant = 
+    (formData.variants || []).map(v => {
+      if (v.idColor === colorId) {
+        return { ...v, images: newImages };
+      }
+      return v;
+    });
+      console.log("preview",listupdateVariant);
+      setFormData(prev => ({
+        ...prev,
+        variants: listupdateVariant,
+        images: [...prev.images, ...preview]
+      }));
+  }, [formData, setFormData]);
+  return {
+    variants,
+    addColor,
+    addStorage,
+    removeVariantColor,
+    removeStorage,
+    updateVariantField,
+    handleImageUploadVariant,
+  };
+};

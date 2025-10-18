@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Breadcrumb from "./Breadcrumb";
 import { Link } from "react-router-dom";
-import { useCategories } from "../hook/useCategori";
-import { useBreadcrumb } from "../hook/useBreadcrumb";
-import { productService } from "../service/productService";
+import { useCategories } from "../hooks/useCategori";
+import { useBreadcrumb } from "../hooks/useBreadcrumb";
+import { productService } from "../services/productService";
 import ItemProduct from "./client/Product/ItemProduct";
 import { groupVariantsByStorage } from "../Util/ProductUtil";
 

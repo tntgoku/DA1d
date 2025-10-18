@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import Header from "../components/client/Header";
 import Footer from "../components/client/Footer";
 import { MainListProduct } from "../components/MainListProduct";
-import { categoryService } from "../service/CateService";
+import { categoryService } from "../services/CateService";
 
 export const CategoryPage = () => {
   const { parentSlug, childSlug } = useParams();

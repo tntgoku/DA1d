@@ -1,7 +1,7 @@
 import { OrderDetailModal } from '../../admin/Order/OrderDetailModal';
 import  {React, useState } from 'react';
-
-const OrderHistory = ({ orders }) => {
+import { testOrders } from '../../../entity/Entity';
+const OrderHistory = ({ orders=testOrders }) => {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
 
@@ -28,7 +28,7 @@ const getStatusColor = (status) => {
   return (
     <div className="order-history">
       <h3>Lịch sử đơn hàng</h3>
-      {orders.map(order => (
+      {testOrders.map(order => (
         <div key={order.id} className="order-card">
           <div className="order-header">
             <div>

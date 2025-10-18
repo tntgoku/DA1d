@@ -170,6 +170,37 @@
     text-align: center;
 }
 
+.form-description {
+    text-align: center;
+    color: #666;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.success-message {
+    text-align: center;
+    padding: 20px;
+    background-color: #e8f5e8;
+    border: 1px solid #4caf50;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.success-message p {
+    margin-bottom: 10px;
+    color: #2e7d32;
+}
+
+.error-message {
+    background-color: #ffebee;
+    color: #c62828;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    font-size: 14px;
+    text-align: center;
+}
+
 @media (max-width: 768px) {
     .social-buttons {
         flex-direction: column;

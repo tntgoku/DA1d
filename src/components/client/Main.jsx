@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import{ useState,useEffect } from 'react';
 import ItemProduct from './Product/ItemProduct';
 import { productsvariant1 } from '../../entity/Entity';
-import { productService } from '../../service/productService';
+import { productService } from '../../services/productService';
 import { groupProductsByVariant } from '../../entity/Object/Product';
 const Main = () => {
     const products1 =productsvariant1;

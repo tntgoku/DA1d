@@ -10,7 +10,6 @@ export const OrderReturn=()=>{
   useEffect(() => {
     const query = new URLSearchParams(location.search);
     const responseCode = query.get("vnp_ResponseCode");
-
     if (responseCode === "00") {
       alert("Thanh toán thành công 🎉");
       navigate("/success"); // hoặc hiển thị trang thành công

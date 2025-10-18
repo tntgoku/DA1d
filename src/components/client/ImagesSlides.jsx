@@ -9,7 +9,20 @@ import { FreeMode, Navigation, Thumbs } from "swiper/modules";
 function ImageSlider({ listimg, activeIndex }) {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const mainSwiperRef = useRef(null);
-
+  const [listimgMain,setListimgMain]=useState(listimg||[]);
+  useEffect(() => {
+    if(listimg.length > 0 && listimg[0].imgSrc.includes("uploads")){
+      let imgSrc=listimg[0].imgSrc;
+      listimg.map((img,index)=>{
+        if(img.imgSrc.includes("uploads")){
+          img.imgSrc="http://localhost:8080/api/upload/imgSrc/"+img.id;
+          setListimgMain([...listimgMain,img]);
+        } else {
+          setListimgMain([...listimgMain,img]);
+        }
+      });
+    }
+  }, [listimg]);
   // Khi activeIndex thay đổi → đổi slide
   useEffect(() => {
     if (mainSwiperRef.current && typeof activeIndex === "number") {

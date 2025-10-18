@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import '../../css/client/AuthForms.css';
 import { SocialLogin } from '../FormSocialLogin';
-import { login as loginService } from '../../service/Authentication';
-import { useAuthen } from '../../hook/useLogin';
+import { login as loginService } from '../../services/Authentication';
+import { useAuthen } from '../../hooks/useLogin';
 // Component Form Đăng Nhập
-const LoginForm = ({ switchToRegister, onSocialLogin }) => {
+const LoginForm = ({ switchToRegister, switchToForgotPassword, onSocialLogin }) => {
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -49,7 +49,7 @@ const LoginForm = ({ switchToRegister, onSocialLogin }) => {
         <button type="submit" className="btn btn-form">Đăng Nhập</button>
         
         <div className="forgot-password">
-          <a href="#">Quên mật khẩu?</a>
+          <span onClick={switchToForgotPassword} style={{cursor: 'pointer', color: '#3498db'}}>Quên mật khẩu?</span>
         </div>
         
         {/* <div className="social-login">

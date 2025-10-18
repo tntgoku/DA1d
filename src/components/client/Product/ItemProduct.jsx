@@ -4,7 +4,10 @@ const ItemProduct =({idkey,nameproduct,product,description,Listimg})=>{
     const navigate = useNavigate();
     let price = product.price ?? 0;
     const firstImage = Array.isArray(Listimg) && Listimg.length > 0 ? Listimg[0] : null;
-    const imgSrc = firstImage?.imgSrc || '/default-image.webp'; // ảnh mặc định nếu không có
+    let imgSrc = firstImage?.imgSrc || '/default-image.webp'; // ảnh mặc định nếu không có
+    if(imgSrc.includes("uploads")){
+      imgSrc="http://localhost:8080/api/upload/"+product.productId;
+    }
     const imgAlt = firstImage?.imgAlt || nameproduct;
 
     return (

@@ -2,7 +2,7 @@ import { ItemProducts } from "./ItemProduct/Itemproduct";
 import { Pagination } from "./Panigation";
 import { DiscountPeriods } from "./ItemProduct/FormDiscountPeroid";
 import FormDetailProduct from "./ItemProduct/Formdetailproduct";
-import { useProductsSection } from "../../hook/useProduct";
+import { useProductsSection } from "../../hooks/useProduct";
 import { getCategoryName } from "../../Util/ProductUtil";
 import {ProductFilter} from "../Filter/ProductFilter";
 import { useState } from "react";

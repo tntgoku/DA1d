@@ -5,8 +5,13 @@ export const ItemOrder=({item,idproduct,images,nameproduct})=>{
     useEffect(() => {
     let totalPrice = 0;
     let totalQuantity = 0;
-    totalPrice += item.object.list_price * item.quantity; // tính tiền cho variant
-    totalQuantity += item.quantity;             // cộng số lượng variant
+        if(item.object.discount !== null && item.object.discount !== undefined || item.object.discount > 0){
+            let discountPrice = item.object.list_price - (item.object.list_price*item.object.discount/100);
+            totalPrice += discountPrice * item.quantity;
+        } else {
+            totalPrice += item.object.list_price * item.quantity;
+        }
+        totalQuantity += item.quantity;
     // Format tổng tiền theo kiểu VNĐ
     const formattedTotalPrice = formatPrice(totalPrice);
     // Log ra console để kiểm tra

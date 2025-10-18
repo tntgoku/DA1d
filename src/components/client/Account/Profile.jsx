@@ -1,6 +1,16 @@
-import React from 'react';
-
+import React, { useState } from 'react';
+import { updateProfile } from '../../../services/Authentication';
+import { useNotificationContext } from '../../NotificationProvider';
 const Profile = ({ userData, setUserData, isEditing, setIsEditing }) => {
+  const [saving, setSaving] = useState(false);
+  const [showPasswordSection, setShowPasswordSection] = useState(false);
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
+  const { showSuccess, showError, showWarning } = useNotificationContext();
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setUserData({
@@ -9,13 +19,103 @@ const Profile = ({ userData, setUserData, isEditing, setIsEditing }) => {
     });
   };
 
-  const handleSave = () => {
-    setIsEditing(false);
-    alert('Thông tin đã được cập nhật!');
+  const handlePasswordChange = (e) => {
+    const { name, value } = e.target;
+    setPasswordData({
+      ...passwordData,
+      [name]: value
+    });
+  };
+
+  const handleSave = async () => {
+    try {
+      setSaving(true);
+      
+      // Map userData to backend format
+      const profileData = {
+        fullName: userData.name,
+        email: userData.email,
+        phone: userData.phone,
+        address: userData.address
+      };
+      
+      console.log('Updating profile with data:', profileData);
+      
+      const response = await updateProfile(profileData);
+      console.log('Profile update response:', response);
+      console.log('Response status:', response?.status);
+      console.log('Response data:', response?.data);
+      
+          if (response && response.status === 200) {
+            showSuccess('Thông tin đã được cập nhật thành công!');
+            setIsEditing(false);
+            
+            // Update localStorage with new data
+            const updatedUserData = {
+              name: userData.name,
+              email: userData.email,
+              token: localStorage.getItem('token')
+            };
+            localStorage.setItem('user', JSON.stringify(updatedUserData));
+          } else {
+            showError('Có lỗi xảy ra khi cập nhật thông tin');
+          }
+        } catch (error) {
+          console.error('Error updating profile:', error);
+          const errorMessage = error.response?.data?.message || error.message || 'Có lỗi xảy ra khi cập nhật thông tin';
+          showError(errorMessage);
+        } finally {
+      setSaving(false);
+    }
   };
 
   const handleCancel = () => {
     setIsEditing(false);
+  };
+
+  const handleChangePassword = async () => {
+    try {
+        // Validate password
+        if (passwordData.newPassword !== passwordData.confirmPassword) {
+          showWarning('Mật khẩu mới và xác nhận mật khẩu không khớp!');
+          return;
+        }
+
+        if (passwordData.newPassword.length < 6) {
+          showWarning('Mật khẩu mới phải có ít nhất 6 ký tự!');
+          return;
+        }
+
+      setSaving(true);
+
+      const passwordUpdateData = {
+        currentPassword: passwordData.currentPassword,
+        newPassword: passwordData.newPassword
+      };
+
+      console.log('Changing password...');
+      
+      const response = await updateProfile(passwordUpdateData);
+      console.log('Password change response:', response);
+      
+          if (response && response.status === 200) {
+            showSuccess('Đổi mật khẩu thành công!');
+            setShowPasswordSection(false);
+            setPasswordData({
+              currentPassword: '',
+              newPassword: '',
+              confirmPassword: ''
+            });
+          } else {
+            showError('Có lỗi xảy ra khi đổi mật khẩu');
+          }
+        } catch (error) {
+          console.error('Error changing password:', error);
+          const errorMessage = error.response?.data?.message || error.message || 'Có lỗi xảy ra khi đổi mật khẩu';
+          showError(errorMessage);
+        } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -60,6 +160,7 @@ const Profile = ({ userData, setUserData, isEditing, setIsEditing }) => {
                 name="email"
                 value={userData.email}
                 onChange={handleInputChange}
+                disabled={true}
               />
             ) : (
               <div className="info-text">{userData.email}</div>
@@ -101,13 +202,99 @@ const Profile = ({ userData, setUserData, isEditing, setIsEditing }) => {
 
         {isEditing ? (
           <div className="form-actions">
-            <button className="btn-primary" onClick={handleSave}>Lưu thay đổi</button>
-            <button className="btn-outline" onClick={handleCancel}>Hủy</button>
+            <button 
+              className="btn-primary" 
+              onClick={handleSave}
+              disabled={saving}
+            >
+              {saving ? 'Đang lưu...' : 'Lưu thay đổi'}
+            </button>
+            <button 
+              className="btn-outline" 
+              onClick={handleCancel}
+              disabled={saving}
+            >
+              Hủy
+            </button>
           </div>
         ) : (
-          <button className="btn-primary  btn-outline" onClick={() => setIsEditing(true)}>
-            Chỉnh sửa thông tin
-          </button>
+          <div className="form-actions">
+            <button className="btn-primary" onClick={() => setIsEditing(true)}>
+              Chỉnh sửa thông tin
+            </button>
+            <button 
+              className="btn-outline" 
+              onClick={() => setShowPasswordSection(!showPasswordSection)}
+            >
+              {showPasswordSection ? 'Hủy đổi mật khẩu' : 'Đổi mật khẩu'}
+            </button>
+          </div>
+        )}
+
+        {/* Password Change Section */}
+        {showPasswordSection && (
+          <div className="password-section" style={{ marginTop: '30px', padding: '20px', border: '1px solid #ddd', borderRadius: '8px' }}>
+            <h3>Đổi mật khẩu</h3>
+            <div className="form-row">
+              <div className="form-group">
+                <label>Mật khẩu hiện tại</label>
+                <input
+                  type="password"
+                  name="currentPassword"
+                  value={passwordData.currentPassword}
+                  onChange={handlePasswordChange}
+                  placeholder="Nhập mật khẩu hiện tại"
+                />
+              </div>
+            </div>
+            <div className="form-row">
+              <div className="form-group">
+                <label>Mật khẩu mới</label>
+                <input
+                  type="password"
+                  name="newPassword"
+                  value={passwordData.newPassword}
+                  onChange={handlePasswordChange}
+                  placeholder="Nhập mật khẩu mới"
+                />
+              </div>
+            </div>
+            <div className="form-row">
+              <div className="form-group">
+                <label>Xác nhận mật khẩu mới</label>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  value={passwordData.confirmPassword}
+                  onChange={handlePasswordChange}
+                  placeholder="Nhập lại mật khẩu mới"
+                />
+              </div>
+            </div>
+            <div className="form-actions">
+              <button 
+                className="btn-primary" 
+                onClick={handleChangePassword}
+                disabled={saving}
+              >
+                {saving ? 'Đang đổi mật khẩu...' : 'Đổi mật khẩu'}
+              </button>
+              <button 
+                className="btn-outline" 
+                onClick={() => {
+                  setShowPasswordSection(false);
+                  setPasswordData({
+                    currentPassword: '',
+                    newPassword: '',
+                    confirmPassword: ''
+                  });
+                }}
+                disabled={saving}
+              >
+                Hủy
+              </button>
+            </div>
+          </div>
         )}
       </div>
     </div>

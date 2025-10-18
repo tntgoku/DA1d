@@ -28,7 +28,7 @@ export const extractUniqueValues = (list, key) => {
     : arr.sort();
 };
 import { Product } from "../entity/Object/Product";
-import { categoryService } from "../service/CateService";
+import { categoryService } from "../services/CateService";
 export const isFormEmpty = (data) => {
   if (data == null) return true;
   if (typeof data === "string") return data.trim() === "";

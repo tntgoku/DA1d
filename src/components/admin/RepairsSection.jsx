@@ -11,11 +11,11 @@ const RepairsSection = ({ repairs }) => {
       <div className="card">
         <div className="card-header">
           <span>Danh sách Đơn Sửa chữa</span>
-                          <div class="search-match">
-                  <form action="/search" method="get" class="input-groups1">
-                  <input class="input-group-field auto-search search-auto form-control" placeholder="Bạn cần tìm gì..." autocomplete="off" type="text" name="query"/>
+                          <div className="search-match">
+                  <form action="/search" method="get" className="input-groups1">
+                  <input className="input-group-field auto-search search-auto form-control" placeholder="Bạn cần tìm gì..." autoComplete="off" type="text" name="query"/>
                   <input type="hidden" value="product" name="type"/>
-                  <button type="submit" class="btn icon-fallback-text" title="Search"><i class="fa-solid fa-magnifying-glass"></i></button>
+                  <button type="submit" className="btn icon-fallback-text" title="Search"><i className="fa-solid fa-magnifying-glass"></i></button>
                   </form>
                 </div>
         </div>

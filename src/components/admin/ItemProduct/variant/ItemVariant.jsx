@@ -1,8 +1,10 @@
 // src/components/Variant/ItemVariant.jsx
-import { useState } from "react";
-import { useVariantImage } from "../../../../hook/useVariantImage";
-export const ItemVariant = ({ variant, onAddStorage, onRemoveVariant, updateVariantField,index }) => {
-  const { ListImgVariant, handleImageUpload } = useVariantImage();
+import { useState,useEffect } from "react";
+export const ItemVariant = ({ variant, onAddStorage, onRemoveVariant, updateVariantField,index,handleImageUploadVariant }) => {
+  const [ListImgVariant,setListImgVariant] = useState([]);
+  useEffect(() => {
+    setListImgVariant(variant.images);
+  }, [variant.images]);
   return (
     <div className="mb-2" id-index={index}>
       {/* Header */}
@@ -79,7 +81,7 @@ export const ItemVariant = ({ variant, onAddStorage, onRemoveVariant, updateVari
           className="form-control"
           accept="image/*"
           multiple
-          onChange={handleImageUpload}
+          onChange={(e)=>handleImageUploadVariant(variant.idColor,e.target.files,e)}
         />
         <small className="text-muted">Có thể chọn nhiều ảnh cùng lúc</small>
       </div>

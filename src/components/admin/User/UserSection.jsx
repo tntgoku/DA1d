@@ -1,247 +1,211 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState } from 'react';
 import { UserModal } from './UserModal';
-// Component Modal cho thêm/sửa người dùng
+import { ItemUser } from './ItemUser';
+import { UserPagination } from '../UserPagination';
+import { UserFilter } from '../../Filter/UserFilter';
+import { useUserManagement } from '../../../hooks/useUserManagement';
 
-const UsersSection = ({ users: initialUsers }) => {
-  // State quản lý danh sách users
-  const [users, setUsers] = useState(initialUsers);
-  const [showModal, setShowModal] = useState(false);
-  const [editingUser, setEditingUser] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    role: 'Người dùng',
-    status: 'Active',
-    password: '',
-      totalOrders: 0,
-  totalSpent: 0,
-  lastOrderDate: '',
-  membershipLevel: 'Standard',
-  loyaltyPoints: 0,
-  discountRate: 0,
-  purchaseNotes: '',
-  defaultShippingAddress: '',
-  createdAt: new Date().toISOString().split('T')[0] // Ngày tạo
-  });
+const UsersSection = () => {
+  // Use custom hook for user management
+  const {
+    users,
+    loading,
+    error,
+    currentPage,
+    itemsPerPage,
+    totalItems,
+    searchTerm,
+    filters,
+    filteredUsers,
+    showModal,
+    editingUser,
+    formData,
+    loadUsers,
+    searchUsers,
+    createUser,
+    updateUser,
+    deleteUser,
+    toggleUserStatus,
+    resetUserPassword,
+    makeAdmin,
+    makeUser,
+    handleInputChange,
+    openCreateModal,
+    openEditModal,
+    closeModal,
+    handlePageChange,
+    handlePreviousPage,
+    handleNextPage,
+    setSearchTerm,
+    setFilters,
+    setError
+  } = useUserManagement();
 
-  // Cập nhật users khi initialUsers thay đổi
-  useEffect(() => {
-    setUsers(initialUsers);
-  }, [initialUsers]);
+  const [currentPageUsers, setCurrentPageUsers] = useState([]);
 
-  // Reset form khi đóng modal
-  useEffect(() => {
-    if (!showModal) {
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        role: 'Người dùng',
-        status: 'Active',
-        password: '',  totalOrders: 0,
-  totalSpent: 0,
-  lastOrderDate: '',
-  membershipLevel: 'Standard',
-  loyaltyPoints: 0,
-  discountRate: 0,
-  purchaseNotes: '',
-  defaultShippingAddress: '',
-  createdAt: new Date().toISOString().split('T')[0] // Ngày tạo
-      });
-      setEditingUser(null);
-    }
-  }, [showModal]);
-
-  // Xử lý thay đổi input trong form
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
-  };
-
-  // Xử lý submit form
-  const handleSubmit = (e) => {
+  // Handle form submission
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (editingUser) {
-      // Cập nhật người dùng
-      const updatedUsers = users.map(user => 
-        user.id === editingUser.id 
-          ? { ...formData, id: editingUser.id }
-          : user
-      );
-      setUsers(updatedUsers);
-    } else {
-      // Thêm người dùng mới
-      const newUser = {
-        ...formData,
-        id: users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1
-      };
-      setUsers([...users, newUser]);
+    try {
+      let result;
+      if (editingUser) {
+        result = await updateUser(editingUser.id, formData);
+      } else {
+        result = await createUser(formData);
+      }
+      
+      if (result.success) {
+        alert(result.message);
+        closeModal();
+      } else {
+        alert(result.message);
+      }
+    } catch (error) {
+      console.error('Error saving user:', error);
+      alert('Có lỗi xảy ra khi lưu thông tin người dùng');
     }
-    
-    setShowModal(false);
   };
 
-  // Mở modal chỉnh sửa người dùng
-  const handleEdit = (user) => {
-    setEditingUser(user);
-    setFormData({
-      name: user.name || '',
-      email: user.email || '',
-      phone: user.phone || '',
-      role: user.role || 'Người dùng',
-      status: user.status || 'Active',
-      password: '' // Không hiển thị mật khẩu cũ
-    });
-    setShowModal(true);
-  };
-
-  // Xóa người dùng
-  const handleDelete = (id) => {
+  // Handle delete user
+  const handleDelete = async (userId) => {
     if (window.confirm('Bạn có chắc chắn muốn xóa người dùng này?')) {
-      setUsers(users.filter(user => user.id !== id));
+      try {
+        const result = await deleteUser(userId);
+        if (result.success) {
+          alert(result.message);
+        } else {
+          alert(result.message);
+        }
+      } catch (error) {
+        console.error('Error deleting user:', error);
+        alert('Có lỗi xảy ra khi xóa người dùng');
+      }
     }
   };
 
-  // Lọc users theo search term
-  const filteredUsers = users.filter(user => {
-    const term = searchTerm.toLowerCase();
-    return (
-      user.name.toLowerCase().includes(term) ||
-      user.email.toLowerCase().includes(term) ||
-      user.phone.includes(term) ||
-      user.role.toLowerCase().includes(term)
-    );
-  });
-
-  // Hàm lấy class cho badge role
-  const getRoleBadgeClass = (role) => {
-    switch (role) {
-      case 'Admin': return 'primary';
-      case 'Nhân viên': return 'info';
-      default: return 'secondary';
+  // Handle toggle status
+  const handleToggleStatus = async (userId, currentStatus) => {
+    try {
+      const result = await toggleUserStatus(userId, currentStatus);
+      if (result.success) {
+        alert(result.message);
+      } else {
+        alert(result.message);
+      }
+    } catch (error) {
+      console.error('Error toggling status:', error);
+      alert('Có lỗi xảy ra khi thay đổi trạng thái');
     }
   };
 
-  // Hàm lấy class cho badge status
-  const getStatusBadgeClass = (status) => {
-    return status === 'Active' ? 'success' : 'warning';
+  // Handle reset password
+  const handleResetPassword = async (userId, newPassword) => {
+    try {
+      const result = await resetUserPassword(userId, newPassword);
+      if (result.success) {
+        alert(result.message);
+      } else {
+        alert(result.message);
+      }
+    } catch (error) {
+      console.error('Error resetting password:', error);
+      alert('Có lỗi xảy ra khi đặt lại mật khẩu');
+    }
   };
 
   return (
     <div>
       <div className="header d-flex justify-content-between align-items-center">
         <h4>Quản lý Người dùng</h4>
-        <button 
-          className="btn btn-primary-2 btn-success" 
-          onClick={() => setShowModal(true)}
+        <button
+          className="btn btn-success"
+          onClick={openCreateModal}
         >
           <i className="fas fa-plus"></i> Thêm người dùng
         </button>
       </div>
 
-      <div className="card">
-        <div className="card-header" style={{display: 'flex', gap: 25, alignItems: 'center'}}>
-          <span>Danh sách Người dùng</span>
-          <div className="search-match">
-            <form 
-              onSubmit={(e) => {
-                e.preventDefault();
-                // Search logic is handled by filteredUsers
-              }} 
-              className="input-groups1"
-            >
-              <input 
-                className="input-group-field auto-search search-auto form-control" 
-                placeholder="Bạn cần tìm gì..." 
-                autoComplete="off" 
-                type="text" 
-                name="query"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              <button type="submit" className="btn icon-fallback-text" title="Search">
-                <i className="fa-solid fa-magnifying-glass"></i>
-              </button>
-            </form>
-          </div>
-        </div>
+      <div className="card mt-3">
         <div className="card-body">
-          <div className="table-responsive">
-            <table className="table table-hover">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Họ tên</th>
-                  <th>Email</th>
-                  <th>Số điện thoại</th>
-                  <th>Vai trò</th>
-                  <th>Trạng thái</th>
-                  <th>Thao tác</th>
-                </tr>
-              </thead>
-              <tbody className=' table table-responsive'>
-                {filteredUsers.map(user => (
-                  <tr key={user.id}>
-                    <td className='text-center align-middle'>{user.id}</td>
-                    <td className='text-center align-middle'>{user.name}</td>
-                    <td className='text-center align-middle'>{user.email}</td>
-                    <td className='text-center align-middle'>{user.phone}</td>
-                    <td className='text-center align-middle'>
-                      <span className={`badge bg-${getRoleBadgeClass(user.role)}`}>
-                        {user.role}
-                      </span>
-                    </td>
-                    <td className=' handle-btn text-center align-middle'>
-                      <span className={`badge bg-${getStatusBadgeClass(user.status)}`} style={{width: '80%',height:"100%",fontSize:13}}>
-                        {user.status}
-                      </span>
-                    </td>
-                    <td className=' handle-btn text-center align-middle' >
-                      <button 
-                        className="btn btn-sm btn-outline-primary me-1"  
-                        onClick={() => handleEdit(user)}
-                      >
-                        <i className="fas fa-edit"></i>
-                      </button>
-                      <button 
-                        className="btn btn-sm btn-outline-danger" 
-                     
-                        onClick={() => handleDelete(user.id)}
-                      >
-                        <i className="fas fa-trash"></i>
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            
-            {filteredUsers.length === 0 && (
-              <div className="text-center py-4">
-                <p>Không tìm thấy người dùng nào</p>
+          <UserFilter users={users} filters={filters} onFilterChange={setFilters}/>
+          
+          {/* Loading Overlay */}
+          {loading && (
+            <div className="text-center py-4">
+              <div className="spinner-border" role="status">
+                <span className="visually-hidden">Loading...</span>
               </div>
-            )}
-          </div>
+              <p className="mt-2">Đang tải dữ liệu...</p>
+            </div>
+          )}
+
+          {/* Error Message */}
+          {error && (
+            <div className="alert alert-danger" role="alert">
+              <i className="fas fa-exclamation-triangle"></i> {error}
+              <button 
+                type="button" 
+                className="btn-close" 
+                onClick={() => setError(null)}
+              ></button>
+            </div>
+          )}
+
+          <table className="table table-hover text-center align-middle">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Thông tin</th>
+                <th>Email</th>
+                <th>Số điện thoại</th>
+                <th>Vai trò</th>
+                {/* <th>Trạng thái</th> */}
+                <th>Đơn hàng</th>
+                <th>Tổng chi tiêu</th>
+                <th>Ngày tạo</th>
+                <th>Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              {!loading && currentPageUsers.length > 0 ? (
+                currentPageUsers.map((user) => (
+                  <ItemUser
+                    key={user.id}
+                    user={user}
+                    handleDelete={handleDelete}
+                    handleEdit={openEditModal}
+                    handleToggleStatus={handleToggleStatus}
+                    handleMakeAdmin={makeAdmin}
+                    handleMakeUser={makeUser}
+                  />
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="10">
+                    <h5 className="text-muted">Không có người dùng nào</h5>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+          
+          <UserPagination filteredUsers={filteredUsers} onPageChange={setCurrentPageUsers} />
         </div>
       </div>
 
-      {/* Modal Thêm/Sửa người dùng */}
+      {/* User Modal */}
       <UserModal
         showModal={showModal}
-        setShowModal={setShowModal}
+        setShowModal={closeModal}
         editingUser={editingUser}
         handleSubmit={handleSubmit}
         formData={formData}
         handleInputChange={handleInputChange}
+        handleResetPassword={handleResetPassword}
       />
     </div>
   );
-}
+};
 
 export default UsersSection;

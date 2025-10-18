@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { SocialLogin } from "../FormSocialLogin";
-import { register } from "../../service/Authentication";
+import { register } from "../../services/Authentication";
+import { useNotificationContext } from "../NotificationProvider";
 const RegisterForm = ({ switchToLogin, onSocialLogin }) => {
   const [formData, setFormData] = useState({
     name: '',
@@ -11,6 +12,7 @@ const RegisterForm = ({ switchToLogin, onSocialLogin }) => {
     password: '',
     confirmPassword: ''
   });
+  const { showSuccess, showError, showWarning } = useNotificationContext();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,18 +25,23 @@ const RegisterForm = ({ switchToLogin, onSocialLogin }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
-      alert('Mật khẩu xác nhận không khớp!');
+      showWarning('Mật khẩu xác nhận không khớp!');
       return;
     }
     // Gọi API đăng ký
     register(formData.name, formData.phone, formData.email, formData.password, formData.confirmPassword)
       .then(data => {
         console.log('Registration successful:', data);
-        alert('Đăng ký thành công!');
+        showSuccess('Đăng ký thành công!');
+        // Switch to login form after successful registration
+        setTimeout(() => {
+          switchToLogin();
+        }, 2000);
       })
       .catch(error => {
         console.error('Registration failed:', error);
-        alert('Đăng ký thất bại. Vui lòng kiểm tra lại thông tin.');
+        const errorMessage = error.response?.data?.message || error.message || 'Đăng ký thất bại. Vui lòng kiểm tra lại thông tin.';
+        showError(errorMessage);
       });
   };
 

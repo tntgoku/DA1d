@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useBreadcrumb } from "../hook/useBreadcrumb";
+import { useBreadcrumb } from "../hooks/useBreadcrumb";
 const Breadcrumb = ({ product, variant ,category }) => {
   const items = useBreadcrumb({ product, variant ,category});
     console.log("items",items);

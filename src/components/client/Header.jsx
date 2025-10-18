@@ -6,15 +6,51 @@ import { useState,useEffect } from "react";
 import '../../css/client/payment.css';
 import logo_store from '../../assets/logo_store.jpg';
 import { Cart } from "../Cart";
+import { useAuth } from '../../hooks/AuthContext';
 const Header = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [animate, setAnimate] = useState(false);
     const [isOpennav,setIsOpennav]= useState(false);
-    const [username,setUsername]=useState();
     const [quantity, setQuantity] = useState(1);
     const navigate=useNavigate();
+    const { isAuthenticated, user, logout, loading } = useAuth();
+    
+    // Get user data from localStorage for immediate display
+    const [localUser, setLocalUser] = useState(null);
+    
+    useEffect(() => {
+        const savedUser = localStorage.getItem('user');
+        const token = localStorage.getItem('token');
+        
+        console.log('Header useEffect - isAuthenticated:', isAuthenticated);
+        console.log('Header useEffect - user from context:', user);
+        console.log('Header useEffect - savedUser from localStorage:', savedUser);
+        console.log('Header useEffect - token from localStorage:', token);
+        
+        if (savedUser && token) {
+            try {
+                const userData = JSON.parse(savedUser);
+                console.log('Header useEffect - parsed userData:', userData);
+                setLocalUser(userData);
+            } catch (error) {
+                console.error('Error parsing saved user:', error);
+            }
+        }
+    }, [isAuthenticated, user]); // Re-run when auth state changes
+    
     const handleToggleLogin = () => {
-        navigate("/login");   
+        const token = localStorage.getItem('token');
+        if (isAuthenticated || token) {
+            // If logged in, show user menu or go to account
+            navigate("/account");
+        } else {
+            // If not logged in, go to login page
+            navigate("/auth");
+        }
+    }
+    
+    const handleLogout = () => {
+        logout();
     }
     const handleTogglenav=()=>{
         if(!isOpennav){
@@ -80,9 +116,30 @@ const Header = () => {
                     <Cart  />
                     <div className="header-account">
                         <div className="button__login">
-                            <button type="button" className="btn-login" onClick={handleToggleLogin}><span className="user-text"> {username ? username : "Đăng nhập"}</span>
-                            <i className="fa-solid fa-user" style={{marginLeft :"5px"}}></i>
-                            </button>
+                            {(isAuthenticated || localUser) ? (
+                                <div className="dropdown">
+                                    <button type="button" className="btn-login dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <span className="user-text">
+                                            {user?.name || user?.fullName || localUser?.name || localUser?.fullName || 'User'}
+                                        </span>
+                                        <i className="fa-solid fa-user" style={{marginLeft :"5px"}}></i>
+                                    </button>
+                                    <ul className="dropdown-menu">
+                                        <li><Link className="dropdown-item" to="/account">
+                                            <i className="fas fa-user me-2"></i>Tài khoản
+                                        </Link></li>
+                                        <li><hr className="dropdown-divider" /></li>
+                                        <li><button className="dropdown-item" onClick={handleLogout}>
+                                            <i className="fas fa-sign-out-alt me-2"></i>Đăng xuất
+                                        </button></li>
+                                    </ul>
+                                </div>
+                            ) : (
+                                <button type="button" className="btn-login" onClick={handleToggleLogin}>
+                                    <span className="user-text">Đăng nhập</span>
+                                    <i className="fa-solid fa-user" style={{marginLeft :"5px"}}></i>
+                                </button>
+                            )}
                         </div>
                     </div>
                                             <button className="navbar-toggler" type="button" data-bs-toggle="collapse" 

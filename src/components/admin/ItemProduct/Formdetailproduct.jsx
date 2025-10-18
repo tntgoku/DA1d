@@ -58,7 +58,7 @@ const handleInputChange = ({ target }) => {
 };
 const handleImageUpload = (e) => {
   const files = Array.from(e.target.files);
-
+  
   // Lấy số lượng ảnh hiện tại để tính displayOrder
   const currentCount = formData.images.length;
 
@@ -66,7 +66,8 @@ const handleImageUpload = (e) => {
     imgSrc: URL.createObjectURL(file),   // URL tạm thời để preview
     imgAlt: file.name,                    // tên file làm alt tạm
     displayOrder: currentCount + index + 1,
-    primary: currentCount === 0 && index === 0 ? true : false  // nếu là ảnh đầu tiên thì làm primary
+    variantId: null,
+    isPrimary: currentCount === 0 && index === 0 ? true : false  // nếu là ảnh đầu tiên thì làm primary
   }));
 
   setFormData({

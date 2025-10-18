@@ -11,13 +11,13 @@ import ReportsSection from '../components/admin/ReportsSection';
 import SettingsSection from '../components/admin/SettingsSection';
 import { useLocation } from 'react-router-dom';
 import { DiscountsSection } from '../components/admin/DiscountSection';
-import { productService } from '../service/productService'; 
+import { productService } from '../services/productService'; 
 import { ProductVariantGroup } from '../entity/Object/ProductVariantGroup';
 import { Variant } from '../entity/Object/Variant';
 import { Product } from '../entity/Object/Product';
 import { VariantColor } from '../entity/Object/VariantColor';
-import { OrderService } from '../service/OrderService';
-Product
+import { OrderService } from '../services/OrderService';
+import { logout } from '../services/Authentication';
 const Dashboard = () => {
   const [activeSection, setActiveSection] = useState('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -42,9 +42,16 @@ const Dashboard = () => {
         });
         console.log("productsWithGroupedVariants",productsWithGroupedVariants);
         setProducts(productsWithGroupedVariants);
-        const dataorder= await OrderService.getall();
-        console.log(dataorder)
+        try {
+          const dataorder = await OrderService.getall();
+      
         setOrders(dataorder);
+        console.log("dataorder", dataorder);
+        } catch (orderError) {
+          console.warn("Không thể lấy dữ liệu orders:", orderError);
+          // Set empty orders array if access denied
+          setOrders([]);
+        }
       } catch (error) {
         console.error('❌ Lỗi khi lấy sản phẩm:', error);
       } finally {

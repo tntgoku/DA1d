@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 // Đảm bảo các hook và util này hoạt động như mong đợi
-import { useUnits } from "../../../hook/useUnit"; 
-import { useSpecifications } from "../../../hook/useSpec";
+import { useUnits } from "../../../hooks/useUnit"; 
+import { useSpecifications } from "../../../hooks/useSpec";
 import {
   isTextSpec,
   mergeSpecsWithDefaults,
