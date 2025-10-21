@@ -1,0 +1,71 @@
+
+import React, { useState } from "react";
+export const FormImages=({images,featuredImageIndex,setFeaturedImage,handleRemoveImage,handleImageUpload})=>{
+
+    return(
+            <div >
+                  <div className="row">
+                    <div className="col-md-12">
+                        <h6>Hình ảnh sản phẩm</h6>
+                        <div className="image-gallery">
+                            {(images?.length ?? 0) === 0 ? (
+                                <div className="text-center text-muted py-4">
+                                <i className="fas fa-images fa-2x mb-2"></i>
+                                <p>Chưa có ảnh nào được tải lên</p>
+                                </div>
+                            ) : (
+                                <div className="row">
+                                {images.map((image, index) => (
+                                    <div key={index} className="col-md-3 mb-3">
+                                    <div className={`card ${index === (featuredImageIndex  ?? 0) ? 'border-primary' : ''}`}>
+                                        <img 
+                                        src={image.imgSrc} 
+                                        className="card-img-top" 
+                                        alt={`Ảnh ${index + 1}`}
+                                        style={{height: '120px', objectFit: 'contain'}}
+                                        />
+                                        <div className="card-body p-2">
+                                        <div className="d-flex justify-content-between">
+                                            <small>Ảnh {index +1 }</small>
+                                            {index === (featuredImageIndex ?? 0) && (
+                                            <span className="badge bg-primary">Ảnh chính</span>
+                                            )}
+                                        </div>
+                                        <div className="btn-group w-100 mt-1" role="group">
+                                            <button
+                                            type="button"
+                                            className="btn btn-sm btn-outline-primary"
+                                            onClick={() => setFeaturedImage(index)}
+                                            disabled={index === (featuredImageIndex ?? 0)}
+                                            >
+                                            <i className="fas fa-star"></i>
+                                            </button>
+                                            <button
+                                            type="button"
+                                            className="btn btn-sm btn-outline-danger"
+                                            onClick={() => handleRemoveImage(index)}
+                                            style={{color:'#fff'}}>
+                                            <i className="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                        </div>
+                                    </div>
+                                    </div>
+                                ))}
+                                </div>
+                            )}
+                        </div>
+                        <div className="mb-3">
+                        <input
+                          type="file"
+                          className="form-control"
+                          accept="image/*"
+                          multiple
+                          onChange={handleImageUpload}
+                        />
+                        </div>
+                                </div>
+                  </div>
+                </div>
+    )
+}

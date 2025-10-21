@@ -1,0 +1,317 @@
+/* CartPopup.css - Cleaned and Merged Version */
+
+/* ==================================== */
+/* 1. POPUP WRAPPER (Backdrop) */
+/* ==================================== */
+.popup-cart-mobile {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: none; /* Ẩn mặc định */
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.popup-cart-mobile.active {
+  display: flex;
+  opacity: 1;
+}
+
+/* Backdrop click area (used for closing the modal by clicking outside) */
+.popup-cart-mobile::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* Background trong suốt, chỉ để tạo vùng click */
+  background: transparent;
+  cursor: pointer;
+  /* Rất quan trọng: Đảm bảo backdrop không bị chặn bởi các lớp khác */
+  pointer-events: auto;
+}
+
+/* ==================================== */
+/* 2. POPUP CONTENT (header-popcart) */
+/* ==================================== */
+.popup-cart-mobile .header-popcart {
+  background: white;
+  width: 100%;
+  max-width: 500px;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.1);
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+  position: relative;
+  
+  /* Cố định cho nội dung dài */
+  max-height: 90vh;
+  overflow-y: auto;
+  
+  /* QUAN TRỌNG: Cho phép nội dung bên trong nó có thể click được */
+  pointer-events: auto; 
+  z-index: 10000; /* Cao hơn backdrop */
+}
+
+/* Hiển thị nội dung khi popup active */
+.popup-cart-mobile.active .header-popcart {
+  transform: translateY(0);
+  animation: slideUp 0.3s ease forwards; /* Sử dụng animation thay cho transition đơn thuần */
+}
+
+/* Animation cho modal (đã được định nghĩa ở code gốc) */
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+/* ==================================== */
+/* 3. COMPONENTS BÊN TRONG */
+/* ==================================== */
+
+/* Top header */
+.top-cart-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.top-cart-header span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #28a745;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.top-cart-header svg {
+  fill: #28a745;
+  width: 20px;
+  height: 20px;
+}
+
+/* Product info */
+.media-content.bodycart-mobile {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.thumb-1x1 {
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #f0f0f0;
+}
+
+.thumb-1x1 img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.body_content {
+  flex: 1;
+}
+
+.product-title {
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0 0 8px 0;
+  color: #333;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.product-new-price{
+  margin-top: 8px;
+}
+.product-new-price b {
+  font-size: 16px;
+  color: #d70018;
+  font-weight: 600;
+}
+
+.product-new-price span {
+  display: block;
+  font-size: 12px;
+  color: #666;
+  margin-top: 4px;
+}
+
+/* Cart count notification */
+.noti-cart-count {
+  display: block;
+  text-align: center;
+  background: #f8f9fa;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  color: #333;
+  text-decoration: none;
+  font-size: 14px;
+  border: 1px solid #e9ecef;
+  transition: all 0.3s ease;
+}
+
+/* .noti-cart-count:hover {
+  background: #e9ecef;
+  text-decoration: none;
+  color: #333;
+} */
+
+.count_item_pr {
+  font-weight: 600;
+  color: #d70018;
+}
+
+/* Close button (Đã sửa đổi để dùng <button> trong JSX) */
+.cart_btn-close.iconclose {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: #f8f9fa;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 100;
+  pointer-events: auto;
+}
+
+.cart_btn-close.iconclose:hover {
+  background: #e9ecef;
+}
+
+.cart_btn-close.iconclose svg {
+  width: 12px;
+  height: 12px;
+  fill: #666;
+}
+
+/* Bottom actions */
+.bottom-action {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px; /* Tăng nhẹ margin-top */
+  width: 100%;
+  position: relative;
+  z-index: 10;
+}
+
+/* Buttons inside bottom-action */
+.bottom-action .tocontinued,
+.bottom-action .checkout {
+  flex: 1;
+  padding: 12px 20px;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  pointer-events: auto;
+  position: relative;
+  z-index: 11;
+}
+
+.bottom-action .tocontinued {
+  background: #f8f9fa;
+  color: #333;
+  border: 1px solid #dee2e6;
+}
+
+.bottom-action .tocontinued:hover {
+  background: #e9ecef;
+  text-decoration: none;
+  color: #333;
+}
+
+.bottom-action .checkout {
+  background: #d70018;
+  color: white;
+  border: none;
+}
+
+.bottom-action .checkout:hover {
+  background: #b30012;
+  text-decoration: none;
+  color: white;
+}
+
+/* ==================================== */
+/* 4. RESPONSIVE */
+/* ==================================== */
+@media (max-width: 480px) {
+  .popup-cart-mobile .header-popcart {
+      padding: 15px;
+      /* Di chuyển từ dưới lên nên chỉ làm tròn góc trên */
+      border-radius: 15px 15px 0 0; 
+      /* Chiếm toàn bộ chiều rộng màn hình */
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      max-width: 100%;
+      max-height: 95vh;
+  }
+  
+  /* Cần ghi đè lại animation khi ở mobile để không bị dịch chuyển */
+  .popup-cart-mobile.active .header-popcart {
+      transform: translateY(0);
+  }
+
+  .thumb-1x1 {
+      width: 60px;
+      height: 60px;
+  }
+  
+  .product-title {
+      font-size: 13px;
+  }
+  
+  .product-new-price b {
+      font-size: 15px;
+  }
+  
+  .bottom-action {
+      flex-direction: column;
+      gap: 8px; /* Giảm gap một chút */
+  }
+  
+  .tocontinued,
+  .checkout {
+      padding: 10px 15px;
+  }
+  
+  .cart_btn-close.iconclose {
+      top: 10px;
+      right: 10px;
+  }
+}
