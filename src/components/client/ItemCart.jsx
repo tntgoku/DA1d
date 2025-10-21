@@ -1,17 +1,17 @@
 import { Link } from "react-router-dom"
 import { formatPrice } from "../../entity/Entity"
-export const ItemCart=({key,idproduct,item,nameproduct,Listimg,handleChange,handleDecrease,handleIncrease})=>{
+export const ItemCart=({idproduct,item,nameproduct,Listimg,handleChange,handleDecrease,handleIncrease})=>{
         return(
             <div className="cart-item">
-                <div className="cart-product" data-line="1" key={key}>
-                    <a href="http://">
+                <div className="cart-product" data-line="1">
+                    <a href="#">
                         <img src={Listimg?.at(0)?.imgSrc} alt="" width={80} height={80} />
                     </a>
                     <div className="cart__info">
                         <div className="cart__product_name">
-                            <a href="http://" className="cart__product_item-name h4">{nameproduct}</a>
+                            <a href="#" className="cart__product_item-name h4">{nameproduct}</a>
                             <span className="cart__product-meta variant-title">{item.color} / BH chính hãng Miễn Phí</span>
-                            <button href="" data-line="1" className="cart__btn-remove remove-item-cart  " onClick={(e)=>{
+                            <button data-line="1" className="cart__btn-remove remove-item-cart  " onClick={(e)=>{
                                 console.log("Remove item:" +item.object.variantId);
                             }}>Xóa</button>
                         </div>

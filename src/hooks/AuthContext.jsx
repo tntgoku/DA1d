@@ -14,28 +14,38 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [authChecked, setAuthChecked] = useState(false);
 
   // Check authentication status on mount
   useEffect(() => {
-    checkAuthStatus();
-  }, []);
+    if (!authChecked) {
+      checkAuthStatus();
+    }
+  }, [authChecked]); // Only run when authChecked changes
 
   const checkAuthStatus = async () => {
     try {
       const token = localStorage.getItem('token');
-      const savedUser = localStorage.getItem('user');
+      // const savedUser = localStorage.getItem('user');
       
-      if (token && savedUser) {
+      if (token) {
         // First, try to use saved user data for immediate display
         try {
-          const userData = JSON.parse(savedUser);
-          setUser(userData);
+          const userData = await getProfile();
+          console.log("userData Tu day ne",userData);
+          setUser(userData.data);
           setIsAuthenticated(true);
         } catch (parseError) {
           console.error('Error parsing saved user:', parseError);
+          // Clear invalid data
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          setIsAuthenticated(false);
+          setUser(null);
+          return;
         }
         
-        // Then, verify with server
+        // Then, verify with server (only once)
         try {
           const response = await getProfile();
           if (response && response.data) {
@@ -47,13 +57,12 @@ export const AuthProvider = ({ children }) => {
           } else {
             // Token invalid, clear everything
             localStorage.removeItem('token');
-            localStorage.removeItem('user');
             setIsAuthenticated(false);
             setUser(null);
           }
         } catch (serverError) {
           console.error('Server verification failed:', serverError);
-          // Keep local data but mark as potentially stale
+          // Keep local data but don't log continuously
           console.warn('Using cached user data, server verification failed');
         }
       } else {
@@ -71,12 +80,14 @@ export const AuthProvider = ({ children }) => {
       setUser(null);
     } finally {
       setLoading(false);
+      setAuthChecked(true);
     }
   };
 
   const login = (userData) => {
     setUser(userData);
     setIsAuthenticated(true);
+    setAuthChecked(true);
     // Save user data to localStorage for persistence
     localStorage.setItem('user', JSON.stringify(userData));
   };
@@ -91,6 +102,7 @@ export const AuthProvider = ({ children }) => {
       // Clear local state and storage regardless of server response
       setUser(null);
       setIsAuthenticated(false);
+      setAuthChecked(false);
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       // Redirect to home page
@@ -102,6 +114,7 @@ export const AuthProvider = ({ children }) => {
     isAuthenticated,
     user,
     loading,
+    authChecked,
     login,
     logout,
     checkAuthStatus

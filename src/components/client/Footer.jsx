@@ -1,5 +1,6 @@
 import '../../css/client/footer.css'
 import { AddressStore, EmailStore, NumberWeb, PolycisSupport } from '../../entity/Marco';
+import { Link } from 'react-router-dom';
 const Footer = () => {
   return (
     <footer className='footer'>
@@ -74,19 +75,20 @@ const Footer = () => {
                     <div className="col-6 col-md-6 col-lg-3 col-xl-3 link-list col-footer footer-click col-fix">
                         <h4 className="title-menu">GIỚI THIỆU</h4>
                         <ul className="list-menu hidden-moblie">
-                            <li><a href="" title=''>Home</a></li>
-                            <li><a href="" title=''>Sản phẩm</a></li>
-                            <li><a href="" title=''>Liên hệ</a></li>
-                            <li><a href="" title=''>Bán hàng Online</a></li>
-                            <li><a href="" title=''>Hỗ trợ kỹ thuật</a></li>
-                            <li><a href="" title=''>Hỗ trợ bảo hành& sửa chữa</a></li>
+                            <li><Link to="/" title=''>Home</Link></li>
+                            <li><Link to="/" title=''>Sản phẩm</Link></li>
+                            <li><Link to="/contact" title=''>Liên hệ</Link></li>
+                            <li><Link to="/" title=''>Bán hàng Online</Link></li>
+                            <li><Link to="/thucu-doi-moi" title=''>Thủ cự đổi mới</Link></li>
+                            <li><Link to="/contact" title=''>Hỗ trợ kỹ thuật</Link></li>
+                            <li><Link to="/warranty-policy" title=''>Hỗ trợ bảo hành& sửa chữa</Link></li>
                         </ul>
                     </div>
                       <div className="col-6 col-md-6 col-lg-3 col-xl-3 link-list col-footer footer-click col-fix">
                         <h4 className="title-menu">HỖ TRỢ</h4>
                         <ul className="list-menu hidden-moblie">
-                            {PolycisSupport.map((index,item)=>(
-                                <li><a href="" title=''>{PolycisSupport[item]}</a></li>
+                            {PolycisSupport.map((item, index)=>(
+                                <li key={index}><a href="#" title=''>{item}</a></li>
                             ))}
                         </ul>
                     </div>

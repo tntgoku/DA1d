@@ -3,8 +3,8 @@ import React from "react";
 export const OrderDetailModal = ({ getStatusColor,showModal, setShowModal, order, formatCurrency,getPaymentMethod, getPaymentStatus }) => {
   if (!showModal || !order) return null;
 
-  const items = order.items || order.listiem || [];
-  console.log("itemsorder:", items);
+  const items = order.items ||[];
+  console.log("ListOrder Items:", items);
   const calculateTotal = () => { return order.totalAmount;
   };
 const [currentPage, setCurrentPage] = React.useState(1);
@@ -170,7 +170,7 @@ const currentItems = items.slice(
               </tr>
             </thead>
             <tbody>
-              {order.listiem.map((item, index) => (
+              {order.items.map((item, index) => (
                 <tr key={index}>
                   <td>{item.object.nameVariants}</td>
                   <td>{item.quantity}</td>
@@ -185,10 +185,10 @@ const currentItems = items.slice(
             <p>Tiền thu người nhận: </p>
                   <strong className="price-print" >
                     {order.paymentMethod === "cod"
-                      ? formatCurrency(calculateTotal()- (order.discount || 0))
+                      ? formatCurrency(calculateTotal())
                       : order.paymentMethod === "vnpay"
                       ? formatCurrency(0)
-                      : formatCurrency(calculateTotal()  - (order.discount || 0))}
+                      : formatCurrency(calculateTotal())}
                   </strong>
                   <br/>
           </div>

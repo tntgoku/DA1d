@@ -16,7 +16,21 @@ apiClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      // Kiểm tra xem token có chứa ký tự Unicode không
+      const hasUnicode = /[^\x00-\x7F]/.test(token);
+      if (hasUnicode) {
+        // Nếu có Unicode, encode thành base64
+        try {
+          const encodedToken = btoa(unescape(encodeURIComponent(token)));
+          config.headers.Authorization = `Bearer ${encodedToken}`;
+        } catch (error) {
+          // Fallback: sử dụng token gốc nếu encode thất bại
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+      } else {
+        // Nếu không có Unicode, sử dụng token gốc
+        config.headers.Authorization = `Bearer ${token}`;
+      }
     }
     return config;
   },

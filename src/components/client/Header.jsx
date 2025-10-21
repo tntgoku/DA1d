@@ -7,6 +7,7 @@ import '../../css/client/payment.css';
 import logo_store from '../../assets/logo_store.jpg';
 import { Cart } from "../Cart";
 import { useAuth } from '../../hooks/AuthContext';
+import CategoryMenu from '../CategoryMenu';
 const Header = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [animate, setAnimate] = useState(false);
@@ -18,25 +19,24 @@ const Header = () => {
     // Get user data from localStorage for immediate display
     const [localUser, setLocalUser] = useState(null);
     
+    
     useEffect(() => {
-        const savedUser = localStorage.getItem('user');
+        // const savedUser = localStorage.getItem('user');
         const token = localStorage.getItem('token');
         
         console.log('Header useEffect - isAuthenticated:', isAuthenticated);
         console.log('Header useEffect - user from context:', user);
-        console.log('Header useEffect - savedUser from localStorage:', savedUser);
         console.log('Header useEffect - token from localStorage:', token);
         
-        if (savedUser && token) {
+        if (token) {
             try {
-                const userData = JSON.parse(savedUser);
-                console.log('Header useEffect - parsed userData:', userData);
-                setLocalUser(userData);
+              setLocalUser(user);
             } catch (error) {
                 console.error('Error parsing saved user:', error);
             }
         }
     }, [isAuthenticated, user]); // Re-run when auth state changes
+
     
     const handleToggleLogin = () => {
         const token = localStorage.getItem('token');
@@ -153,23 +153,25 @@ const Header = () => {
                                 <li className="d-block d-lg-none title-menu">
                                     Menu chính
                                 </li>
+                                
+                                {/* Dynamic Categories Menu */}
+                                <CategoryMenu />
+                                
+                                {/* Static Menu Items */}
                                 <li className="nav-item">
-                                    <a href="" className="a-img" title="Apple">Apple</a><i className="fa fa-caret-down item-rote"></i>
+                                    <a href="" className="a-img" title="Dịch vụ">Dịch vụ</a><i className="fa fa-caret-down item-rote"></i>
                                     <ul className="item_small">
-                                        <li><a href="" className="caret-down">Apple Iphone</a><i className="fa fa-caret-right"></i></li>
-                                        <li><a href="" className="caret-down">Apple Ipad</a><i className="fa fa-caret-right"></i></li>
-                                        <li><a href="" className="caret-down">Macbook</a><i className="fa fa-caret-right"></i></li>
-                                        <li><a href="" className="caret-down">iMac & Mac Desktop</a><i className="fa fa-caret-right"></i></li>
-                                        <li><a href="" className="caret-down">Apple Watch</a><i className="fa fa-caret-right"></i></li>
-                                        <li><a href="" className="caret-down">Tai nghe Airpods</a><i className="fa fa-caret-right"></i></li>
-                                        <li><a href="" className="caret-down">Phụ kiện Apple</a><i className="fa fa-caret-right"></i></li>
+                                        <li><Link to="/thucu-doi-moi" className="caret-down">Thủ cự đổi mới</Link></li>
                                     </ul>
                                 </li>
-                                <li className="nav-item"><a  href="" className="a-img" title="Máy cũ">Máy cũ</a><i className="fa fa-caret-down item-rote"></i></li>
-                                <li className="nav-item"><a  href="" className="a-img" title="Phụ kiện">Phụ kiện</a><i className="fa fa-caret-down item-rote"></i></li>
-                                <li className="nav-item"><a  href="" className="a-img" title="Dịch vụ">Dịch vụ</a><i className="fa fa-caret-down item-rote"></i></li>
-                                <li className="nav-item"><a  href="" className="a-img" title="Chính sách">Chính sách</a><i className="fa fa-caret-down item-rote"></i></li>
-                                <li className="nav-item"><a  href="" className="a-img" title="Liên hệ">Liên hệ</a><i className="fa fa-caret-down item-rote"></i></li>
+                                <li className="nav-item">
+                                    <a href="" className="a-img" title="Chính sách">Chính sách</a><i className="fa fa-caret-down item-rote"></i>
+                                    <ul className="item_small">
+                                        <li><Link to="/warranty-policy" className="caret-down">Chính sách bảo hành</Link></li>
+                                        <li><Link to="/purchase-policy" className="caret-down">Chính sách mua hàng</Link></li>
+                                    </ul>
+                                </li>
+                                <li className="nav-item"><Link to="/contact" className="a-img" title="Liên hệ">Liên hệ</Link></li>
                             </ul>
                         </div>
                 </div>

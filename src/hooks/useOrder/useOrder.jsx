@@ -1,3 +1,5 @@
+import { useState,useEffect } from 'react';
+
 export const useOrder = () => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -53,7 +55,31 @@ export const useOrder = () => {
     const [showMakeAdminModal, setShowMakeAdminModal] = useState(false);
     const [showMakeUserModal, setShowMakeUserModal] = useState(false);
     const [listCustomer, setListCustomer] = useState([]);
-
+    const ORDER_STATUS = {
+        pending: { label: 'Chờ xác nhận', color: 'warning' },
+        confirmed: { label: 'Đã xác nhận', color: 'primary' },
+        processing: { label: 'Đang xử lý', color: 'info' },
+        shipped: { label: 'Đang giao', color: 'secondary' },
+        delivered: { label: 'Đã giao', color: 'success' },
+        cancelled: { label: 'Đã hủy', color: 'danger' },
+        returned: { label: 'Hoàn hàng', color: 'gray' }
+      };
+      const PAYMENT_METHODS = {
+        cod: { label: 'Thanh toán khi nhận hàng', color: 'secondary' },
+        vnpay: { label: 'VNPAY', color: 'primary' },
+        momo: { label: 'MoMo', color: 'danger' },
+        bank_transfer: { label: 'Chuyển khoản ngân hàng', color: 'info' },
+        credit_card: { label: 'Thẻ tín dụng / Ghi nợ', color: 'warning' }
+      };
+      const PAYMENT_STATUS = {
+        unpaid: { label: 'Chưa thanh toán', color: 'danger' },
+        paid: { label: 'Đã thanh toán', color: 'success' },
+        partial: { label: 'Thanh toán một phần', color: 'warning' },
+        refunded: { label: 'Hoàn tiền', color: 'info' }
+      };
+      const getPaymentMethod = (method) => PAYMENT_METHODS[method] || { label: method, color: 'secondary' };
+      const getPaymentStatus = (status) => PAYMENT_STATUS[status] || { label: status, color: 'secondary' };
+      const getStatus = (status) => ORDER_STATUS[status] || { label: status, color: 'secondary' };
     const getOrders = async () => {
         try {
             const response = await apiClient.get('orders');
@@ -122,5 +148,24 @@ export const useOrder = () => {
         orders,
         loading,
         error,
+        getOrders,
+        createOrder,
+        updateOrder,
+        deleteOrder,
+        getOrderById,
+        getOrderItems,
+        updateOrderStatus,
+        updateOrderPaymentStatus,
+        getPaymentMethod,
+        getPaymentStatus,
+        getStatus,
+        getOrders,
+        createOrder,
+        updateOrder,
+        deleteOrder,
+        getOrderById,
+        getOrderItems,
+        updateOrderStatus,
+        updateOrderPaymentStatus,ORDER_STATUS,PAYMENT_METHODS,PAYMENT_STATUS
     }
 }

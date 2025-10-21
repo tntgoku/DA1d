@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
-import React from "react";
+import React, { useEffect } from "react";
 import anh from '../assets/logo_store.jpg';
 import { formatPrice } from "../entity/Entity";
 import { ItemOrder } from "../components/ItemOrder";
 import { usePayment } from "../hooks/usePayment";
 import { useLogin } from "../hooks/useLogin";
+import { useAuth } from "../hooks/AuthContext";
 const ViewPayment = () => {
   const {
     provinces,
@@ -30,6 +31,38 @@ const ViewPayment = () => {
   } = usePayment();
 
   const { isLoggedIn, userInfo } = useLogin();
+  const {checkAuthStatus,user,isAuthenticated }=useAuth();
+  console.log("User in ViewPayment", user);
+  
+    // ✅ CORRECT: Use useEffect to set form data when the user object changes
+    useEffect(() => {
+      // We only want to set the user details if they are available and 
+      // the form fields haven't already been filled with that exact data.
+      // This optimization helps prevent unnecessary renders.
+      const newEmail = user?.email || '';
+      const newFullName = user?.fullName || '';
+      const newPhone = user?.phone || '';
+  
+      // Check if the data is different before setting state
+      let hasChanges = false;
+      
+      if (formData.email !== newEmail) {
+          handleFormChange({ target: { name: 'email', value: newEmail } });
+          handleFormChange({ target: { name: 'id', value: user?.idUser || '' } });
+          hasChanges = true;
+      }
+      
+      if (formData.fullname !== newFullName) {
+          handleFormChange({ target: { name: 'fullname', value: newFullName } });
+          hasChanges = true;
+      }
+      
+      if (formData.phone !== newPhone) {
+          handleFormChange({ target: { name: 'phone', value: newPhone } });
+          hasChanges = true;
+      }
+
+    }, [user, handleFormChange, formData.email, formData.fullname, formData.phone]);
   return (
     <div>
       <header className="banner"></header>
@@ -49,30 +82,46 @@ const ViewPayment = () => {
                             <div className="title-header" style={{display :'flex',alignItems :'center'
                             }}>
                                 <h3 className="layout-flex__item--stretch">Phương thức thanh toán</h3>
-                                <Link to="/login" className="btn--link btn--edit">
+                                {/* <Link to="/login" className="btn--link btn--edit">
                                 <i className="fa fa-user-circle"></i>Đăng nhập
-                                </Link>
+                                </Link> */}
+                                {!isAuthenticated ? (
+                                    <Link to="/login" className="btn--link btn--edit">
+                                    <i className="fa fa-user-circle"></i>Đăng nhập
+                                    </Link>
+                                ) : (
+                                    <span className="btn--link btn--edit" style={{color: '#28a745'}}>
+                                    <i className="fa fa-user-circle"></i>Đã đăng nhập: {user?.fullName || user?.email}
+                                    </span>
+                                )}
                             </div>
                             <div className="section__content">
                             <div className="fieldset">
                                 <div className="field">
                                 <div className="field__input-wrapper form-group">
                                     <label htmlFor="email" className="field__label" style={ {display :'none'}}>Email</label>
-                                    <input  type="email"  className=" form-control"  name="email" id="email"  placeholder="Enter email" onChange={handleFormChange}/>
+                                    <input  type="email"  className=" form-control"  name="email" id="email"  placeholder="Enter email" 
+                                        value={user?.email || ''}
+                                    
+                                    onChange={handleFormChange}/>
                                 </div>
                                 </div>
 
                                 <div className="field">
                                 <div className="field__input-wrapper form-group">
                                     <label htmlFor="full_name" className="field__label"style={ {display :'none'}}>Họ và tên</label>
-                                    <input type="text" className=" form-control" name="fullname" id="full_name" placeholder="Enter full name" onChange={handleFormChange} />
+                                    <input type="text" className=" form-control" name="fullname" id="full_name" placeholder="Enter full name" 
+                                    value={user?.fullName || ''}
+                                    onChange={handleFormChange} />
                                 </div>
                                 </div>
 
                                 <div className="field">
                                 <div className="field__input-wrapper form-group">
                                     <label htmlFor="phone" className="field__label" style={ {display :'none'}}>Số điện thoại </label> 
-                                    <input type="tel" className=" form-control" id="phone" name="phone" placeholder="Enter phone number" onChange={handleFormChange}/>
+                                    <input type="tel" className=" form-control" id="phone" name="phone" placeholder="Enter phone number" 
+                                        value={user?.phone || ''}
+                                    onChange={handleFormChange}/>
                                 </div>
                                 </div>
 

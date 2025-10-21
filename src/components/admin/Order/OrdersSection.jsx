@@ -5,6 +5,7 @@ import { useOrderForm } from '../../../hooks/useOrder/useOrderForm';
 import { useOrderActions } from '../../../hooks/useOrder/useOrderActions';
 import { useCustomerSelection } from '../../../hooks/useCustomerSelection';
 import { useOrderFilters } from '../../../hooks/useOrder/useOrderFilters';
+import { useOrder } from '../../../hooks/useOrder/useOrder';
 const formatCurrency = (amount) => {
   return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
 };
@@ -20,31 +21,7 @@ const OrdersSection = ({ orders: initialOrders, products }) => {
   const { handleSubmit, handleStatusChange, handleDelete, loading } = useOrderActions(initialOrders, setOrders);
   const { listCustomer, filteredCustomers, fillCustomerInfo, clearCustomerInfo } = useCustomerSelection();
   const { searchTerm, setSearchTerm, statusFilter, setStatusFilter, filteredOrders, getFilterSummary } = useOrderFilters(orders);
-const ORDER_STATUS = {
-  pending: { label: 'Chờ xác nhận', color: 'warning' },
-  confirmed: { label: 'Đã xác nhận', color: 'primary' },
-  processing: { label: 'Đang xử lý', color: 'info' },
-  shipped: { label: 'Đang giao', color: 'secondary' },
-  delivered: { label: 'Đã giao', color: 'success' },
-  cancelled: { label: 'Đã hủy', color: 'danger' },
-  returned: { label: 'Hoàn hàng', color: 'gray' }
-};
-const PAYMENT_METHODS = {
-  cod: { label: 'Thanh toán khi nhận hàng', color: 'secondary' },
-  vnpay: { label: 'VNPAY', color: 'primary' },
-  momo: { label: 'MoMo', color: 'danger' },
-  bank_transfer: { label: 'Chuyển khoản ngân hàng', color: 'info' },
-  credit_card: { label: 'Thẻ tín dụng / Ghi nợ', color: 'warning' }
-};
-const PAYMENT_STATUS = {
-  unpaid: { label: 'Chưa thanh toán', color: 'danger' },
-  paid: { label: 'Đã thanh toán', color: 'success' },
-  partial: { label: 'Thanh toán một phần', color: 'warning' },
-  refunded: { label: 'Hoàn tiền', color: 'info' }
-};
-const getPaymentMethod = (method) => PAYMENT_METHODS[method] || { label: method, color: 'secondary' };
-const getPaymentStatus = (status) => PAYMENT_STATUS[status] || { label: status, color: 'secondary' };
-const getStatus = (status) => ORDER_STATUS[status] || { label: status, color: 'secondary' };
+  const { getPaymentMethod, getPaymentStatus, getStatus,PAYMENT_METHODS,PAYMENT_STATUS,ORDER_STATUS } = useOrder();
   useEffect(() => {
     setOrders(initialOrders);
   }, [initialOrders]);

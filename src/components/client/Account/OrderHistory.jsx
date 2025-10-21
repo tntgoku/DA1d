@@ -1,10 +1,11 @@
 import { OrderDetailModal } from '../../admin/Order/OrderDetailModal';
 import  {React, useState } from 'react';
 import { testOrders } from '../../../entity/Entity';
-const OrderHistory = ({ orders=testOrders }) => {
+import { useOrder } from '../../../hooks/useOrder/useOrder';
+const OrderHistory = ({ orders }) => {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
-
+  console.log("ListOrders",orders)
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount || 0);
   };
@@ -19,41 +20,42 @@ const getStatusColor = (status) => {
     default: return 'secondary';
   }
 };
-
+const { getPaymentMethod, getPaymentStatus, getStatus,PAYMENT_METHODS,PAYMENT_STATUS,ORDER_STATUS } = useOrder();
   const handleViewDetail = (order) => {
     setSelectedOrder(order);
+    console.log("OrderSelected",order);
     setShowDetailModal(true);
   };
 
   return (
     <div className="order-history">
       <h3>Lịch sử đơn hàng</h3>
-      {testOrders.map(order => (
+      {orders.map(order => (
         <div key={order.id} className="order-card">
           <div className="order-header">
             <div>
               <strong>Mã đơn: {order.id}</strong>
-              <span className="order-date">Ngày: {order.date}</span>
+              <span className="order-date">Ngày: {new Date(order?.createdAt).toLocaleString('vi-VN')}</span>
             </div>
-            <div className={`status ${getStatusColor(order.status)}`}>
-              {order.status}
+            <div className={`status ${getStatusColor(order?.orderStatus)}`}>
+              {order?.orderStatus}
             </div>
           </div>
           <div className="order-details">
             <div className="products-list">
-              {order.items.map((product, index) => (
+              {order?.items.map((product, index) => (
                 <div key={index} className="product-item">
-                  <span>{product.productName}</span>
-                  <span>{product.quantity} x {formatCurrency(product.price)}</span>
+                  <span>{product.object.nameVariants}</span>
+                  <span>{product?.object?.discount !== 0 ? `${formatCurrency(product?.object?.list_price*(1-product?.object?.discount/100))}` : `${formatCurrency(product?.object?.list_price)}`}</span>
                 </div>
               ))}
             </div>
             <div className="order-total">
-              Tổng cộng: <strong>{formatCurrency(order.total)}</strong>
+              Tổng cộng: <strong>{formatCurrency(order?.totalAmount)}</strong>
             </div>
           </div>
           <div className="order-actions">
-            <button className="btn-outline" onClick={() => handleViewDetail(order)} >Xem chi tiết</button>
+            <button className="btn-outline" onClick={(e) => {e.preventDefault(); handleViewDetail(order)}} >Xem chi tiết</button>
             <button className="btn-primary btn-outline">Mua lại</button>
           </div>
         </div>
@@ -66,6 +68,8 @@ const getStatusColor = (status) => {
           setShowModal={setShowDetailModal}
           order={selectedOrder}
           formatCurrency={formatCurrency}
+          getPaymentMethod={getPaymentMethod}
+          getPaymentStatus={getPaymentStatus}
         />
       )}
     </div>

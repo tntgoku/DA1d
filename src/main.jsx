@@ -10,6 +10,10 @@ import AuthForms from './page/AuthForms.jsx';
 import Account from './page/Account.jsx';
 import Dashboard from './page/Dashboard.jsx';
 import { CategoryPage } from './page/CategoryPage.jsx';
+import WarrantyPolicy from './page/WarrantyPolicy.jsx';
+import PurchasePolicy from './page/PurchasePolicy.jsx';
+import Contact from './page/Contact.jsx';
+import ThucuDoiMoi from './page/ThucuDoiMoi.jsx';
 import { AuthProvider } from './hooks/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
@@ -48,6 +52,12 @@ createRoot(document.getElementById('root')).render(
           <Route path="/detail/:id" element={<Detail />} />
           <Route path="/:parentSlug/:childSlug?/:productSlug/:variantId" element={<Detail />} />
           <Route path="/:parentSlug/:childSlug?" element={<CategoryPage />} />
+          
+          {/* Policy Pages */}
+          <Route path="/warranty-policy" element={<WarrantyPolicy />} />
+          <Route path="/purchase-policy" element={<PurchasePolicy />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/thucu-doi-moi" element={<ThucuDoiMoi />} />
           
           {/* Admin - Protected with ADMIN role */}
           <Route path="/admin" element={

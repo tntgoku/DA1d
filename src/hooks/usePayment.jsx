@@ -177,16 +177,16 @@ export const usePayment = () => {
   // Submit order 
   const submitOrder = async () => {
     // Validate required fields
-    if (!formData.email || !formData.fullname || !formData.phone || !selectedProvince || !formData.address) {
-      alert("Vui lòng điền đầy đủ thông tin giao hàng!");
-      return;
-    }
+    // if (!formData.email || !formData.fullname || !formData.phone || !selectedProvince || !formData.address) {
+    //   alert("Vui lòng điền đầy đủ thông tin giao hàng!");
+    //   return;
+    // }
 
     if (!listCart || listCart.length === 0) {
       alert("Giỏ hàng trống! Vui lòng thêm sản phẩm vào giỏ hàng.");
       return;
     }
-
+    console.log("Form data in submitOrder", formData);
     const orderData = {
       ...formData,
       province: selectedProvince,
@@ -207,30 +207,30 @@ export const usePayment = () => {
       }
     });
     
-    console.log("Submitting order:", orderData);
+    // console.log("Submitting order:", orderData);
     
-    // try {
+    try {
       const result = await OrderService.PostOrder(orderData);
       console.log("Order submitted successfully:", result);
       
-    //   if (result && result.status === 200) {
-    //     if (formData.paymentMethod === "vnpay") {
-    //       alert("Đang chuyển hướng đến trang thanh toán...");
-    //       setTimeout(() => {
-    //         window.location.href = result.data.paymentUrl;
-    //       }, 2000);
-    //     } else {
-    //       alert("Đặt hàng thành công! Chúng tôi sẽ liên hệ với bạn sớm nhất.");
-    //       setTimeout(() => {
-    //         window.location.href = "/";
-    //       }, 3000);
-    //     }
-    //   }
-    // } catch (error) {
-      // console.error("Error submitting order:", error);
-      // const errorMessage = error.response?.data?.message || error.message || "Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại.";
-      // alert(errorMessage);
-    // }
+      if (result && result.status === 200) {
+        if (formData.paymentMethod === "vnpay") {
+          alert("Đang chuyển hướng đến trang thanh toán...");
+          setTimeout(() => {
+            window.location.href = result.data.paymentUrl;
+          }, 2000);
+        } else {
+          alert("Đặt hàng thành công! Chúng tôi sẽ liên hệ với bạn sớm nhất.");
+          setTimeout(() => {
+            window.location.href = "/";
+          }, 3000);
+        }
+      }
+    } catch (error) {
+      console.error("Error submitting order:", error);
+      const errorMessage = error.response?.data?.message || error.message || "Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại.";
+      alert(errorMessage);
+    }
   };
 
   return {

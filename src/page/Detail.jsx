@@ -16,6 +16,7 @@ import Breadcrumb from "../components/Breadcrumb";
 import { useCategories } from "../hooks/useCategori";
 import { useProductDetail } from "../hooks/useProductDetail";
 import CartPopup from "../components/CartPop";
+import ProductComments from "../components/ProductComments";
 const Detail = () => {
     const { id } = useParams();
     const{categories}=useCategories();
@@ -326,6 +327,9 @@ const Detail = () => {
                                 <li className="tab-link" data-tab="tab-2">
                                     <h3>Hỗ trợ trả góp</h3>
                                 </li>
+                                <li className="tab-link" data-tab="tab-3">
+                                    {/* <h3>Đánh giá & Bình luận</h3> */}
+                                </li>
                             </ul>
                             <div className="tab-float">
                                 <div className="tab-content" id="tab-1-content">
@@ -340,6 +344,8 @@ const Detail = () => {
                                     </div>
                                 </div>
                                 <div className="tab-content" id="tab-2-content"></div>
+                                <div className="tab-content" id="tab-3-content">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -371,6 +377,10 @@ const Detail = () => {
                 </div>
             </div>
         </div>
+        <ProductComments 
+                                        productId={product?.id} 
+                                        productName={product?.name} 
+                                    />
         <div className="productRelate product-lq">
             <div className="container">
                 <div className="block-background block-product">

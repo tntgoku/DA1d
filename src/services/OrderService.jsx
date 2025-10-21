@@ -17,9 +17,7 @@ export const OrderService={
 },
 async PostOrder  (formData){
 try {
-    const response = await apiClient.post("checkout",
-        formData
-    );
+    const response = await apiClient.post("checkout",formData);
     if (response.data.status === 200) {
       if (formData.paymentMethod === "vnpay") {
           // Điều hướng đến URL thanh toán mà backend trả về
